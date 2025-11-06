@@ -101,5 +101,12 @@
 	<!-- Privacy Policy URL - REQUIRED by App Store -->
 	<key>NSPrivacyPolicyURL</key>
 	<string>https://freetalk.site/privacy-policy</string>
+	
+	<!-- Export Compliance - Encryption Declaration -->
+	<!-- Set to true if app uses non-exempt encryption (custom encryption beyond OS-provided) -->
+	<!-- Set to false if app only uses exempt encryption (HTTPS/TLS, standard OS encryption) -->
+	<!-- If true, you'll need to provide export compliance documentation in App Store Connect -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<true/>
 </dict>
 </plist>
