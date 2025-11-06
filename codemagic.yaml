@@ -111,56 +111,144 @@ workflows:
           
           # Wait for app to launch
           echo "Waiting for app to launch..."
-          sleep 15
+          sleep 10
+          
+          # Login with test account
+          echo "Logging in with test account..."
+          sleep 5  # Wait for login screen to appear
+          
+          # Tap on email field (typically center-left of screen)
+          # iPhone 15 Pro Max: email field is usually around x=215, y=400
+          echo "Tapping email field..."
+          xcrun simctl io booted tap 215 400
+          sleep 2
+          
+          # Type email address
+          echo "Entering email..."
+          xcrun simctl io booted type "john123@yahoo.com"
+          sleep 2
+          
+          # Tap on PIN field (usually below email field)
+          echo "Tapping PIN field..."
+          xcrun simctl io booted tap 215 500
+          sleep 2
+          
+          # Type PIN
+          echo "Entering PIN..."
+          xcrun simctl io booted type "4225"
+          sleep 2
+          
+          # Tap login button (usually below PIN field or at bottom)
+          echo "Tapping login button..."
+          xcrun simctl io booted tap 215 600
+          sleep 5
+          
+          # Wait for login to complete and home screen to load
+          echo "Waiting for login to complete..."
+          sleep 10
+          
+          # Wait for content to load on home screen
+          echo "Waiting for home feed content to load..."
+          sleep 10
           
           # Create screenshots directory
           mkdir -p screenshots
           
-          echo "Taking screenshots..."
+          echo "Taking screenshots with in-app navigation..."
           
-          # Screenshot 1: Home Feed (default screen)
+          # iPhone 15 Pro Max screen dimensions: 430 x 932 points (1242 x 2688 pixels)
+          # Bottom navigation bar is typically at y=850-932 (bottom of screen)
+          # Tab buttons are typically spaced across the bottom
+          
+          # Screenshot 1: Home Feed (default screen - wait for content to load)
+          echo "Screenshot 1: Home Feed"
+          sleep 5  # Wait for posts to load
           xcrun simctl io booted screenshot screenshots/01_home.png
           sleep 2
           
-          # Screenshot 2: Chat (navigate manually or add automation)
-          # Note: You may need to add navigation commands here
-          # Example: xcrun simctl io booted tap <x> <y> to tap on Chat button
-          xcrun simctl io booted screenshot screenshots/02_chat.png
-          sleep 2
-          
-          # Screenshot 3: Create Post
-          xcrun simctl io booted screenshot screenshots/03_create.png
-          sleep 2
-          
-          # Screenshot 4: Reels/Videos
+          # Navigate to Videos/Reels tab (typically 2nd tab from left)
+          # Tap at approximate position: x=215 (center), y=900 (bottom nav)
+          echo "Navigating to Videos/Reels..."
+          xcrun simctl io booted tap 215 900
+          sleep 5  # Wait for videos to load
           xcrun simctl io booted screenshot screenshots/04_reels.png
           sleep 2
           
-          # Screenshot 5: Profile
+          # Navigate to Create Post tab (typically center tab)
+          echo "Navigating to Create Post..."
+          xcrun simctl io booted tap 215 900  # Center tab
+          sleep 3
+          xcrun simctl io booted screenshot screenshots/03_create.png
+          sleep 2
+          
+          # Navigate to Messages/Chat tab (typically 3rd tab)
+          echo "Navigating to Messages..."
+          xcrun simctl io booted tap 320 900  # Right side tab
+          sleep 5  # Wait for messages to load
+          xcrun simctl io booted screenshot screenshots/02_chat.png
+          sleep 2
+          
+          # Navigate to Profile tab (typically last tab on right)
+          echo "Navigating to Profile..."
+          xcrun simctl io booted tap 400 900  # Far right tab
+          sleep 5  # Wait for profile to load
           xcrun simctl io booted screenshot screenshots/05_profile.png
           sleep 2
           
-          # Screenshot 6: Marketplace
+          # Navigate back to Home and tap Marketplace (if accessible from home)
+          echo "Navigating to Marketplace..."
+          xcrun simctl io booted tap 110 900  # Back to home (left tab)
+          sleep 3
+          # If marketplace is accessible from home, tap it
+          # Otherwise, this will be a home screen with marketplace visible
           xcrun simctl io booted screenshot screenshots/06_marketplace.png
           sleep 2
           
-          # Screenshot 7: Notifications
+          # Navigate to Notifications (usually top right icon)
+          echo "Navigating to Notifications..."
+          xcrun simctl io booted tap 400 50  # Top right corner
+          sleep 3
           xcrun simctl io booted screenshot screenshots/07_notifications.png
           sleep 2
           
-          # Screenshot 8: Search/Discover
+          # Navigate to Search (usually top bar)
+          echo "Navigating to Search..."
+          # Go back to home first
+          xcrun simctl io booted tap 110 900
+          sleep 2
+          # Tap search bar (usually near top center)
+          xcrun simctl io booted tap 215 100
+          sleep 3
           xcrun simctl io booted screenshot screenshots/08_search.png
           sleep 2
           
-          # Screenshot 9: Settings
+          # Navigate to Settings (usually in profile menu)
+          echo "Navigating to Settings..."
+          xcrun simctl io booted tap 400 900  # Go to profile
+          sleep 3
+          # Tap settings icon (usually top right or in menu)
+          xcrun simctl io booted tap 400 50
+          sleep 3
           xcrun simctl io booted screenshot screenshots/09_settings.png
           sleep 2
           
-          # Screenshot 10: Groups
+          # Screenshot 10: Groups (if accessible from messages or home)
+          echo "Screenshot 10: Groups/Community"
+          xcrun simctl io booted tap 320 900  # Go to messages
+          sleep 3
           xcrun simctl io booted screenshot screenshots/10_groups.png
           
           echo "Screenshots captured successfully!"
           ls -lh screenshots/
+          
+          # Note: If screenshots don't show the right content, you may need to:
+          # 1. Adjust tap coordinates based on your app's UI layout
+          #    - Login fields: Email (x=215, y=400), PIN (x=215, y=500), Login button (x=215, y=600)
+          #    - Bottom nav tabs: Home (x=110, y=900), Videos (x=215, y=900), Messages (x=320, y=900), Profile (x=400, y=900)
+          # 2. Use accessibility labels instead of coordinates (if available)
+          # 3. Add more wait time for content to load
+          # 4. Use deep links if your app supports them
+          # 5. Verify login coordinates match your login screen layout
 
       - name: Resize screenshots to App Store requirements
         script: |
