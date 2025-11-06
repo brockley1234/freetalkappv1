@@ -105,8 +105,8 @@
 	<!-- Export Compliance - Encryption Declaration -->
 	<!-- Set to true if app uses non-exempt encryption (custom encryption beyond OS-provided) -->
 	<!-- Set to false if app only uses exempt encryption (HTTPS/TLS, standard OS encryption) -->
-	<!-- If true, you'll need to provide export compliance documentation in App Store Connect -->
+	<!-- Most apps use standard HTTPS/TLS which is exempt, so set to false -->
 	<key>ITSAppUsesNonExemptEncryption</key>
-	<true/>
+	<false/>
 </dict>
 </plist>
