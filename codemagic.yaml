@@ -93,7 +93,8 @@ workflows:
 
       - name: Build iOS app for screenshots
         script: |
-          flutter build ios --simulator --release --no-codesign
+          # Build for simulator (debug mode - release mode not supported for simulators)
+          flutter build ios --simulator --debug --no-codesign
 
       - name: Generate screenshots
         script: |
