@@ -85,6 +85,10 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>ReelTalk uses your location when the app is open to: (1) Show you nearby events and users (optional feature), (2) Tag your posts with location information if you choose. Location is never shared without your permission.</string>
 	
+	<!-- Location always access (required by some SDKs) -->
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>ReelTalk uses your location when the app is open to: (1) Show you nearby events and users (optional feature), (2) Tag your posts with location information if you choose. Location is never shared without your permission.</string>
+	
 	<!-- Privacy Tracking Declaration (iOS 14.5+) - REQUIRED by App Store -->
 	<!-- Set to false because we do not request IDFA or use tracking technologies -->
 	<key>NSPrivacyTracking</key>
