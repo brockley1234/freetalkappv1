@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>ReelTalk</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>ReelTalk</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	
+	<!-- URL Scheme Configuration for Deep Linking -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>freetalk</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.freetalk.app</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
+	
+	<!-- Camera access for taking photos/videos and video calls -->
+	<key>NSCameraUsageDescription</key>
+	<string>ReelTalk needs camera access to: (1) Enable video calls with friends, (2) Capture photos and videos for your posts and stories, (3) Record content with real-time filters and effects. Camera access is only used when you actively use these features.</string>
+	
+	<!-- Photo library access for selecting images and videos -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ReelTalk needs photo library access to: (1) Select photos and videos you want to share in posts, stories, and messages, (2) Save media from conversations to your device. You control which photos and videos are accessed.</string>
+	
+	<!-- Photo library add usage (for saving media) -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>ReelTalk needs permission to save photos and videos you receive or create within the app to your photo library. This only happens when you choose to save content.</string>
+	
+	<!-- Microphone access for voice/video calls and recording -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ReelTalk needs microphone access to: (1) Enable voice and video calls with other users, (2) Record audio for video posts and stories, (3) Send voice messages in chats. Microphone is only active when you use these communication features.</string>
+	
+	<!-- Contacts access (if needed in future) -->
+	<key>NSContactsUsageDescription</key>
+	<string>ReelTalk can access your contacts to help you find and connect with friends who are already using the app. Contact information is never stored on our servers without your explicit consent.</string>
+	
+	<!-- Location access (if needed) -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ReelTalk uses your location when the app is open to: (1) Show you nearby events and users (optional feature), (2) Tag your posts with location information if you choose. Location is never shared without your permission.</string>
+	
+	<!-- Privacy Tracking Declaration (iOS 14.5+) - REQUIRED by App Store -->
+	<!-- Set to false because we do not request IDFA or use tracking technologies -->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	
+	<!-- Privacy Manifest File Reference (iOS 17+) - REQUIRED by App Store -->
+	<key>NSPrivacyManifestLocation</key>
+	<string>PrivacyInfo.xcprivacy</string>
+	
+	<!-- Privacy Policy URL - REQUIRED by App Store -->
+	<key>NSPrivacyPolicyURL</key>
+	<string>https://freetalk.site/privacy-policy</string>
+</dict>
+</plist>

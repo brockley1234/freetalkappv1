@@ -1,0 +1,58 @@
+﻿{
+  "description": "Flutter Web Build Optimization Configuration",
+  "optimizations": {
+    "build_modes": {
+      "profile": {
+        "description": "Fast builds for testing (2-5 min)",
+        "command": "flutter build web --profile --web-renderer html --source-maps=false",
+        "use_case": "Testing features, debugging layout, quick iterations",
+        "pros": ["Fastest build time", "Still debuggable", "Good performance"],
+        "cons": ["Slightly larger bundle", "Not for production"]
+      },
+      "release": {
+        "description": "Production builds (5-10 min)",
+        "command": "flutter build web --release --web-renderer html --source-maps=false --dart-define=Dart2jsOptimization=O3",
+        "use_case": "Final deployment to production",
+        "pros": ["Smallest bundle", "Best performance", "Most optimized"],
+        "cons": ["Longest build time", "Hard to debug"]
+      }
+    },
+    "renderers": {
+      "html": {
+        "build_time": "Fastest",
+        "compatibility": "Best",
+        "performance": "Good for most apps",
+        "recommended": true
+      },
+      "canvaskit": {
+        "build_time": "Slower",
+        "compatibility": "Good",
+        "performance": "Best for complex graphics",
+        "recommended": false
+      }
+    },
+    "tips": [
+      "Skip 'flutter clean' for incremental builds (saves 30-60 seconds)",
+      "Use --profile mode during development and testing",
+      "Only use --release mode for final production deploys",
+      "Disable source maps with --source-maps=false (saves 1-2 min)",
+      "Use --no-tree-shake-icons if you use many icons (faster compilation)",
+      "Keep dependencies minimal - remove unused packages",
+      "Consider code splitting with deferred imports for large apps"
+    ]
+  },
+  "build_time_estimates": {
+    "first_build": {
+      "profile": "3-5 minutes",
+      "release": "7-12 minutes"
+    },
+    "incremental_build": {
+      "profile": "1-2 minutes",
+      "release": "3-6 minutes"
+    },
+    "with_clean": {
+      "profile": "4-6 minutes",
+      "release": "8-15 minutes"
+    }
+  }
+}

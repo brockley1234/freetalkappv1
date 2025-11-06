@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "com.freetalk.app",
+        "paths": [
+          "/post/*",
+          "/profile/*",
+          "/highlight/*",
+          "/story/*",
+          "/messages/*",
+          "/event/*",
+          "/club/*",
+          "/reset-pin*"
+        ]
+      }
+    ]
+  }
+}

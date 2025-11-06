@@ -1,0 +1,122 @@
+﻿[
+  {
+    "id": "alias_anno_domini",
+    "title": "Alias",
+    "artist": "Anno Domini Beats",
+    "filename": "Alias - Anno Domini Beats.mp3",
+    "duration": 180,
+    "category": "Electronic",
+    "mood": "Energetic",
+    "genre": "Electronic/Hip-Hop",
+    "license": "Royalty Free",
+    "description": "Upbeat electronic track perfect for action sequences"
+  },
+  {
+    "id": "cash_mark_karan",
+    "title": "Cash",
+    "artist": "Mark Karan, Scott Guberman, Angeline Saris, Jeremy Hoenig",
+    "filename": "Cash - Mark Karan, Scott Guberman, Angeline Saris, Jeremy Hoenig.mp3",
+    "duration": 165,
+    "category": "Pop",
+    "mood": "Confident",
+    "genre": "Pop/Rock",
+    "license": "Royalty Free",
+    "description": "Confident pop track with attitude"
+  },
+  {
+    "id": "circuit_rush",
+    "title": "Circuit Rush",
+    "artist": "The Mini Vandals",
+    "filename": "Circuit Rush - The Mini Vandals.mp3",
+    "duration": 195,
+    "category": "Electronic",
+    "mood": "Intense",
+    "genre": "Electronic/Dance",
+    "license": "Royalty Free",
+    "description": "High-energy electronic dance track"
+  },
+  {
+    "id": "final_boss_battle",
+    "title": "Final Boss Battle",
+    "artist": "Rod Kim",
+    "filename": "Final Boss Battle - Rod Kim.mp3",
+    "duration": 210,
+    "category": "Gaming",
+    "mood": "Epic",
+    "genre": "Orchestral/Electronic",
+    "license": "Royalty Free",
+    "description": "Epic battle music with orchestral elements"
+  },
+  {
+    "id": "fontana",
+    "title": "Fontana",
+    "artist": "Ryan Stasik, Kanika Moore",
+    "filename": "Fontana - Ryan Stasik, Kanika Moore.mp3",
+    "duration": 220,
+    "category": "Indie",
+    "mood": "Dreamy",
+    "genre": "Indie/Alternative", 
+    "license": "Royalty Free",
+    "description": "Dreamy indie track with atmospheric vibes"
+  },
+  {
+    "id": "love_fast",
+    "title": "Love Fast",
+    "artist": "Ryan Stasik, Kanika Moore",
+    "filename": "Love Fast - Ryan Stasik, Kanika Moore.mp3",
+    "duration": 185,
+    "category": "Pop",
+    "mood": "Romantic",
+    "genre": "Indie Pop",
+    "license": "Royalty Free",
+    "description": "Upbeat romantic indie pop track"
+  },
+  {
+    "id": "numb_sky",
+    "title": "Numb Sky",
+    "artist": "Mark Karan, Scott Guberman, Angeline Saris, Jeremy Hoenig",
+    "filename": "Numb Sky - Mark Karan, Scott Guberman, Angeline Saris, Jeremy Hoenig.mp3",
+    "duration": 200,
+    "category": "Alternative",
+    "mood": "Melancholy",
+    "genre": "Alternative Rock",
+    "license": "Royalty Free",
+    "description": "Moody alternative rock with emotional depth"
+  },
+  {
+    "id": "purple_desire",
+    "title": "Purple Desire",
+    "artist": "The Grey Room & Clark Sims",
+    "filename": "Purple Desire - The Grey Room _ Clark Sims.mp3",
+    "duration": 175,
+    "category": "Ambient",
+    "mood": "Mysterious",
+    "genre": "Ambient/Electronic",
+    "license": "Royalty Free",
+    "description": "Mysterious ambient track with electronic elements"
+  },
+  {
+    "id": "true_crime_documentary",
+    "title": "True Crime Documentary and Chill",
+    "artist": "Rod Kim",
+    "filename": "True Crime Documentary and Chill - Rod Kim.mp3",
+    "duration": 240,
+    "category": "Cinematic",
+    "mood": "Suspenseful",
+    "genre": "Cinematic/Ambient",
+    "license": "Royalty Free",
+    "description": "Suspenseful cinematic music perfect for storytelling"
+  },
+  {
+    "id": "uwu_victory",
+    "title": "uWu Victory",
+    "artist": "Rod Kim",
+    "filename": "uWu Victory - Rod Kim.mp3",
+    "duration": 120,
+    "category": "Gaming",
+    "mood": "Playful",
+    "genre": "Chiptune",
+    "license": "Royalty Free",
+    "description": "Playful victory theme with retro gaming vibes"
+  }
+]

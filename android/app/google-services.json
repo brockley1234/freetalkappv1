@@ -1,0 +1,29 @@
+﻿{
+  "project_info": {
+    "project_number": "910913472413",
+    "project_id": "reeltalk-46664",
+    "storage_bucket": "reeltalk-46664.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910913472413:android:7df42f94e95cd16d391174",
+        "android_client_info": {
+          "package_name": "com.freetalk.social"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfQaqdi9TVBDPM-z-u7Jac4bsjglfAZ6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

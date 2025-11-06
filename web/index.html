@@ -1,0 +1,432 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <!-- Critical: Suppress non-critical Flutter engine assertions -->
+  <script>
+    // Suppress non-critical Flutter engine assertions
+    window.addEventListener('error', function(e) {
+      if (e.message && (e.message.includes('Assertion failed') || 
+          e.message.includes('js_primitives'))) {
+        e.preventDefault();
+        console.warn('Suppressed Flutter assertion:', e.message);
+        return false;
+      }
+    }, true);
+  </script>
+  
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+  
+  <!-- Security Policy -->
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="unsafe-none">
+  
+  <!-- Cache Control - Force fresh content -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- Optimized viewport for mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="reeltalk">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  
+  <!-- Touch and gesture optimizations -->
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>reeltalk</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Preconnect to optimize external resource loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  
+  <!-- DNS prefetch for faster lookups -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  
+  <!-- Note: Worker resources are loaded on-demand by the application -->
+  
+  <!-- Material Icons Font from Google Fonts (async loading for performance) -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Material+Icons+Outlined&family=Material+Icons+Round&family=Material+Icons+Sharp&family=Material+Icons+Two+Tone&display=swap" rel="stylesheet" media="print" onload="this.media='all'"">
+
+  <!-- Noto Fonts for comprehensive character support (fixes missing character warnings) -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+Symbols:wght@400;700&family=Noto+Sans+Symbols+2&family=Noto+Color+Emoji&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+
+  <!-- Mobile-optimized CSS -->
+  <style>
+    * {
+      /* Better touch target spacing */
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      -webkit-touch-callout: none;
+    }
+    
+    body {
+      /* Font stack with Noto fonts for comprehensive character support */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 
+                   'Noto Sans', 'Noto Sans Symbols', 'Noto Sans Symbols 2', 'Noto Color Emoji', 
+                   sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      /* Prevent pull-to-refresh and overscroll */
+      overscroll-behavior-y: contain;
+      /* Smooth scrolling on mobile */
+      -webkit-overflow-scrolling: touch;
+      /* Prevent text size adjustment on rotation */
+      -webkit-text-size-adjust: 100%;
+      /* Prevent double-tap zoom */
+      touch-action: manipulation;
+    }
+    
+    /* Better video controls for touch */
+    video {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    /* Optimize button touch areas */
+    button, a, input[type="button"], input[type="submit"] {
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+    
+    /* Remove tap delay on mobile */
+    a, button, input, select, textarea {
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+    }
+    
+    /* Improve scrolling performance */
+    .scrollable {
+      -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+    }
+    
+    /* Full screen video support */
+    video::-webkit-media-controls-fullscreen-button {
+      display: block;
+    }
+    
+    /* Improve video playback on mobile */
+    video::-webkit-media-controls {
+      -webkit-appearance: media-controls;
+    }
+    
+    /* Better focus states for accessibility */
+    :focus-visible {
+      outline: 2px solid #2196F3;
+      outline-offset: 2px;
+    }
+    
+    /* Hide scrollbars on mobile for cleaner look */
+    @media (max-width: 768px) {
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 2px;
+      }
+    }
+    
+    /* Landscape orientation optimizations */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body {
+        /* Prevent bounce effect in landscape on iOS */
+        position: fixed;
+        width: 100%;
+      }
+    }
+  </style>
+  
+</head>
+<body>
+  <!-- Loading screen for better perceived performance -->
+  <div id="loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+    <div style="text-align: center;">
+      <div style="width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+      <p style="margin-top: 20px; color: #333; font-family: sans-serif;">Loading reelTalk...</p>
+    </div>
+  </div>
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <script>
+    // Hide loading screen when app is ready
+    window.addEventListener('flutter-first-frame', function() {
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.style.opacity = '0';
+        loading.style.transition = 'opacity 0.3s';
+        setTimeout(() => loading.remove(), 300);
+      }
+    });
+    
+    // Fallback: hide after 5 seconds
+    setTimeout(function() {
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.style.opacity = '0';
+        loading.style.transition = 'opacity 0.3s';
+        setTimeout(() => loading.remove(), 300);
+      }
+    }, 5000);
+  </script>
+  <script>
+    // ============================================================================
+    // Service Worker Registration - Single Unified Strategy
+    // ============================================================================
+    
+    /**
+     * Register service worker for offline support and performance optimization
+     * Uses intelligent caching strategies for different resource types
+     * Safari fix: Aggressive update checking to prevent stale content
+     */
+    if ('serviceWorker' in navigator) {
+      // Use localStorage with timestamp to prevent repeated prompts
+      const UPDATE_PROMPT_KEY = 'ReelTalk_last_update_prompt';
+      const PROMPT_COOLDOWN = 60 * 60 * 1000; // 1 hour cooldown between prompts
+      
+      // Detect Safari
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      
+      // Check if we should show update prompt (cooldown period)
+      function shouldShowUpdatePrompt() {
+        const lastPrompt = localStorage.getItem(UPDATE_PROMPT_KEY);
+        if (!lastPrompt) return true;
+        
+        const timeSinceLastPrompt = Date.now() - parseInt(lastPrompt);
+        return timeSinceLastPrompt > PROMPT_COOLDOWN;
+      }
+      
+      window.addEventListener('load', () => {
+        // Delay service worker registration to not block app startup
+        setTimeout(() => {
+          // Safari fix: Clear old service worker cache on load
+          if (isSafari && 'caches' in window) {
+            caches.keys().then(function(names) {
+              // Delete all old versions
+              const currentVersion = 'ReelTalk-v1.0.4';
+              names.forEach(name => {
+                if (name.startsWith('ReelTalk-') && !name.includes(currentVersion)) {
+                  caches.delete(name);
+                }
+              });
+            }).catch(err => console.warn('⚠️ Cache cleanup error:', err));
+          }
+          
+          // Clean up old Flutter caches first (one time, non-blocking)
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              const oldCaches = names.filter(name => 
+                name.startsWith('flutter-temp') || name.includes('old')
+              );
+              for (let name of oldCaches) {
+                caches.delete(name);
+              }
+            }).catch(function(err) {
+              console.warn('⚠️ Cache cleanup error:', err);
+            });
+          }
+          
+          // Register service worker (single registration point)
+          // Safari fix: Add updateViaCache: 'none' to prevent aggressive caching
+          navigator.serviceWorker.register('/sw.js', {
+            updateViaCache: 'none'  // Safari fix: Don't cache the service worker file
+          })
+          .then((registration) => {
+            
+            // Safari fix: Check for updates immediately
+            if (isSafari) {
+              registration.update();
+            }
+            
+            // Check for updates every 24 hours (more frequently on Safari)
+            const updateInterval = isSafari ? 30 * 60 * 1000 : 24 * 60 * 60 * 1000; // 30 min for Safari
+            setInterval(() => {
+              registration.update();
+            }, updateInterval);
+            
+            // Listen for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              
+              if (!newWorker) return;
+              
+              newWorker.addEventListener('statechange', () => {
+                // Only show update prompt if:
+                // 1. New worker is installed
+                // 2. There's an existing controller (not first install)
+                // 3. Enough time has passed since last prompt
+                // 4. Page has been visible for at least 3 seconds (not just loading)
+                if (newWorker.state === 'installed' && 
+                    navigator.serviceWorker.controller && 
+                    shouldShowUpdatePrompt() &&
+                    document.visibilityState === 'visible') {
+                  
+                  // Wait 3 seconds before showing to avoid showing on initial load
+                  setTimeout(() => {
+                    // Double check we should still show (user might have navigated away)
+                    if (!shouldShowUpdatePrompt() || document.visibilityState !== 'visible') {
+                      return;
+                    }
+                    
+                    localStorage.setItem(UPDATE_PROMPT_KEY, Date.now().toString());
+                    
+                    if (confirm('A new version of ReelTalk is available. Reload to update?')) {
+                      newWorker.postMessage({ type: 'SKIP_WAITING' });
+                      
+                      // Listen for the controlling service worker change
+                      navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        window.location.reload();
+                      });
+                    }
+                  }, 3000);
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.warn('⚠️ Service Worker registration failed:', error);
+          });
+        }, 100); // Delay by 100ms to not block app initialization
+      });
+    } else {
+      console.log('ℹ️ Service Workers not supported');
+    }
+    
+    // Add global error handlers for graceful degradation
+    window.addEventListener('error', function(event) {
+      const message = event.message || '';
+      
+      // Suppress Flutter engine errors that are non-critical
+      if (message.includes('js_primitives') || 
+          message.includes('window.dart') ||
+          message.includes('Assertion failed') ||
+          message.includes('service worker') || 
+          message.includes('serviceWorker')) {
+        console.warn('🚫 Non-critical error suppressed:', message);
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+    }, true);
+    
+    window.addEventListener('unhandledrejection', function(event) {
+      const message = event.reason?.message || event.reason?.toString() || '';
+      
+      // Suppress non-critical promise rejections
+      if (message.includes('js_primitives') ||
+          message.includes('window.dart') ||
+          message.includes('Assertion failed') ||
+          message.includes('service worker') || 
+          message.includes('serviceWorker')) {
+        console.warn('🚫 Promise rejection suppressed:', message);
+        event.preventDefault();
+        return false;
+      }
+    });
+  </script>
+  
+  <!-- Performance optimization script -->
+  <script>
+    // Defer worker manager initialization until Flutter is ready
+    window.addEventListener('flutter-first-frame', function() {
+      // Load Web Worker Manager after Flutter is initialized
+      const script = document.createElement('script');
+      script.src = 'worker_manager.js';
+      script.defer = true;
+      document.body.appendChild(script);
+    });
+    
+    // Preload critical resources (after worker manager loads)
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        if (window.workerManager) {
+      // Preload any critical images or assets
+      const criticalAssets = [
+        // Add your critical image URLs here
+      ];
+      
+      if (criticalAssets.length > 0) {
+        window.workerManager.preloadImages(criticalAssets)
+          .then(results => {
+            console.log('✅ Preloaded', results.filter(r => r.success).length, 'assets');
+          })
+          .catch(err => {
+            console.warn('⚠️ Asset preload error:', err);
+          });
+      }
+        }
+      }, 1000); // Wait 1 second for worker manager to initialize
+    });
+    
+    // Optimize page load performance
+    window.addEventListener('load', function() {
+      // Use requestIdleCallback for non-critical tasks
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(function() {
+          // Perform non-critical initialization here
+        });
+      }
+    });
+  </script>
+  
+  <!-- Flutter loader script with modern initialization -->
+  <script>
+    {{flutter_js}}
+    {{flutter_build_config}}
+    
+    // Use the modern Flutter initialization API
+    if (typeof _flutter !== 'undefined' && _flutter.loader) {
+      _flutter.loader.load({
+        onEntrypointLoaded: async function(engineInitializer) {
+          try {
+            // Initialize the Flutter engine with the modern API
+            const appRunner = await engineInitializer.initializeEngine();
+            // Run the app
+            await appRunner.runApp();
+          } catch (e) {
+            console.error('Flutter initialization error:', e);
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+
