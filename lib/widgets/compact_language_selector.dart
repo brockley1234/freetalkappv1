@@ -45,7 +45,7 @@ class CompactLanguageSelector extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -59,7 +59,7 @@ class CompactLanguageSelector extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -69,11 +69,14 @@ class CompactLanguageSelector extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  Icon(Icons.language, color: Colors.blue.shade700),
+                  Icon(
+                    Icons.language,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     'Select Language',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -97,15 +100,19 @@ class CompactLanguageSelector extends StatelessWidget {
                     leading: Text(flag, style: const TextStyle(fontSize: 28)),
                     title: Text(
                       name,
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.normal,
-                        color:
-                            isSelected ? Colors.blue.shade700 : Colors.black87,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     trailing: isSelected
-                        ? Icon(Icons.check_circle, color: Colors.blue.shade700)
+                        ? Icon(
+                            Icons.check_circle,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
                         : null,
                     onTap: () {
                       languageProvider.setLocale(Locale(code, ''));
@@ -151,14 +158,16 @@ class CompactLanguageSelector extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: backgroundColor ?? Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: borderColor ?? Colors.white.withValues(alpha: 0.3),
-                  width: 1,
-                ),
+            decoration: BoxDecoration(
+              color: backgroundColor ??
+                  Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: borderColor ??
+                    Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                width: 1,
               ),
+            ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -170,8 +179,8 @@ class CompactLanguageSelector extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       currentCode.toUpperCase(),
-                      style: TextStyle(
-                        color: textColor ?? Colors.white,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: textColor ?? Theme.of(context).colorScheme.onSurface,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -180,7 +189,7 @@ class CompactLanguageSelector extends StatelessWidget {
                   const SizedBox(width: 4),
                   Icon(
                     Icons.arrow_drop_down,
-                    color: textColor ?? Colors.white,
+                    color: textColor ?? Theme.of(context).colorScheme.onSurface,
                     size: 20,
                   ),
                 ],
@@ -200,7 +209,7 @@ class LanguageBanner extends StatelessWidget {
   void _showLanguageBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -218,7 +227,7 @@ class LanguageBanner extends StatelessWidget {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -228,11 +237,14 @@ class LanguageBanner extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      Icon(Icons.language, color: Colors.blue.shade700),
+                      Icon(
+                        Icons.language,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       const SizedBox(width: 12),
-                      const Text(
+                      Text(
                         'Select Language',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -317,9 +329,11 @@ class LanguageBanner extends StatelessWidget {
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.blue.shade200),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              ),
             ),
             child: Row(
               children: [
@@ -331,23 +345,27 @@ class LanguageBanner extends StatelessWidget {
                     children: [
                       Text(
                         currentName,
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade900,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                       ),
                       Text(
                         'Tap to change language',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 12,
-                          color: Colors.blue.shade700,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.edit, color: Colors.blue.shade700, size: 20),
+                Icon(
+                  Icons.edit,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  size: 20,
+                ),
               ],
             ),
           ),

@@ -442,7 +442,7 @@ class _TapStreakGameState extends State<TapStreakGame>
                                 .displayLarge
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
                           ),
                         ),
@@ -454,7 +454,11 @@ class _TapStreakGameState extends State<TapStreakGame>
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.pause, size: 64, color: Colors.white),
+                              Icon(
+                                Icons.pause, 
+                                size: 64, 
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                               const SizedBox(height: 16),
                               ElevatedButton.icon(
                                 onPressed: _togglePause,
@@ -508,7 +512,7 @@ class _TapStreakGameState extends State<TapStreakGame>
                     Text(
                       'Tap to the beat. Build your streak. 🔥',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             fontSize: ResponsiveSizing.getFontSize(context,
                                 small: 12, medium: 14, large: 16, xlarge: 16),
                           ),
@@ -568,7 +572,7 @@ class _TapStreakGameState extends State<TapStreakGame>
                       style: TextStyle(
                         fontSize: ResponsiveSizing.getFontSize(context,
                             small: 11, medium: 12, large: 13, xlarge: 13),
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         height: 1.5,
                       ),
                     ),
@@ -615,7 +619,7 @@ class _TapStreakGameState extends State<TapStreakGame>
             Text(
               label,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: ResponsiveSizing.getFontSize(context,
                     small: 15, medium: 16, large: 18, xlarge: 20),
                 fontWeight: FontWeight.bold,
@@ -625,7 +629,7 @@ class _TapStreakGameState extends State<TapStreakGame>
             Text(
               desc,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 fontSize: ResponsiveSizing.getFontSize(context,
                     small: 10, medium: 11, large: 12, xlarge: 12),
               ),
@@ -758,16 +762,16 @@ class _TapStreakGameState extends State<TapStreakGame>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.touch_app,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                             size: 50,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             beatActive ? 'TAP!' : 'WAIT',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                               letterSpacing: 2,
@@ -776,8 +780,8 @@ class _TapStreakGameState extends State<TapStreakGame>
                           const SizedBox(height: 4),
                           Text(
                             'x${comboMultiplier.toStringAsFixed(1)}',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
                             ),
@@ -798,7 +802,7 @@ class _TapStreakGameState extends State<TapStreakGame>
               padding: EdgeInsets.all(ResponsiveSizing.getSpacing(context,
                   small: 12, medium: 14, large: 16)),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(
                     ResponsiveSizing.getBorderRadius(context)),
               ),
@@ -817,7 +821,7 @@ class _TapStreakGameState extends State<TapStreakGame>
                     Text(
                       'Avg Reaction: ${(reactionTimes.reduce((a, b) => a + b) / reactionTimes.length).toStringAsFixed(0)}ms',
                       style: TextStyle(
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         fontSize: ResponsiveSizing.getFontSize(context,
                             small: 10, medium: 11, large: 12, xlarge: 12),
                       ),
@@ -957,6 +961,7 @@ class _TapStreakGameState extends State<TapStreakGame>
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final padding =
         ResponsiveSizing.getSpacing(context, small: 10, medium: 12, large: 14);
     final borderRadius = ResponsiveSizing.getBorderRadius(context);
@@ -967,7 +972,7 @@ class _TapStreakGameState extends State<TapStreakGame>
         vertical: padding * 0.8,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
@@ -979,7 +984,7 @@ class _TapStreakGameState extends State<TapStreakGame>
             style: TextStyle(
               fontSize: ResponsiveSizing.getFontSize(context,
                   small: 10, medium: 11, large: 12, xlarge: 12),
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,

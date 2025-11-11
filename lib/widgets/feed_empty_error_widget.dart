@@ -29,21 +29,21 @@ class FeedErrorWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.red.shade50,
+                  color: Theme.of(context).colorScheme.errorContainer,
                 ),
                 child: Icon(
                   icon,
                   size: 64,
-                  color: Colors.red.shade400,
+                  color: Theme.of(context).colorScheme.error,
                 ),
               ),
               const SizedBox(height: 24),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -53,7 +53,7 @@ class FeedErrorWidget extends StatelessWidget {
                   message!,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,
@@ -102,21 +102,21 @@ class FeedEmptyWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.blue.shade50,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                 ),
                 child: Icon(
                   icon,
                   size: 64,
-                  color: Colors.blue.shade400,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 24),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -125,7 +125,7 @@ class FeedEmptyWidget extends StatelessWidget {
                 message,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -236,7 +236,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
               Icon(
                 Icons.check_circle_outline,
                 size: 48,
-                color: Colors.green.shade400,
+                color: Theme.of(context).colorScheme.secondary,
               ),
               const SizedBox(height: 16),
               Text(
@@ -244,7 +244,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
               const SizedBox(height: 8),
@@ -252,7 +252,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                 'Follow more users to see their posts',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: 32),
@@ -270,7 +270,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -297,9 +297,10 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                           ),
                           child: Container(
                             decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: Colors.grey.shade200,
+                                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
                               ),
                             ),
                             padding: const EdgeInsets.all(12),
@@ -308,7 +309,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                                 // Avatar
                                 CircleAvatar(
                                   radius: 24,
-                                  backgroundColor: Colors.blue.shade100,
+                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                                   backgroundImage: (user['avatar'] is String && 
                                           (user['avatar'] as String).isNotEmpty)
                                       ? NetworkImage(
@@ -329,7 +330,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                                               .join()
                                               .toUpperCase(),
                                           style: TextStyle(
-                                            color: Colors.blue.shade700,
+                                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         )
@@ -344,9 +345,10 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                                     children: [
                                       Text(
                                         user['name'] ?? 'Unknown',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -356,7 +358,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                                         '@${user['username'] ?? 'unknown'}',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Colors.grey.shade500,
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -366,7 +368,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                                         '${user['followersCount'] ?? 0} followers',
                                         style: TextStyle(
                                           fontSize: 11,
-                                          color: Colors.grey.shade600,
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                         ),
                                       ),
                                     ],
@@ -380,11 +382,11 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                                       : null,
                                   style: FilledButton.styleFrom(
                                     backgroundColor: isFollowing
-                                        ? Colors.grey.shade300
-                                        : Colors.blue,
+                                        ? Theme.of(context).colorScheme.surfaceContainerHighest
+                                        : Theme.of(context).colorScheme.primary,
                                     foregroundColor: isFollowing
-                                        ? Colors.black87
-                                        : Colors.white,
+                                        ? Theme.of(context).colorScheme.onSurface
+                                        : Theme.of(context).colorScheme.onPrimary,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
                                       vertical: 8,
@@ -413,7 +415,7 @@ class _FeedEndReachedWidgetState extends State<FeedEndReachedWidget> {
                     'No more suggested users available',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ),

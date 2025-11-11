@@ -212,7 +212,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                     'Loading...',
                     style: TextStyle(
                       fontSize: (screenWidth * 0.035).clamp(13.0, 16.0),
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -233,7 +233,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                   Icon(
                     Icons.search_off,
                     size: emptyStateIconSize,
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                   ),
                   SizedBox(height: (screenHeight * 0.02).clamp(12.0, 20.0)),
                   Text(
@@ -241,14 +241,14 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                     style: TextStyle(
                       fontSize: emptyStateTitleSize,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                     ),
                   ),
                   SizedBox(height: (screenHeight * 0.01).clamp(8.0, 12.0)),
                   Text(
                     'Try searching for something else',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontSize: emptyStateSubtitleSize,
                     ),
                     textAlign: TextAlign.center,
@@ -294,7 +294,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                   Icon(
                     Icons.search_off,
                     size: emptyStateIconSize,
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                   ),
                   SizedBox(height: (screenHeight * 0.02).clamp(12.0, 20.0)),
                   Text(
@@ -302,7 +302,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                     style: TextStyle(
                       fontSize: emptyStateTitleSize,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -345,7 +345,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                     child: Text(
                       "You're all caught up",
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         fontSize: (screenWidth * 0.03).clamp(11.0, 13.0),
                       ),
                     ),
@@ -460,7 +460,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                     Text(
                       '$followers followers',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         fontSize: followersTextSize,
                       ),
                     ),
@@ -471,7 +471,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                           fontSize: bioTextSize,
                         ),
                       ),
@@ -495,7 +495,9 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
     return FilledButton(
       onPressed: () => _handleFollowToggle(userId, isFollowing),
       style: FilledButton.styleFrom(
-        backgroundColor: isFollowing ? Colors.grey.shade300 : Colors.blue,
+        backgroundColor: isFollowing
+            ? Theme.of(context).colorScheme.surfaceContainerHighest
+            : Theme.of(context).colorScheme.primary,
         padding: EdgeInsets.symmetric(horizontal: buttonPaddingH),
       ),
       child: Text(
@@ -624,7 +626,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                         Text(
                           _safeFormatTimeAgo(createdAt),
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             fontSize: timeSize,
                           ),
                         ),
@@ -651,7 +653,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                       SizedBox(width: (screenWidth * 0.01).clamp(4.0, 6.0)),
                       Text('$likesCount',
                           style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: statTextSize)),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), fontSize: statTextSize)),
                     ],
                   ),
                   Row(
@@ -661,7 +663,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                       SizedBox(width: (screenWidth * 0.01).clamp(4.0, 6.0)),
                       Text('$commentsCount',
                           style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: statTextSize)),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), fontSize: statTextSize)),
                     ],
                   ),
                   Row(
@@ -671,7 +673,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                       SizedBox(width: (screenWidth * 0.01).clamp(4.0, 6.0)),
                       Text('Share',
                           style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: statTextSize)),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), fontSize: statTextSize)),
                     ],
                   ),
                 ],
@@ -780,7 +782,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                         Text(
                           '$views views • ${_safeFormatTimeAgo(createdAt)}',
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             fontSize: metaSize,
                           ),
                         ),
@@ -880,7 +882,7 @@ class _SearchResultsWidgetState extends State<SearchResultsWidget> {
                         Text(
                           _safeFormatTimeAgo(createdAt),
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             fontSize: timeSize,
                           ),
                         ),

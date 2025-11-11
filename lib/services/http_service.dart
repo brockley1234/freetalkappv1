@@ -1,4 +1,5 @@
 ﻿import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_service.dart';
@@ -35,6 +36,18 @@ class HttpService {
           if (kDebugMode) {
             debugPrint('🔐 HTTP Request: ${options.method} ${options.uri}');
           }
+          
+          // Add platform header for backend token generation
+          if (kIsWeb) {
+            options.headers['x-platform'] = 'web';
+          } else if (Platform.isIOS) {
+            options.headers['x-platform'] = 'ios';
+          } else if (Platform.isAndroid) {
+            options.headers['x-platform'] = 'android';
+          } else {
+            options.headers['x-platform'] = 'unknown';
+          }
+          
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
             if (kDebugMode) {
@@ -54,14 +67,59 @@ class HttpService {
             );
             debugPrint('🔐 Response data: ${error.response?.data}');
           }
-          // Handle 401 errors (token expired)
+          
+          // Handle 401 errors (token expired) - try to refresh token
           if (error.response?.statusCode == 401) {
             if (kDebugMode) {
-              debugPrint('🔐 ⚠️ 401 Unauthorized - clearing tokens');
+              debugPrint('🔐 ⚠️ 401 Unauthorized - attempting token refresh...');
             }
-            // Clear tokens from secure storage
-            await SecureStorageService().clearAuthCredentials();
+            
+            try {
+              // Try to refresh the token
+              final refreshed = await ApiService.refreshToken();
+              
+              if (refreshed) {
+                if (kDebugMode) {
+                  debugPrint('🔐 ✅ Token refreshed successfully, retrying request...');
+                }
+                
+                // Get new token and retry the request
+                final newToken = await SecureStorageService().getAccessToken();
+                if (newToken != null) {
+                  // Update the request headers with new token
+                  error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+                  
+                  // Retry the original request
+                  final opts = Options(
+                    method: error.requestOptions.method,
+                    headers: error.requestOptions.headers,
+                  );
+                  
+                  final response = await _dio.request(
+                    error.requestOptions.path,
+                    options: opts,
+                    data: error.requestOptions.data,
+                    queryParameters: error.requestOptions.queryParameters,
+                  );
+                  
+                  return handler.resolve(response);
+                }
+              } else {
+                if (kDebugMode) {
+                  debugPrint('🔐 ❌ Token refresh failed, clearing tokens');
+                }
+                // Refresh failed, clear tokens
+                await SecureStorageService().clearAuthCredentials();
+              }
+            } catch (refreshError) {
+              if (kDebugMode) {
+                debugPrint('🔐 ❌ Token refresh error: $refreshError');
+              }
+              // Clear tokens on refresh error
+              await SecureStorageService().clearAuthCredentials();
+            }
           }
+          
           return handler.next(error);
         },
       ),

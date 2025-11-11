@@ -52,6 +52,19 @@ class _AuthWrapperState extends State<AuthWrapper> {
       final isLoggedIn = await ApiService.isLoggedIn();
 
       if (isLoggedIn) {
+        // Double-check: Verify both access and refresh tokens exist
+        // If refresh token is missing, user has logged out - don't attempt refresh
+        final refreshToken = await ApiService.getRefreshToken();
+        if (refreshToken == null || refreshToken.isEmpty) {
+          _logger.info('⚠️ No refresh token found - user has logged out');
+          await ApiService.clearTokens();
+          setState(() {
+            _isAuthenticated = false;
+            _isLoading = false;
+          });
+          return;
+        }
+
         // Verify token is still valid by making an API call
         final result = await ApiService.getCurrentUser();
 
@@ -176,7 +189,16 @@ class _AuthWrapperState extends State<AuthWrapper> {
             _logger.info('🔄 Refreshing token before Socket connection...');
             final tokenRefreshed = await ApiService.refreshToken();
             if (tokenRefreshed != true) {
-              _logger.warning('⚠️ Token refresh failed, but continuing with existing token');
+              _logger.warning('⚠️ Token refresh failed - user may have logged out');
+              // If refresh fails, clear tokens and redirect to login
+              await ApiService.clearTokens();
+              if (mounted) {
+                setState(() {
+                  _isAuthenticated = false;
+                  _isLoading = false;
+                });
+              }
+              return;
             } else {
               _logger.info('✅ Token refreshed successfully');
             }

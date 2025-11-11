@@ -164,7 +164,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -178,14 +178,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
               height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
 
             // Share option
             ListTile(
-              leading: const Icon(Icons.share, color: Colors.blue),
+              leading: Icon(
+                Icons.share,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               title: const Text('Share Post'),
               onTap: () {
                 Navigator.pop(context);
@@ -195,7 +198,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
             // Copy Link option
             ListTile(
-              leading: const Icon(Icons.link, color: Colors.green),
+              leading: Icon(
+                Icons.link,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
               title: const Text('Copy Link'),
               onTap: () {
                 Navigator.pop(context);
@@ -205,7 +211,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
             // Copy Text option
             ListTile(
-              leading: const Icon(Icons.content_copy, color: Colors.orange),
+              leading: Icon(
+                Icons.content_copy,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
               title: const Text('Copy Text'),
               onTap: () {
                 Navigator.pop(context);
@@ -216,10 +225,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
             // Delete option (only for post owner)
             if (isOwner)
               ListTile(
-                leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text(
+                leading: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
                   'Delete Post',
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -257,7 +271,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to share: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -272,16 +286,19 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Link copied to clipboard'),
+                Icon(
+                  Icons.check_circle, 
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+                const SizedBox(width: 12),
+                const Text('Link copied to clipboard'),
               ],
             ),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -290,7 +307,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to copy link: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -370,10 +387,10 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
       if (result['success'] == true) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Post deleted successfully'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+            SnackBar(
+              content: const Text('Post deleted successfully'),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              duration: const Duration(seconds: 2),
             ),
           );
 
@@ -385,7 +402,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to delete post'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
@@ -398,7 +415,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -471,7 +488,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to update reaction'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
@@ -501,7 +518,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -512,17 +529,20 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(
+            Icons.arrow_back, 
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           onPressed: () => Navigator.pop(context),
           tooltip: 'Go back',
         ),
-        title: const Text(
+        title: Text(
           'Post',
           style: TextStyle(
-            color: Colors.black87,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -551,11 +571,18 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Theme.of(context).colorScheme.error,
+            ),
             const SizedBox(height: 16),
             Text(
               _errorMessage!,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -606,11 +633,11 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             child: Text(
               userAvatar,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -638,7 +665,10 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                 const SizedBox(height: 2),
                 Text(
                   timeAgo,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -680,7 +710,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                 width: double.infinity,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey.shade200,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: const Center(
                       child: Icon(Icons.broken_image, size: 48),
                     ),
@@ -696,7 +726,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: Colors.grey.shade200,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: const Center(
                           child: Icon(Icons.broken_image, size: 48),
                         ),
@@ -741,18 +771,28 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
       child: Row(
         children: [
           if (reactionsCount > 0) ...[
-            Icon(Icons.thumb_up, size: 16, color: Colors.blue.shade700),
+            Icon(
+              Icons.thumb_up,
+              size: 16,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             const SizedBox(width: 4),
             Text(
               '$reactionsCount',
-              style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                fontSize: 14,
+              ),
             ),
             const SizedBox(width: 16),
           ],
           if (commentsCount > 0)
             Text(
               '$commentsCount comment${commentsCount > 1 ? 's' : ''}',
-              style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                fontSize: 14,
+              ),
             ),
         ],
       ),
@@ -806,7 +846,9 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
     required VoidCallback onTap,
     bool isActive = false,
   }) {
-    final color = isActive ? Colors.blue : Colors.grey.shade700;
+    final color = isActive
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8);
 
     return InkWell(
       onTap: onTap,
@@ -838,17 +880,23 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
               Icon(
                 Icons.comment_outlined,
                 size: 48,
-                color: Colors.grey.shade400,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 8),
               Text(
                 'No comments yet',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  fontSize: 16,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Be the first to comment!',
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  fontSize: 14,
+                ),
               ),
             ],
           ),
@@ -868,7 +916,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -895,11 +943,11 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             child: Text(
               userAvatar,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -913,7 +961,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -932,7 +980,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                           Text(
                             timeAgo,
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               fontSize: 12,
                             ),
                           ),
@@ -956,7 +1004,7 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                             placeholder: (context, url) => Container(
                               width: 200,
                               height: 150,
-                              color: Colors.grey.shade200,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: const Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
@@ -966,8 +1014,11 @@ View post: ${ApiService.baseApi}posts/${widget.postId}
                             errorWidget: (context, url, error) => Container(
                               width: 200,
                               height: 150,
-                              color: Colors.grey.shade200,
-                              child: const Icon(Icons.error, color: Colors.red),
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              child: Icon(
+                                Icons.error, 
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
                           ),
                         ),

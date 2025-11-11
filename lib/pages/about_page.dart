@@ -50,7 +50,10 @@ class AboutPage extends StatelessWidget {
           Center(
             child: Text(
               ApiService.appVersion,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+              style: TextStyle(
+                fontSize: 16, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
           ),
 
@@ -63,7 +66,7 @@ class AboutPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontStyle: FontStyle.italic,
-                color: Colors.grey.shade700,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -74,20 +77,22 @@ class AboutPage extends StatelessWidget {
           // Mission Statement
           Card(
             elevation: 2,
-            color: Colors.blue.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.favorite, color: Colors.red, size: 28),
-                      SizedBox(width: 8),
+                      Icon(Icons.favorite, color: Theme.of(context).colorScheme.error, size: 28),
+                      const SizedBox(width: 8),
                       Text(
                         'Our Mission',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 20, 
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface),
                       ),
                     ],
                   ),
@@ -97,7 +102,7 @@ class AboutPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.6,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -126,7 +131,7 @@ class AboutPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.6,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -256,30 +261,30 @@ class AboutPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  _buildTechItem(
+                  _buildTechItem(context,
                       'Flutter 3.24+', 'Cross-platform UI (iOS, Android, Web)'),
                   const Divider(),
-                  _buildTechItem('Node.js 18+', 'High-performance backend'),
+                  _buildTechItem(context,'Node.js 18+', 'High-performance backend'),
                   const Divider(),
-                  _buildTechItem('Express.js', 'Flexible web framework'),
+                  _buildTechItem(context,'Express.js', 'Flexible web framework'),
                   const Divider(),
-                  _buildTechItem('MongoDB', 'Scalable NoSQL database'),
+                  _buildTechItem(context,'MongoDB', 'Scalable NoSQL database'),
                   const Divider(),
-                  _buildTechItem(
+                  _buildTechItem(context,
                       'Socket.IO 4.8', 'Real-time bidirectional communication'),
                   const Divider(),
-                  _buildTechItem(
+                  _buildTechItem(context,
                       'Firebase', 'Authentication & Cloud Messaging (FCM)'),
                   const Divider(),
-                  _buildTechItem(
+                  _buildTechItem(context,
                       'In-App Purchase', 'Stripe & App Store/Google Play'),
                   const Divider(),
-                  _buildTechItem('Provider', 'State management for Flutter'),
+                  _buildTechItem(context,'Provider', 'State management for Flutter'),
                   const Divider(),
-                  _buildTechItem(
+                  _buildTechItem(context,
                       'Nginx & SSL', 'Production-grade hosting & security'),
                   const Divider(),
-                  _buildTechItem('Docker', 'Containerization for deployment'),
+                  _buildTechItem(context,'Docker', 'Containerization for deployment'),
                 ],
               ),
             ),
@@ -348,17 +353,17 @@ class AboutPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildCreditItem('Framework', 'Flutter & Dart'),
-                  _buildCreditItem('Server', 'Express.js & Node.js'),
-                  _buildCreditItem('Real-Time', 'Socket.IO'),
-                  _buildCreditItem('Database', 'MongoDB & Mongoose'),
-                  _buildCreditItem('Design System', 'Material Design 3'),
-                  _buildCreditItem('Icons', 'Material Icons & Cupertino'),
-                  _buildCreditItem('State Mgmt', 'Provider Pattern'),
-                  _buildCreditItem('Cloud Services', 'Firebase & DigitalOcean'),
-                  _buildCreditItem(
+                  _buildCreditItem(context,'Framework', 'Flutter & Dart'),
+                  _buildCreditItem(context,'Server', 'Express.js & Node.js'),
+                  _buildCreditItem(context,'Real-Time', 'Socket.IO'),
+                  _buildCreditItem(context,'Database', 'MongoDB & Mongoose'),
+                  _buildCreditItem(context,'Design System', 'Material Design 3'),
+                  _buildCreditItem(context,'Icons', 'Material Icons & Cupertino'),
+                  _buildCreditItem(context,'State Mgmt', 'Provider Pattern'),
+                  _buildCreditItem(context,'Cloud Services', 'Firebase & DigitalOcean'),
+                  _buildCreditItem(context,
                       'Community', 'Flutter & Node.js Communities'),
-                  _buildCreditItem('Inspiration', 'Modern social platforms'),
+                  _buildCreditItem(context,'Inspiration', 'Modern social platforms'),
                 ],
               ),
             ),
@@ -438,7 +443,12 @@ class AboutPage extends StatelessWidget {
                 },
                 child: const Text('Terms'),
               ),
-              Text(' • ', style: TextStyle(color: Colors.grey.shade600)),
+              Text(
+                ' • ', 
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
               TextButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -447,7 +457,12 @@ class AboutPage extends StatelessWidget {
                 },
                 child: const Text('Privacy'),
               ),
-              Text(' • ', style: TextStyle(color: Colors.grey.shade600)),
+              Text(
+                ' • ', 
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
               TextButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -466,7 +481,10 @@ class AboutPage extends StatelessWidget {
           Center(
             child: Text(
               '© 2025 FreeTalk. All rights reserved.',
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              style: TextStyle(
+                fontSize: 12, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -489,7 +507,10 @@ class AboutPage extends StatelessWidget {
           Center(
             child: Text(
               'Version ${ApiService.appVersion}',
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+              style: TextStyle(
+                fontSize: 11, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -529,7 +550,7 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTechItem(String name, String description) {
+  Widget _buildTechItem(BuildContext context, String name, String description) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -541,7 +562,10 @@ class AboutPage extends StatelessWidget {
           ),
           Text(
             description,
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), 
+              fontSize: 13,
+            ),
           ),
         ],
       ),
@@ -556,7 +580,7 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCreditItem(String title, String value) {
+  Widget _buildCreditItem(BuildContext context, String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -564,7 +588,10 @@ class AboutPage extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), 
+              fontSize: 14,
+            ),
           ),
           Text(
             value,

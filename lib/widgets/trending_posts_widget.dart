@@ -29,7 +29,7 @@ class TrendingPostsWidget extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey.shade200,
+            color: Theme.of(context).dividerColor,
             width: 1,
           ),
         ),
@@ -63,7 +63,7 @@ class TrendingPostsWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade800,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -71,8 +71,8 @@ class TrendingPostsWidget extends StatelessWidget {
               if (onViewMore != null)
                 GestureDetector(
                   onTap: onViewMore,
-                  child: const Icon(Icons.arrow_forward,
-                      color: Colors.grey, size: 20),
+                  child: Icon(Icons.arrow_forward,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
                 ),
             ],
           ),
@@ -122,12 +122,14 @@ class TrendingPostsWidget extends StatelessWidget {
         child: Container(
           width: 160,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -150,7 +152,7 @@ class TrendingPostsWidget extends StatelessWidget {
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
                       return Container(
-                        color: Colors.grey.shade200,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: Center(
                           child: CircularProgressIndicator(
                             value: loadingProgress.expectedTotalBytes != null
@@ -174,7 +176,7 @@ class TrendingPostsWidget extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withValues(alpha: 0.7),
+                      Theme.of(context).colorScheme.shadow.withValues(alpha: 0.7),
                     ],
                   ),
                 ),
@@ -276,75 +278,77 @@ class TrendingPostsWidget extends StatelessWidget {
   }
 
   Widget _buildLoadingState() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade200,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.red.shade400, Colors.orange.shade400],
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.local_fire_department,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Trending Now',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade800,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: _buildSkeletonCard(),
-                );
-              },
+    return Builder(
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).dividerColor,
+              width: 1,
             ),
           ),
-        ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.red.shade400, Colors.orange.shade400],
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.local_fire_department,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Trending Now',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 200,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: _buildSkeletonCard(context),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSkeletonCard() {
+  Widget _buildSkeletonCard(BuildContext context) {
     return Container(
       width: 160,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -356,16 +360,7 @@ class TrendingPostsWidget extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.grey.shade100,
-                  Colors.grey.shade200,
-                  Colors.grey.shade100,
-                ],
-                stops: const [0.0, 0.5, 1.0],
-              ),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
           ),
           // Content skeleton
@@ -380,7 +375,7 @@ class TrendingPostsWidget extends StatelessWidget {
                   width: 70,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -392,7 +387,7 @@ class TrendingPostsWidget extends StatelessWidget {
                       width: 100,
                       height: 14,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -403,7 +398,7 @@ class TrendingPostsWidget extends StatelessWidget {
                           width: 40,
                           height: 12,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(3),
                           ),
                         ),
@@ -412,7 +407,7 @@ class TrendingPostsWidget extends StatelessWidget {
                           width: 40,
                           height: 12,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(3),
                           ),
                         ),
@@ -472,15 +467,7 @@ class _AnimatedShimmerLoaderState extends State<_AnimatedShimmerLoader>
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.grey.shade100,
-            Colors.grey.shade200,
-            Colors.grey.shade100,
-          ],
-        ),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: Stack(
         children: [
@@ -500,7 +487,7 @@ class _AnimatedShimmerLoaderState extends State<_AnimatedShimmerLoader>
                       end: Alignment.centerRight,
                       colors: [
                         Colors.transparent,
-                        Colors.white.withValues(alpha: 0.4),
+                        Theme.of(context).colorScheme.surface.withValues(alpha: 0.4),
                         Colors.transparent,
                       ],
                       stops: const [0.0, 0.5, 1.0],
@@ -530,7 +517,7 @@ class _AnimatedShimmerLoaderState extends State<_AnimatedShimmerLoader>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
+                        color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -550,7 +537,7 @@ class _AnimatedShimmerLoaderState extends State<_AnimatedShimmerLoader>
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],

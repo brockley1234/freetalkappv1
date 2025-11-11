@@ -123,9 +123,9 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -133,17 +133,23 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.music_note, color: Colors.blue),
+                Icon(
+                  Icons.music_note,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'Select Music',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const Spacer(),
                 IconButton(
@@ -165,7 +171,7 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               onChanged: (value) {
                 setState(() {
@@ -220,17 +226,21 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.grey[300],
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 isPlaying ? Icons.pause : Icons.music_note,
-                color: isSelected ? Colors.white : Colors.grey[600],
+                color: isSelected
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             title: Text(
               track.title,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -241,15 +251,20 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    _buildChip(track.category, Colors.blue),
+                    _buildChip(
+                      track.category,
+                      Theme.of(context).colorScheme.primary,
+                    ),
                     const SizedBox(width: 4),
-                    _buildChip(track.mood, Colors.green),
+                    _buildChip(
+                      track.mood,
+                      Theme.of(context).colorScheme.secondary,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${track.duration}s',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 12,
-                        color: Colors.grey[600],
                       ),
                     ),
                   ],
@@ -263,7 +278,7 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
                   onPressed: () => _playPreview(track),
                   icon: Icon(
                     isPlaying ? Icons.stop : Icons.play_arrow,
-                    color: Colors.blue,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 IconButton(
@@ -273,7 +288,9 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
                   },
                   icon: Icon(
                     isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                    color: isSelected ? Colors.green : Colors.blue,
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],
@@ -307,17 +324,23 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
           },
           child: Container(
             decoration: BoxDecoration(
-              color: isSelected ? Colors.blue : Colors.grey[100],
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected ? Colors.blue : Colors.grey[300]!,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
               ),
             ),
             child: Center(
               child: Text(
                 category,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -351,17 +374,23 @@ class _MusicSelectorBottomSheetState extends State<MusicSelectorBottomSheet>
           },
           child: Container(
             decoration: BoxDecoration(
-              color: isSelected ? Colors.green : Colors.grey[100],
+              color: isSelected
+                  ? Theme.of(context).colorScheme.secondary
+                  : Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected ? Colors.green : Colors.grey[300]!,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
               ),
             ),
             child: Center(
               child: Text(
                 mood,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onSecondary
+                      : Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),

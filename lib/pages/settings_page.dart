@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import '../services/socket_service.dart';
 import '../l10n/app_localizations.dart';
@@ -157,21 +158,14 @@ class _SettingsPageState extends State<SettingsPage>
   }
 
   Widget _buildBody(AppLocalizations l10n, Size screenSize, bool isMobile, bool isTablet, bool isLarge) {
+    // Single column layout for all screen sizes
+    // For large screens, use centered content with max width
     if (isLarge) {
-      // Desktop layout - two columns
-      return Row(
-        children: [
-          Expanded(
-            child: _buildSettingsColumn(l10n, isMobile),
-          ),
-          const VerticalDivider(width: 1),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: _buildSettingsColumn(l10n, isMobile),
-            ),
-          ),
-        ],
+      return Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: _buildSettingsColumn(l10n, isMobile),
+        ),
       );
     } else {
       // Mobile and tablet layout - single column
@@ -350,7 +344,7 @@ class _SettingsPageState extends State<SettingsPage>
           title: l10n.logout,
           subtitle: 'Sign out of your account',
           onTap: _handleLogout,
-          textColor: Colors.orange,
+          textColor: Theme.of(context).colorScheme.error.withValues(alpha: 0.8),
           isMobile: isMobile,
         ),
         _buildListTile(
@@ -358,7 +352,7 @@ class _SettingsPageState extends State<SettingsPage>
           title: l10n.deleteAccount,
           subtitle: 'Permanently delete your account',
           onTap: _handleDeleteAccount,
-          textColor: Colors.red,
+          textColor: Theme.of(context).colorScheme.error,
           isMobile: isMobile,
         ),
         const SizedBox(height: 32),
@@ -375,10 +369,10 @@ class _SettingsPageState extends State<SettingsPage>
       ),
       child: Text(
         title,
-        style: TextStyle(
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
           fontSize: isMobile ? 16 : 18,
           fontWeight: FontWeight.bold,
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -410,15 +404,15 @@ class _SettingsPageState extends State<SettingsPage>
         ),
         title: Text(
           title,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.w500,
-            color: textColor,
+            color: textColor ?? Theme.of(context).textTheme.titleMedium?.color,
           ),
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
             fontSize: isMobile ? 14 : 16,
             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
           ),
@@ -464,14 +458,14 @@ class _SettingsPageState extends State<SettingsPage>
         ),
         title: Text(
           title,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.w500,
           ),
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
             fontSize: isMobile ? 14 : 16,
             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
           ),
@@ -565,7 +559,7 @@ class _SettingsPageState extends State<SettingsPage>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (context) => const _BlockedUsersBottomSheet(),
     );
   }
@@ -583,11 +577,50 @@ class _SettingsPageState extends State<SettingsPage>
             child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
+              
+              try {
+                // Disconnect socket first
+                SocketService().disconnect();
+                
+                // Call logout API (this will clear tokens internally)
+                await ApiService.logout();
+                
+                // Clear local storage
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.clear();
+                
+                // Verify both access and refresh tokens are cleared
+                final accessToken = await ApiService.getAccessToken();
+                final refreshToken = await ApiService.getRefreshToken();
+                if (accessToken != null || refreshToken != null) {
+                  debugPrint('⚠️ Tokens still exist after logout, forcing clear');
+                  await ApiService.clearTokens();
+                  // Double-check after forced clear
+                  final accessToken2 = await ApiService.getAccessToken();
+                  final refreshToken2 = await ApiService.getRefreshToken();
+                  if (accessToken2 != null || refreshToken2 != null) {
+                    debugPrint('❌ CRITICAL: Tokens still exist after forced clear!');
+                  }
+                }
+              } catch (e) {
+                debugPrint('Error during logout: $e');
+                // Ensure tokens are cleared even on error
+                try {
+                  await ApiService.clearTokens();
+                  await ApiService.clearRememberedCredentials();
+                } catch (clearError) {
+                  debugPrint('Error clearing tokens: $clearError');
+                }
+              }
+              
+              // Navigate to login page - check mounted before using context
+              if (!mounted) return;
+              Navigator.pushAndRemoveUntil(
+                this.context,
                 MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
               );
             },
             child: Text(AppLocalizations.of(context)!.logout),
@@ -615,7 +648,7 @@ class _SettingsPageState extends State<SettingsPage>
             },
             child: Text(
               AppLocalizations.of(context)!.deleteAccount,
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],
@@ -870,7 +903,7 @@ class _BlockedUsersBottomSheetState extends State<_BlockedUsersBottomSheet> {
               children: [
                 Text(
                   'Blocked Users',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontSize: isMobile ? 18 : 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -905,7 +938,7 @@ class _BlockedUsersBottomSheetState extends State<_BlockedUsersBottomSheet> {
                             SizedBox(height: isMobile ? 16 : 20),
                             Text(
                               'No blocked users',
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 fontSize: isMobile ? 16 : 18,
                                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
@@ -913,7 +946,7 @@ class _BlockedUsersBottomSheetState extends State<_BlockedUsersBottomSheet> {
                             SizedBox(height: isMobile ? 8 : 12),
                             Text(
                               'Users you block will appear here',
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontSize: isMobile ? 14 : 16,
                                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
@@ -930,8 +963,14 @@ class _BlockedUsersBottomSheetState extends State<_BlockedUsersBottomSheet> {
                               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            title: Text(user['username'] ?? 'User'),
-                            subtitle: Text(user['reason'] ?? ''),
+                            title: Text(
+                              user['username'] ?? 'User',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            subtitle: Text(
+                              user['reason'] ?? '',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
                             trailing: TextButton(
                               onPressed: () => _unblockUser(user['id']),
                               child: const Text('Unblock'),

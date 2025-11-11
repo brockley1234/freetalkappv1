@@ -293,8 +293,8 @@ class _HomePageState extends State<HomePage> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.blue.shade50,
-                  Colors.purple.shade50,
+                  Theme.of(context).colorScheme.primaryContainer,
+                  Theme.of(context).colorScheme.secondaryContainer,
                 ],
               ),
             ),
@@ -307,7 +307,7 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       icon: Icon(
                         Icons.close,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -325,22 +325,22 @@ class _HomePageState extends State<HomePage> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.blue.shade300,
-                        Colors.purple.shade300,
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(context).colorScheme.secondary,
                       ],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blue.withValues(alpha: 0.3),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.waving_hand,
                     size: 48,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -349,7 +349,7 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -358,7 +358,7 @@ class _HomePageState extends State<HomePage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     height: 1.5,
                   ),
                 ),
@@ -368,7 +368,7 @@ class _HomePageState extends State<HomePage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     height: 1.5,
                   ),
                 ),
@@ -736,13 +736,13 @@ class _HomePageState extends State<HomePage> {
             SnackBar(
               content: Row(
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.white),
+                  Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimary),
                   const SizedBox(width: 12),
                   Text(localizations?.profilePictureUpdated ??
                       'Profile picture updated successfully!'),
                 ],
               ),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 3),
               behavior: SnackBarBehavior.floating,
             ),
@@ -803,12 +803,12 @@ class _HomePageState extends State<HomePage> {
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.auto_stories, color: Colors.white),
+                Icon(Icons.auto_stories, color: Theme.of(context).colorScheme.onTertiary),
                 const SizedBox(width: 12),
                 Expanded(child: Text('$authorName posted a new story')),
               ],
             ),
-            backgroundColor: Colors.purple.shade700,
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
             duration: const Duration(seconds: 3),
             behavior: SnackBarBehavior.floating,
             action: SnackBarAction(
@@ -1249,7 +1249,7 @@ class _HomePageState extends State<HomePage> {
                 content: Text(
                   result['message'] ?? 'Failed to load notifications',
                 ),
-                backgroundColor: Colors.orange,
+                backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
                 duration: const Duration(seconds: 3),
               ),
             );
@@ -1274,7 +1274,7 @@ class _HomePageState extends State<HomePage> {
           scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text('Error: ${e.toString()}'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -1686,9 +1686,9 @@ class _HomePageState extends State<HomePage> {
     // Handle club invite notifications (clubs feature removed)
     if (notificationType == 'club_invite') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Club feature is currently disabled'),
-          backgroundColor: Colors.orange,
+        SnackBar(
+          content: const Text('Club feature is currently disabled'),
+          backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
         ),
       );
       return;
@@ -1799,7 +1799,7 @@ class _HomePageState extends State<HomePage> {
             scaffoldMessenger.showSnackBar(
               SnackBar(
                 content: Text('Failed to open chat: ${e.toString()}'),
-                backgroundColor: Colors.red,
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
               ),
             );
           }
@@ -1919,7 +1919,7 @@ class _HomePageState extends State<HomePage> {
             SnackBar(
               content: Text(localizations?.allNotificationsCleared ??
                   'All notifications cleared'),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 2),
             ),
           );
@@ -1935,7 +1935,7 @@ class _HomePageState extends State<HomePage> {
                     localizations?.errorOccurred ??
                     'Failed to clear notifications',
               ),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -1949,7 +1949,7 @@ class _HomePageState extends State<HomePage> {
           SnackBar(
             content: Text(localizations?.errorClearingNotifications ??
                 'An error occurred while clearing notifications'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
             duration: const Duration(seconds: 3),
           ),
         );
@@ -1962,7 +1962,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Icon(
           isActive ? Icons.notifications : Icons.notifications_outlined,
-          color: Colors.black87,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
         if (_unreadNotificationCount > 0)
           Positioned(
@@ -1971,17 +1971,17 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5),
+                border: Border.all(color: Theme.of(context).colorScheme.surface, width: 1.5),
               ),
               constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(
                 _unreadNotificationCount > 99
                     ? '99+'
                     : '$_unreadNotificationCount',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onError,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
@@ -2004,15 +2004,15 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5),
+                border: Border.all(color: Theme.of(context).colorScheme.surface, width: 1.5),
               ),
               constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(
                 _unreadMessageCount > 99 ? '99+' : '$_unreadMessageCount',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onError,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
@@ -2065,7 +2065,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -2079,7 +2079,7 @@ class _HomePageState extends State<HomePage> {
               height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -2092,7 +2092,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -2101,7 +2101,10 @@ class _HomePageState extends State<HomePage> {
 
             // Share via other apps
             ListTile(
-              leading: const Icon(Icons.share, color: Colors.blue),
+              leading: Icon(
+                Icons.share,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               title: Text(
                   AppLocalizations.of(context)?.shareVia ?? 'Share via...'),
               subtitle: Text(AppLocalizations.of(context)?.sharePostUsingApps ??
@@ -2118,7 +2121,10 @@ class _HomePageState extends State<HomePage> {
 
             // Copy link
             ListTile(
-              leading: const Icon(Icons.link, color: Colors.green),
+              leading: Icon(
+                Icons.link,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
               title:
                   Text(AppLocalizations.of(context)?.copyLink ?? 'Copy Link'),
               subtitle: Text(AppLocalizations.of(context)?.copyPostLink ??
@@ -2131,7 +2137,10 @@ class _HomePageState extends State<HomePage> {
 
             // Copy text
             ListTile(
-              leading: const Icon(Icons.content_copy, color: Colors.orange),
+              leading: Icon(
+                Icons.content_copy,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
               title:
                   Text(AppLocalizations.of(context)?.copyText ?? 'Copy Text'),
               subtitle: Text(AppLocalizations.of(context)?.copyPostContent ??
@@ -2173,7 +2182,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           SnackBar(
             content: Text(
                 '${localizations?.failedToShare ?? 'Failed to share'}: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -2190,7 +2199,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           content: Text(localizations?.postTextCopiedToClipboard ??
               'Post text copied to clipboard!'),
           duration: const Duration(seconds: 2),
-          backgroundColor: Colors.green,
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         ),
       );
     }
@@ -2200,7 +2209,7 @@ View post: ${ApiService.baseApi}/posts/$postId
   void _showQuickMenu() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -2215,7 +2224,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                 height: 4,
                 margin: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -2229,7 +2238,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -2241,10 +2250,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.event, color: Colors.blue),
+                  child: Icon(
+                    Icons.event,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.events ?? 'Events',
@@ -2271,10 +2283,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade50,
+                    color: Theme.of(context).colorScheme.errorContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.sports_esports, color: Colors.red),
+                  child: Icon(
+                    Icons.sports_esports,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 title: const Text(
                   'Games',
@@ -2298,10 +2313,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.bookmark, color: Colors.orange),
+                  child: Icon(
+                    Icons.bookmark,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.savedPosts ?? 'Saved Posts',
@@ -2327,10 +2345,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.purple.shade50,
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.visibility, color: Colors.purple),
+                  child: Icon(
+                    Icons.visibility,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.profileVisitors ??
@@ -2357,10 +2378,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.teal.shade50,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.work, color: Colors.teal),
+                  child: Icon(
+                    Icons.work,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.jobs ?? 'Jobs',
@@ -2385,10 +2409,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade50,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.store, color: Colors.green),
+                  child: Icon(
+                    Icons.store,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
                 title: const Text(
                   'Marketplace',
@@ -2412,10 +2439,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.pink.shade50,
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.touch_app, color: Colors.pink),
+                  child: Icon(
+                    Icons.touch_app,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.pokes ?? 'Pokes',
@@ -2441,11 +2471,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade50,
+                    color: Theme.of(context).colorScheme.errorContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.warning_amber_rounded,
-                      color: Colors.red),
+                  child: Icon(
+                    Icons.warning_amber_rounded,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.crisisSupport ??
@@ -2473,13 +2505,19 @@ View post: ${ApiService.baseApi}/posts/$postId
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.amber.shade300, Colors.orange.shade400],
+                      colors: [
+                        Theme.of(context).colorScheme.tertiary,
+                        Theme.of(context).colorScheme.tertiaryContainer,
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.star, color: Colors.white),
+                  child: Icon(
+                    Icons.star,
+                    color: Theme.of(context).colorScheme.onTertiary,
+                  ),
                 ),
                 title: Text(
                   AppLocalizations.of(context)?.premium ?? 'Premium',
@@ -2596,7 +2634,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               ),
                               prefixIcon: const Icon(Icons.person_rounded),
                               filled: true,
-                              fillColor: Colors.grey[50],
+                              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: isSmallScreen ? 12 : 16,
@@ -2618,7 +2656,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               ),
                               prefixIcon: const Icon(Icons.email_rounded),
                               filled: true,
-                              fillColor: Colors.grey[50],
+                              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: isSmallScreen ? 12 : 16,
@@ -2641,7 +2679,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               ),
                               prefixIcon: const Icon(Icons.info_rounded),
                               filled: true,
-                              fillColor: Colors.grey[50],
+                              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: isSmallScreen ? 12 : 16,
@@ -2667,7 +2705,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   Container(
                     padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(16),
                       ),
@@ -2698,9 +2736,9 @@ View post: ${ApiService.baseApi}/posts/$postId
 
                                   if (name.isEmpty) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Name cannot be empty'),
-                                        backgroundColor: Colors.red,
+                                      SnackBar(
+                                        content: const Text('Name cannot be empty'),
+                                        backgroundColor: Theme.of(context).colorScheme.errorContainer,
                                         behavior: SnackBarBehavior.floating,
                                       ),
                                     );
@@ -2709,10 +2747,9 @@ View post: ${ApiService.baseApi}/posts/$postId
 
                                   if (email.isEmpty || !email.contains('@')) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content:
-                                            Text('Please enter a valid email'),
-                                        backgroundColor: Colors.red,
+                                      SnackBar(
+                                        content: const Text('Please enter a valid email'),
+                                        backgroundColor: Theme.of(context).colorScheme.errorContainer,
                                         behavior: SnackBarBehavior.floating,
                                       ),
                                     );
@@ -2753,17 +2790,17 @@ View post: ${ApiService.baseApi}/posts/$postId
                                       if (context.mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
-                                          const SnackBar(
+                                          SnackBar(
                                             content: Row(
                                               children: [
                                                 Icon(Icons.check_circle,
-                                                    color: Colors.white),
-                                                SizedBox(width: 8),
-                                                Text(
+                                                    color: Theme.of(context).colorScheme.onPrimaryContainer),
+                                                const SizedBox(width: 8),
+                                                const Text(
                                                     'Profile updated successfully!'),
                                               ],
                                             ),
-                                            backgroundColor: Colors.green,
+                                            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                                             behavior: SnackBarBehavior.floating,
                                           ),
                                         );
@@ -2780,7 +2817,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                               result['message'] ??
                                                   'Failed to update profile',
                                             ),
-                                            backgroundColor: Colors.red,
+                                            backgroundColor: Theme.of(dialogContext).colorScheme.errorContainer,
                                             behavior: SnackBarBehavior.floating,
                                           ),
                                         );
@@ -2793,7 +2830,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                         SnackBar(
                                           content:
                                               Text('Error: ${e.toString()}'),
-                                          backgroundColor: Colors.red,
+                                          backgroundColor: Theme.of(dialogContext).colorScheme.errorContainer,
                                           behavior: SnackBarBehavior.floating,
                                         ),
                                       );
@@ -2876,7 +2913,7 @@ View post: ${ApiService.baseApi}/posts/$postId
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -2890,7 +2927,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -2898,7 +2935,10 @@ View post: ${ApiService.baseApi}/posts/$postId
             // Edit option (only for post owner)
             if (isOwner)
               ListTile(
-                leading: const Icon(Icons.edit, color: Colors.blue),
+                leading: Icon(
+                  Icons.edit,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 title:
                     Text(AppLocalizations.of(context)?.editPost ?? 'Edit Post'),
                 onTap: () {
@@ -2909,7 +2949,7 @@ View post: ${ApiService.baseApi}/posts/$postId
 
             // Save/Bookmark option
             ListTile(
-              leading: const Icon(Icons.bookmark_border, color: Colors.orange),
+              leading: Icon(Icons.bookmark_border, color: Theme.of(context).colorScheme.tertiary),
               title:
                   Text(AppLocalizations.of(context)?.savePost ?? 'Save Post'),
               onTap: () {
@@ -2920,7 +2960,7 @@ View post: ${ApiService.baseApi}/posts/$postId
 
             // Share option
             ListTile(
-              leading: const Icon(Icons.share, color: Colors.green),
+              leading: Icon(Icons.share, color: Theme.of(context).colorScheme.primary),
               title:
                   Text(AppLocalizations.of(context)?.sharePost ?? 'Share Post'),
               onTap: () {
@@ -2931,7 +2971,7 @@ View post: ${ApiService.baseApi}/posts/$postId
 
             // Copy Link option
             ListTile(
-              leading: const Icon(Icons.link, color: Colors.blue),
+              leading: Icon(Icons.link, color: Theme.of(context).colorScheme.primary),
               title:
                   Text(AppLocalizations.of(context)?.copyLink ?? 'Copy Link'),
               onTap: () {
@@ -2943,7 +2983,7 @@ View post: ${ApiService.baseApi}/posts/$postId
             // Report option (only for other users' posts)
             if (!isOwner)
               ListTile(
-                leading: const Icon(Icons.flag, color: Colors.orange),
+                leading: Icon(Icons.flag, color: Theme.of(context).colorScheme.tertiary),
                 title: Text(
                     AppLocalizations.of(context)?.reportPost ?? 'Report Post'),
                 onTap: () {
@@ -2955,10 +2995,10 @@ View post: ${ApiService.baseApi}/posts/$postId
             // Delete option (only for post owner)
             if (isOwner)
               ListTile(
-                leading: const Icon(Icons.delete, color: Colors.red),
+                leading: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                 title: Text(
                   AppLocalizations.of(context)?.deletePost ?? 'Delete Post',
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -2986,13 +3026,13 @@ View post: ${ApiService.baseApi}/posts/$postId
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle, color: Colors.white),
+                Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimaryContainer),
                 const SizedBox(width: 12),
                 Text(AppLocalizations.of(context)?.linkCopiedToClipboard ??
                     'Link copied to clipboard'),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             duration: const Duration(seconds: 2),
           ),
         );
@@ -3004,7 +3044,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           SnackBar(
             content: Text(
                 '${localizations?.failedToCopyLink ?? 'Failed to copy link'}: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -3084,7 +3124,7 @@ View post: ${ApiService.baseApi}/posts/$postId
             SnackBar(
               content: Text(AppLocalizations.of(context)?.postDeleted ??
                   'Post deleted successfully'),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 2),
             ),
           );
@@ -3096,7 +3136,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               content: Text(result['message'] ??
                   AppLocalizations.of(context)?.deleteFailed ??
                   'Failed to delete post'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -3110,7 +3150,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           SnackBar(
             content: Text(
                 '${AppLocalizations.of(context)?.error ?? 'Error'}: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -3139,9 +3179,9 @@ View post: ${ApiService.baseApi}/posts/$postId
 
     if (post.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Post not found'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('Post not found'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
       return;
@@ -3180,7 +3220,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       content: Text(AppLocalizations.of(context)
                               ?.postContentCannotBeEmpty ??
                           'Post content cannot be empty'),
-                      backgroundColor: Colors.red,
+                      backgroundColor: Theme.of(context).colorScheme.errorContainer,
                     ),
                   );
                 }
@@ -3247,7 +3287,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     SnackBar(
                       content: Text(AppLocalizations.of(context)?.postUpdated ??
                           'Post updated successfully'),
-                      backgroundColor: Colors.green,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                       duration: const Duration(seconds: 2),
                     ),
                   );
@@ -3259,7 +3299,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             AppLocalizations.of(context)?.updateFailed ??
                             'Failed to update post',
                       ),
-                      backgroundColor: Colors.red,
+                      backgroundColor: Theme.of(context).colorScheme.errorContainer,
                     ),
                   );
                 }
@@ -3271,7 +3311,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   SnackBar(
                     content: Text(
                         '${AppLocalizations.of(context)?.error ?? 'Error'}: ${e.toString()}'),
-                    backgroundColor: Colors.red,
+                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
                   ),
                 );
               }
@@ -3322,13 +3362,13 @@ View post: ${ApiService.baseApi}/posts/$postId
               children: [
                 Icon(
                   saved ? Icons.bookmark : Icons.bookmark_border,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
                 const SizedBox(width: 12),
                 Text(saved ? 'Post saved' : 'Post removed from saved'),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             duration: const Duration(seconds: 2),
           ),
         );
@@ -3336,7 +3376,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? 'Failed to save post'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -3347,7 +3387,7 @@ View post: ${ApiService.baseApi}/posts/$postId
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text('Error: ${e.toString()}'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
     }
@@ -3356,7 +3396,7 @@ View post: ${ApiService.baseApi}/posts/$postId
   Future<void> _handleSharePost(String postId) async {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -3374,7 +3414,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               ),
               const SizedBox(height: 16),
               ListTile(
-                leading: const Icon(Icons.feed, color: Colors.purple),
+                leading: Icon(Icons.feed, color: Theme.of(context).colorScheme.tertiary),
                 title: const Text('Share to Your Feed'),
                 subtitle: const Text('All your followers will see this'),
                 onTap: () {
@@ -3383,7 +3423,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.send, color: Colors.blue),
+                leading: Icon(Icons.send, color: Theme.of(context).colorScheme.primary),
                 title: const Text('Send to Followers'),
                 subtitle: const Text('Share via direct message'),
                 onTap: () {
@@ -3392,7 +3432,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.copy, color: Colors.green),
+                leading: Icon(Icons.copy, color: Theme.of(context).colorScheme.primary),
                 title: const Text('Copy Link'),
                 onTap: () {
                   Navigator.pop(context);
@@ -3430,7 +3470,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Post shared to $followerCount followers!'),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 2),
             ),
           );
@@ -3444,7 +3484,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to share post: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -3464,9 +3504,9 @@ View post: ${ApiService.baseApi}/posts/$postId
 
       if (followers.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('You have no followers to share with'),
-            backgroundColor: Colors.orange,
+          SnackBar(
+            content: const Text('You have no followers to share with'),
+            backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
           ),
         );
         return;
@@ -3566,8 +3606,8 @@ View post: ${ApiService.baseApi}/posts/$postId
                         );
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 ),
                 child: Text('Send (${selectedFollowers.length})'),
               ),
@@ -3580,7 +3620,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to load followers: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -3616,7 +3656,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Post sent to $recipientCount followers!'),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 2),
             ),
           );
@@ -3630,7 +3670,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to send post: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -3710,9 +3750,9 @@ View post: ${ApiService.baseApi}/posts/$postId
                 if (selectedReason == null) {
                   if (dialogContext.mounted) {
                     ScaffoldMessenger.of(dialogContext).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select a reason'),
-                        backgroundColor: Colors.red,
+                      SnackBar(
+                        content: const Text('Please select a reason'),
+                        backgroundColor: Theme.of(context).colorScheme.errorContainer,
                       ),
                     );
                   }
@@ -3766,20 +3806,20 @@ View post: ${ApiService.baseApi}/posts/$postId
                   if (result['success'] == true) {
                     if (mounted) {
                       scaffoldMessenger.showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Row(
                             children: [
-                              Icon(Icons.check_circle, color: Colors.white),
-                              SizedBox(width: 12),
-                              Expanded(
+                              Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onErrorContainer),
+                              const SizedBox(width: 12),
+                              const Expanded(
                                 child: Text(
                                   'Report submitted. Thank you for helping keep our community safe.',
                                 ),
                               ),
                             ],
                           ),
-                          backgroundColor: Colors.green,
-                          duration: Duration(seconds: 3),
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          duration: const Duration(seconds: 3),
                         ),
                       );
                     }
@@ -3790,7 +3830,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           content: Text(
                             result['message'] ?? 'Failed to submit report',
                           ),
-                          backgroundColor: Colors.red,
+                          backgroundColor: Theme.of(context).colorScheme.errorContainer,
                         ),
                       );
                     }
@@ -3803,7 +3843,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     scaffoldMessenger.showSnackBar(
                       SnackBar(
                         content: Text('Error: ${e.toString()}'),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Theme.of(context).colorScheme.errorContainer,
                       ),
                     );
                   }
@@ -3952,15 +3992,29 @@ View post: ${ApiService.baseApi}/posts/$postId
               Navigator.pop(context);
               
               try {
-                // Call logout API
+                // Disconnect socket first
+                SocketService().disconnect();
+                
+                // Call logout API (this will clear tokens internally)
                 await ApiService.logout();
                 
-                // Clear local storage and cache
+                // Clear local storage and cache (additional cleanup)
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
                 
-                // Disconnect socket
-                SocketService().disconnect();
+                // Verify both access and refresh tokens are cleared
+                final accessToken = await ApiService.getAccessToken();
+                final refreshToken = await ApiService.getRefreshToken();
+                if (accessToken != null || refreshToken != null) {
+                  AppLogger.w('⚠️ Tokens still exist after logout, forcing clear');
+                  await ApiService.clearTokens();
+                  // Double-check after forced clear
+                  final accessToken2 = await ApiService.getAccessToken();
+                  final refreshToken2 = await ApiService.getRefreshToken();
+                  if (accessToken2 != null || refreshToken2 != null) {
+                    AppLogger.e('❌ CRITICAL: Tokens still exist after forced clear!');
+                  }
+                }
                 
                 // Navigate to login page - use State's context after checking mounted
                 if (!mounted) return;
@@ -3971,6 +4025,15 @@ View post: ${ApiService.baseApi}/posts/$postId
                 );
               } catch (e) {
                 AppLogger.e('Error during logout: $e');
+                
+                // Ensure tokens are cleared even on error
+                try {
+                  await ApiService.clearTokens();
+                  await ApiService.clearRememberedCredentials();
+                } catch (clearError) {
+                  AppLogger.e('Error clearing tokens: $clearError');
+                }
+                
                 // Still navigate to login page even if API call fails
                 if (!mounted) return;
                 Navigator.pushAndRemoveUntil(
@@ -4007,7 +4070,7 @@ View post: ${ApiService.baseApi}/posts/$postId
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 1,
         leading: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -4016,14 +4079,14 @@ View post: ${ApiService.baseApi}/posts/$postId
             height: 10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _isSocketConnected ? Colors.green : Colors.grey,
+              color: _isSocketConnected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
               border: Border.all(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 width: 2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: (_isSocketConnected ? Colors.green : Colors.grey)
+                  color: (_isSocketConnected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline)
                       .withValues(alpha: 0.5),
                   blurRadius: 4,
                   spreadRadius: 1,
@@ -4036,38 +4099,39 @@ View post: ${ApiService.baseApi}/posts/$postId
           // Show refresh button only on home/feed page
           if (_selectedIndex == 0)
             IconButton(
-              icon: _isLoadingPosts
-                  ? const SizedBox(
+                  icon: _isLoadingPosts
+                  ? SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.black87,
+                          Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     )
-                  : const Icon(Icons.refresh, color: Colors.black87),
+                  : Icon(Icons.refresh, color: Theme.of(context).colorScheme.onSurface),
               onPressed: _isLoadingPosts
                   ? null
                   : () async {
                       HapticFeedback.lightImpact();
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
                       final localizations = AppLocalizations.of(context);
+                      final primaryContainerColor = Theme.of(context).colorScheme.primaryContainer;
                       await _refreshPosts();
                       if (mounted) {
                         scaffoldMessenger.showSnackBar(
                           SnackBar(
                             content: Row(
                               children: [
-                                const Icon(Icons.check_circle,
-                                    color: Colors.white),
+                                Icon(Icons.check_circle,
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer),
                                 const SizedBox(width: 12),
                                 Text(localizations?.success ??
                                     'Feed refreshed!'),
                               ],
                             ),
-                            backgroundColor: Colors.green,
+                            backgroundColor: primaryContainerColor,
                             duration: const Duration(seconds: 2),
                             behavior: SnackBarBehavior.floating,
                           ),
@@ -4079,7 +4143,7 @@ View post: ${ApiService.baseApi}/posts/$postId
             ),
           // Logout button - accessible from all pages
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black87),
+            icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.onSurface),
             onPressed: _handleLogout,
             tooltip: AppLocalizations.of(context)?.logout ?? 'Logout',
           ),
@@ -4091,7 +4155,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           ),
           // Quick Menu button - accessible from all pages
           IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black87),
+            icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.onSurface),
             onPressed: _showQuickMenu,
             tooltip: AppLocalizations.of(context)?.quickMenu ?? 'Quick Menu',
           ),
@@ -4155,8 +4219,8 @@ View post: ${ApiService.baseApi}/posts/$postId
                   _refreshPosts();
                 }
               },
-              backgroundColor: Colors.blue,
-              child: const Icon(Icons.add, color: Colors.white),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
             )
           : null,
     );
@@ -4206,7 +4270,7 @@ View post: ${ApiService.baseApi}/posts/$postId
             SnackBar(
               content: Row(
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimaryContainer, size: 20),
                   const SizedBox(width: 12),
                   Text(
                     _posts.isEmpty 
@@ -4215,7 +4279,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   ),
                 ],
               ),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
             ),
@@ -4224,7 +4288,7 @@ View post: ${ApiService.baseApi}/posts/$postId
       },
       backgroundColor:
           Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.95),
-      color: Colors.blue,
+      color: Theme.of(context).colorScheme.primary,
       displacement: 60, // Pull distance before triggering
       strokeWidth: 3.0, // Thicker progress indicator
       edgeOffset: 0, // Distance from edge
@@ -4241,16 +4305,18 @@ View post: ${ApiService.baseApi}/posts/$postId
                 padding: EdgeInsets.symmetric(
                     horizontal: padding, vertical: spacing * 0.6),
                 decoration: BoxDecoration(
-                  color: Colors.orange.shade100,
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
                   borderRadius: BorderRadius.circular(
                       ResponsiveDimensions.getBorderRadius(context)),
-                  border: Border.all(color: Colors.orange.shade300),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.cloud_off,
-                      color: Colors.orange.shade700,
+                      color: Theme.of(context).colorScheme.onTertiaryContainer,
                       size: iconSize,
                     ),
                     SizedBox(width: spacing * 0.6),
@@ -4258,7 +4324,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       child: Text(
                         'You\'re offline. Showing cached content.',
                         style: TextStyle(
-                          color: Colors.orange.shade900,
+                          color: Theme.of(context).colorScheme.onTertiaryContainer,
                           fontSize: captionSize,
                           fontWeight: FontWeight.w500,
                         ),
@@ -4378,16 +4444,16 @@ View post: ${ApiService.baseApi}/posts/$postId
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.amber.shade600,
-                                Colors.orange.shade700,
+                                Theme.of(context).colorScheme.tertiary,
+                                Theme.of(context).colorScheme.tertiaryContainer,
                               ],
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.trending_up,
                             size: 20,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -4397,7 +4463,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade800,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -4536,16 +4602,16 @@ View post: ${ApiService.baseApi}/posts/$postId
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.trending_up,
                                       size: 14,
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.onPrimary,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       'Top ${index + 1}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onPrimary,
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -4577,7 +4643,11 @@ View post: ${ApiService.baseApi}/posts/$postId
                 ),
                 child: Row(
                   children: [
-                    Expanded(child: Divider(color: Colors.grey.shade300)),
+                    Expanded(
+                      child: Divider(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: ResponsiveDimensions.getHorizontalPadding(
@@ -4589,11 +4659,15 @@ View post: ${ApiService.baseApi}/posts/$postId
                           fontSize:
                               ResponsiveDimensions.getBodyFontSize(context),
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ),
-                    Expanded(child: Divider(color: Colors.grey.shade300)),
+                    Expanded(
+                      child: Divider(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -4753,7 +4827,7 @@ View post: ${ApiService.baseApi}/posts/$postId
       // Local asset (like bot avatars) - use Image widget with AssetImage
       return CircleAvatar(
         radius: 24,
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
         child: ClipOval(
           child: Image.asset(
             userAvatar,
@@ -4769,7 +4843,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         .toUpperCase()
                     : 'U',
                 style: TextStyle(
-                  color: Colors.blue.shade700,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -4782,7 +4856,7 @@ View post: ${ApiService.baseApi}/posts/$postId
       // Network image - use CircleAvatar with NetworkImage
       return CircleAvatar(
         radius: 24,
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
         backgroundImage: userAvatar != null && userAvatar.isNotEmpty
             ? NetworkImage(UrlUtils.getFullAvatarUrl(userAvatar))
             : null,
@@ -4797,7 +4871,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         .toUpperCase()
                     : 'U',
                 style: TextStyle(
-                  color: Colors.blue.shade700,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -4838,12 +4912,12 @@ View post: ${ApiService.baseApi}/posts/$postId
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Colors.blue.shade300, Colors.purple.shade300],
+                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.tertiary],
                     ),
                   ),
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7),
                       strokeWidth: 2,
                     ),
                   ),
@@ -4855,14 +4929,14 @@ View post: ${ApiService.baseApi}/posts/$postId
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Colors.blue.shade400, Colors.purple.shade400],
+                        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.tertiary],
                       ),
                     ),
                     child: Center(
                       child: Icon(
                         Icons.broken_image,
                         size: iconSize * 1.5,
-                        color: Colors.white54,
+                        color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.54),
                       ),
                     ),
                   );
@@ -4874,7 +4948,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Colors.blue.shade400, Colors.purple.shade400],
+                    colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.tertiary],
                   ),
                 ),
                 child: Center(
@@ -4884,13 +4958,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                       Icon(
                         Icons.add_photo_alternate_outlined,
                         size: iconSize * 1.5,
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7),
                       ),
                       SizedBox(height: padding * 0.6),
                       Text(
                         'Add your feed banner',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.9),
                           fontSize: headingSize * 0.5,
                           fontWeight: FontWeight.w600,
                         ),
@@ -4907,9 +4981,9 @@ View post: ${ApiService.baseApi}/posts/$postId
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withValues(alpha: 0.3),
+                    Theme.of(context).colorScheme.shadow.withValues(alpha: 0.3),
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.4),
+                    Theme.of(context).colorScheme.shadow.withValues(alpha: 0.4),
                   ],
                   stops: const [0.0, 0.5, 1.0],
                 ),
@@ -4933,12 +5007,12 @@ View post: ${ApiService.baseApi}/posts/$postId
                             style: TextStyle(
                               fontSize: headingSize,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              shadows: const [
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              shadows: [
                                 Shadow(
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                   blurRadius: 4,
-                                  color: Colors.black38,
+                                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.38),
                                 ),
                               ],
                             ),
@@ -4950,13 +5024,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                         Container(
                           padding: EdgeInsets.all(padding * 0.5),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.25),
+                            color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.25),
                             borderRadius: BorderRadius.circular(
                                 ResponsiveDimensions.getBorderRadius(context)),
                           ),
                           child: Icon(
                             Icons.home,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                             size: iconSize,
                           ),
                         ),
@@ -4976,11 +5050,11 @@ View post: ${ApiService.baseApi}/posts/$postId
                     ? Container(
                         padding: EdgeInsets.all(padding * 0.6),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.25),
+                              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.25),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -4989,10 +5063,10 @@ View post: ${ApiService.baseApi}/posts/$postId
                         child: SizedBox(
                           width: iconSize * 0.9,
                           height: iconSize * 0.9,
-                          child: const CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.blue),
+                                AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
                           ),
                         ),
                       )
@@ -5007,11 +5081,11 @@ View post: ${ApiService.baseApi}/posts/$postId
                               vertical: padding * 0.5,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
+                                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.25),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -5025,13 +5099,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                                       ? Icons.edit
                                       : Icons.add_photo_alternate,
                                   size: iconSize * 0.75,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                                 SizedBox(width: padding * 0.3),
                                 Text(
                                   hasPhoto ? 'Change' : 'Add Photo',
                                   style: TextStyle(
-                                    color: Colors.blue.shade700,
+                                    color: Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.w600,
                                     fontSize:
                                         ResponsiveDimensions.getBodyFontSize(
@@ -5063,12 +5137,12 @@ View post: ${ApiService.baseApi}/posts/$postId
       padding: EdgeInsets.symmetric(
           vertical: padding * 0.875, horizontal: padding * 0.5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(
             ResponsiveDimensions.getBorderRadius(context)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -5089,16 +5163,16 @@ View post: ${ApiService.baseApi}/posts/$postId
                 return Padding(
                   padding: EdgeInsets.only(
                       right: spacing, left: index == 0 ? spacing / 2 : 0),
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
+                    child: Shimmer.fromColors(
+                    baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    highlightColor: Theme.of(context).colorScheme.surface,
                     child: Column(
                       children: [
                         Container(
                           width: storySize,
                           height: storySize,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -5107,7 +5181,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           width: storySize * 0.85,
                           height: storyNameSize * 0.8,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -5173,7 +5247,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               height: storySize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.grey.shade200,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               child: Stack(
                 children: [
@@ -5188,7 +5262,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
-                                color: Colors.grey.shade200,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                 child: Center(
                                   child: Text(
                                     _currentUser?['name']?.isNotEmpty == true
@@ -5197,7 +5271,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                     style: TextStyle(
                                       fontSize: storySize * 0.4,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.blue.shade700,
+                                      color: Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                 ),
@@ -5205,7 +5279,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             },
                           )
                         : Container(
-                            color: Colors.grey.shade200,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             child: Center(
                               child: Text(
                                 _currentUser?['name']?.isNotEmpty == true
@@ -5214,7 +5288,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                 style: TextStyle(
                                   fontSize: storySize * 0.4,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ),
@@ -5228,13 +5302,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                       width: iconSize * 1.2,
                       height: iconSize * 1.2,
                       decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                       ),
                       child: Icon(
                         Icons.add,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         size: iconSize * 0.7,
                       ),
                     ),
@@ -5247,7 +5321,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               'Your Story',
               style: TextStyle(
                 fontSize: nameSize,
-                color: Colors.grey.shade700,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w500,
               ),
               overflow: TextOverflow.ellipsis,
@@ -5309,15 +5383,15 @@ View post: ${ApiService.baseApi}/posts/$postId
                     : null,
                 border: !hasUnseen
                     ? Border.all(
-                        color: Colors.grey.shade300, width: borderWidth)
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3), width: borderWidth)
                     : null,
               ),
               child: Padding(
                 padding: EdgeInsets.all(storySize * 0.04),
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(storySize * 0.025),
@@ -5330,7 +5404,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
-                                  color: Colors.grey.shade200,
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   child: Center(
                                     child: Text(
                                       name.isNotEmpty
@@ -5339,7 +5413,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                       style: TextStyle(
                                         fontSize: storySize * 0.35,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.blue.shade700,
+                                        color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
                                   ),
@@ -5347,14 +5421,14 @@ View post: ${ApiService.baseApi}/posts/$postId
                               },
                             )
                           : Container(
-                              color: Colors.grey.shade200,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Center(
                                 child: Text(
                                   name.isNotEmpty ? name[0].toUpperCase() : 'U',
                                   style: TextStyle(
                                     fontSize: storySize * 0.35,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue.shade700,
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),
@@ -5469,7 +5543,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   style: TextStyle(
                     fontSize: bodyFontSize,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   children: [
                     TextSpan(
@@ -5523,7 +5597,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       style: TextStyle(
                         fontSize: subheadingFontSize,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade800,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -5559,7 +5633,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       'Loading suggestions...',
                       style: TextStyle(
                         fontSize: bodyFontSize,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -5584,10 +5658,10 @@ View post: ${ApiService.baseApi}/posts/$postId
             Container(
               padding: EdgeInsets.all(padding),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(
                     ResponsiveDimensions.getBorderRadius(context)),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -5602,7 +5676,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     'No suggestions right now',
                     style: TextStyle(
                       fontSize: bodyFontSize,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -5631,12 +5705,12 @@ View post: ${ApiService.baseApi}/posts/$postId
       width: 160,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.08),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.08),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -5713,9 +5787,10 @@ View post: ${ApiService.baseApi}/posts/$postId
                         Flexible(
                           child: Text(
                             userName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 2,
@@ -5730,7 +5805,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       Text(
                         userBio.toString(),
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           fontSize: 11,
                         ),
                         textAlign: TextAlign.center,
@@ -5741,7 +5816,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       Text(
                         '$followersCount followers',
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           fontSize: 11,
                         ),
                         textAlign: TextAlign.center,
@@ -5764,7 +5839,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Following $userName!'),
-                            backgroundColor: Colors.green,
+                            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                             duration: const Duration(seconds: 1),
                           ),
                         );
@@ -5774,18 +5849,18 @@ View post: ${ApiService.baseApi}/posts/$postId
                     } catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Failed to follow user'),
-                            backgroundColor: Colors.red,
-                            duration: Duration(seconds: 2),
+                          SnackBar(
+                            content: const Text('Failed to follow user'),
+                            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       }
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     elevation: 0,
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
@@ -5844,11 +5919,11 @@ View post: ${ApiService.baseApi}/posts/$postId
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(borderRadius),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
                 blurRadius: shadowElevation * 2,
                 offset: Offset(0, shadowElevation),
               ),
@@ -5867,19 +5942,19 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: double.infinity,
                     padding: EdgeInsets.all(itemSpacing),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
+                      color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(borderRadius),
                         topRight: Radius.circular(borderRadius),
                       ),
                       border:
-                          Border(bottom: BorderSide(color: Colors.blue.shade200)),
+                          Border(bottom: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3))),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.repeat,
-                          color: Colors.blue.shade700,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                           size: ResponsiveDimensions.getIconSize(context),
                         ),
                         SizedBox(width: itemSpacing * 0.67),
@@ -5890,7 +5965,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               Text(
                                 '${sharedBy['name']} shared this post',
                                 style: TextStyle(
-                                  color: Colors.blue.shade900,
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                                   fontWeight: FontWeight.w600,
                                   fontSize: captionFontSize,
                                 ),
@@ -5901,7 +5976,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                   child: Text(
                                     shareMessage,
                                     style: TextStyle(
-                                      color: Colors.blue.shade700,
+                                      color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                                       fontSize: captionFontSize * 0.92,
                                     ),
                                     maxLines: 2,
@@ -5965,6 +6040,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: ResponsiveDimensions.getSubheadingFontSize(context),
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -5976,7 +6052,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               Text(
                                 timeAgo,
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                   fontSize: captionFontSize,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -6019,6 +6095,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             style: TextStyle(
                               fontSize: bodyFontSize,
                               height: 1.5,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(height: itemSpacing * 0.67),
@@ -6032,13 +6109,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                               Icon(
                                 Icons.person_outline,
                                 size: ResponsiveDimensions.getIconSize(context) * 0.75,
-                                color: Colors.grey,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                               SizedBox(width: itemSpacing * 0.33),
                               Text(
                                 'with ',
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                   fontSize: captionFontSize,
                                 ),
                               ),
@@ -6060,7 +6137,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                   child: Text(
                                     '${user['name']}${isLast ? '' : ', '}',
                                     style: TextStyle(
-                                      color: Colors.blue,
+                                      color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: captionFontSize,
                                     ),
@@ -6096,24 +6173,24 @@ View post: ${ApiService.baseApi}/posts/$postId
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   placeholder: (context, url) => Container(
-                                    color: Colors.grey.shade200,
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                     child: Center(
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.blue.shade300,
+                                          Theme.of(context).colorScheme.primary,
                                         ),
                                       ),
                                     ),
                                   ),
                                   errorWidget: (context, url, error) {
                                     return Container(
-                                      color: Colors.grey.shade200,
+                                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       child: Center(
                                         child: Icon(
                                           Icons.broken_image,
                                           size: ResponsiveDimensions.getLargeIconSize(context),
-                                          color: Colors.grey.shade400,
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
                                         ),
                                       ),
                                     );
@@ -6212,7 +6289,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                   Text(
                                     '$reactionsCount',
                                     style: TextStyle(
-                                      color: Colors.grey.shade600,
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                       fontSize: captionFontSize,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -6229,7 +6306,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           child: Text(
                             '$comments comment${comments > 1 ? 's' : ''}',
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               fontSize: captionFontSize,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -6242,7 +6319,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: itemSpacing * 0.5),
                   child: Divider(
-                    color: Colors.grey.shade200,
+                    color: Theme.of(context).dividerColor,
                     height: 1,
                     thickness: 1,
                   ),
@@ -6262,13 +6339,13 @@ View post: ${ApiService.baseApi}/posts/$postId
                       _buildPostAction(
                         icon: Icons.chat_bubble_outline,
                         label: 'Comment',
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         onTap: () => _showCommentsBottomSheet(postId, comments),
                       ),
                       _buildPostAction(
                         icon: Icons.share_outlined,
                         label: 'Share',
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         onTap: () => _showShareDialog(
                           postId: postId,
                           userName: userName,
@@ -6615,7 +6692,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to update reaction'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -6627,7 +6704,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -6797,7 +6874,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                       ? IconButton(
                                           icon: Icon(
                                             Icons.clear,
-                                            color: Colors.grey.shade600,
+                                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                             size: isMobile ? 20 : 24,
                                           ),
                                           onPressed: () {
@@ -7129,14 +7206,14 @@ View post: ${ApiService.baseApi}/posts/$postId
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade800,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             Text(
                               'Most popular users with the most followers',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -7228,7 +7305,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade800,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -7261,7 +7338,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         ),
                         leading: Icon(
                           Icons.search,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           size: 20,
                         ),
                         title:
@@ -7309,13 +7386,16 @@ View post: ${ApiService.baseApi}/posts/$postId
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Find friends and connect',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              style: TextStyle(
+                fontSize: 14, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),
@@ -7339,7 +7419,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     height: 48,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.grey.shade300,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -7352,7 +7432,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           height: 16,
                           width: 120,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
@@ -7361,7 +7441,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           height: 12,
                           width: 180,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -7373,7 +7453,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -7410,14 +7490,17 @@ View post: ${ApiService.baseApi}/posts/$postId
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Try searching with different keywords',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
               const SizedBox(height: 24),
               // Suggestion chips
@@ -7427,7 +7510,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                 alignment: WrapAlignment.center,
                 children: _trendingSearches.map((search) {
                   return ActionChip(
-                    backgroundColor: Colors.blue.shade100,
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
                     onPressed: () {
                       _searchController.text = search;
                       _onSearchChanged(search);
@@ -7481,7 +7564,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       'Loading more users...',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -7562,7 +7645,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     Text(
                       userEmail,
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         fontSize: subtitleFontSize,
                       ),
                       maxLines: 1,
@@ -7703,7 +7786,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   Text(
                     userBio.toString(),
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontSize: subtitleFontSize,
                     ),
                     maxLines: 1,
@@ -7713,7 +7796,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   Text(
                     userEmail,
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontSize: subtitleFontSize,
                     ),
                     maxLines: 1,
@@ -7795,12 +7878,12 @@ View post: ${ApiService.baseApi}/posts/$postId
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
+                        Text(
                           'Top Posts',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -7810,7 +7893,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       'Most engaged posts from people you follow',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -7919,13 +8002,15 @@ View post: ${ApiService.baseApi}/posts/$postId
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Follow people to see their top posts',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 14,
+              ),
             ),
           ],
         ),
@@ -7978,14 +8063,17 @@ View post: ${ApiService.baseApi}/posts/$postId
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Try searching with different keywords',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
             ],
           ),
@@ -8096,7 +8184,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
@@ -8155,14 +8243,17 @@ View post: ${ApiService.baseApi}/posts/$postId
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Try searching with different keywords',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
             ],
           ),
@@ -8216,7 +8307,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
-                      color: Colors.grey.shade300,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                     ),
                     child: thumbnail != null && thumbnail.toString().isNotEmpty
                         ? ClipRRect(
@@ -8262,7 +8353,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         authorName,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -8335,7 +8426,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
@@ -8394,14 +8485,17 @@ View post: ${ApiService.baseApi}/posts/$postId
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Try searching with different keywords',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
             ],
           ),
@@ -8469,7 +8563,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: Colors.grey.shade300,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                           child: Icon(
                             mediaType == 'video'
                                 ? Icons.video_library
@@ -8482,7 +8576,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     )
                   else
                     Container(
-                      color: Colors.grey.shade300,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                       child: Icon(
                         Icons.auto_stories,
                         size: 48,
@@ -8514,7 +8608,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           children: [
                             CircleAvatar(
                               radius: 16,
-                              backgroundColor: Colors.white,
+                              backgroundColor: Theme.of(context).colorScheme.surface,
                               backgroundImage: authorAvatar != null &&
                                       authorAvatar.toString().isNotEmpty
                                   ? UrlUtils.getAvatarImageProvider(
@@ -8618,7 +8712,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
@@ -8677,14 +8771,17 @@ View post: ${ApiService.baseApi}/posts/$postId
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Try searching with different keywords',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
             ],
           ),
@@ -8828,7 +8925,10 @@ View post: ${ApiService.baseApi}/posts/$postId
                 const SizedBox(height: 16),
                 Text(
                   'Loading notifications...',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
                 ),
               ],
             ),
@@ -8911,7 +9011,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           style: TextStyle(
                             fontSize: isDesktop ? 24 : 20,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade800,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -8923,7 +9023,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: isDesktop ? 16 : 14,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               height: 1.5,
                             ),
                           ),
@@ -9311,10 +9411,10 @@ View post: ${ApiService.baseApi}/posts/$postId
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile refreshed'),
-              duration: Duration(seconds: 1),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: const Text('Profile refreshed'),
+              duration: const Duration(seconds: 1),
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             ),
           );
         }
@@ -9324,7 +9424,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to refresh: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -9410,7 +9510,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to upload image'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -9422,7 +9522,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error uploading image: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -9496,9 +9596,9 @@ View post: ${ApiService.baseApi}/posts/$postId
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Feed banner updated successfully!'),
-                backgroundColor: Colors.green,
+              SnackBar(
+                content: const Text('Feed banner updated successfully!'),
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
             );
           }
@@ -9508,7 +9608,7 @@ View post: ${ApiService.baseApi}/posts/$postId
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to upload banner'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -9520,7 +9620,7 @@ View post: ${ApiService.baseApi}/posts/$postId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error uploading banner: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -9539,16 +9639,16 @@ View post: ${ApiService.baseApi}/posts/$postId
         // Show success message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Row(
+            SnackBar(
+              content: const Row(
                 children: [
                   Icon(Icons.check_circle, color: Colors.white, size: 20),
                   SizedBox(width: 12),
                   Text('Profile updated!'),
                 ],
               ),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -9596,7 +9696,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           child: ClipOval(
                             child: _isUploadingAvatar
                                 ? Container(
-                                    color: Colors.grey.shade300,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                                     child: const Center(
                                       child: CircularProgressIndicator(),
                                     ),
@@ -9618,7 +9718,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                                             return child;
                                           }
                                           return Container(
-                                            color: Colors.grey.shade300,
+                                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                                             child: Center(
                                               child: CircularProgressIndicator(
                                                 value: loadingProgress
@@ -9843,9 +9943,9 @@ View post: ${ApiService.baseApi}/posts/$postId
           // White content area with rounded top
           SliverToBoxAdapter(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 ),
@@ -9922,12 +10022,12 @@ View post: ${ApiService.baseApi}/posts/$postId
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     'Your Posts',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const Spacer(),
@@ -9936,7 +10036,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       '${_userPosts.length} ${_userPosts.length == 1 ? 'post' : 'posts'}',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -9992,7 +10092,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade800,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -10000,7 +10100,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                         'Share your thoughts with the world',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -10014,8 +10114,8 @@ View post: ${ApiService.baseApi}/posts/$postId
                         icon: const Icon(Icons.add),
                         label: const Text('Create Post'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 12,
@@ -10114,12 +10214,13 @@ View post: ${ApiService.baseApi}/posts/$postId
     Color color,
     VoidCallback? onTap,
   ) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardTheme.color ?? theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -10145,7 +10246,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade800,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 4),
@@ -10153,7 +10254,7 @@ View post: ${ApiService.baseApi}/posts/$postId
               label,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade600,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -10421,9 +10522,9 @@ View post: ${ApiService.baseApi}/posts/$postId
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.7,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),
@@ -10435,12 +10536,12 @@ View post: ${ApiService.baseApi}/posts/$postId
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200),
+                  bottom: BorderSide(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
                 ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.visibility, color: Colors.blue),
+                  Icon(Icons.visibility, color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 12),
                   const Text(
                     'Recent Profile Visitors',
@@ -10488,7 +10589,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       'Visited ${_formatTimeAgo(lastVisit)}',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                     trailing: ElevatedButton(
@@ -10504,8 +10605,8 @@ View post: ${ApiService.baseApi}/posts/$postId
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -10627,22 +10728,23 @@ View post: ${ApiService.baseApi}/posts/$postId
 
   // Shimmer loading widgets
   Widget _buildProfileLoadingShimmer() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           const SizedBox(height: 60),
           Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            baseColor: isDark ? Theme.of(context).colorScheme.surfaceContainerHighest : Colors.grey[300]!,
+            highlightColor: isDark ? Theme.of(context).colorScheme.surface : Colors.grey[100]!,
             child: Column(
               children: [
                 // Avatar shimmer
                 Container(
                   width: 100,
                   height: 100,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -10652,7 +10754,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   width: 150,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -10662,7 +10764,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   width: 200,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -10678,7 +10780,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           width: 50,
                           height: 22,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -10687,7 +10789,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           width: 60,
                           height: 14,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -10716,12 +10818,13 @@ View post: ${ApiService.baseApi}/posts/$postId
   }
 
   Widget _buildPostCardShimmer() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: isDark ? Theme.of(context).colorScheme.surfaceContainerHighest : Colors.grey[300]!,
+      highlightColor: isDark ? Theme.of(context).colorScheme.surface : Colors.grey[100]!,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -10735,8 +10838,8 @@ View post: ${ApiService.baseApi}/posts/$postId
                   Container(
                     width: 40,
                     height: 40,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -10749,7 +10852,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           width: 120,
                           height: 14,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -10758,7 +10861,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                           width: 80,
                           height: 10,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -10777,7 +10880,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: double.infinity,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -10786,7 +10889,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: double.infinity,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -10795,7 +10898,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: 200,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -10804,7 +10907,7 @@ View post: ${ApiService.baseApi}/posts/$postId
             ),
             const SizedBox(height: 16),
             // Image placeholder
-            Container(width: double.infinity, height: 200, color: Colors.white),
+            Container(width: double.infinity, height: 200, color: Theme.of(context).colorScheme.surfaceContainerHighest),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -10814,7 +10917,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: 60,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -10823,7 +10926,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     width: 80,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -10889,7 +10992,7 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to load posts'),
-              backgroundColor: Colors.orange,
+              backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
             ),
           );
         }
@@ -10901,7 +11004,7 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -10912,9 +11015,9 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -10924,7 +11027,7 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -10964,14 +11067,14 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
                             Icon(
                               Icons.post_add_outlined,
                               size: 64,
-                              color: Colors.grey.shade300,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'No posts yet',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -11034,7 +11137,10 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
                 content,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 14, color: Colors.black87),
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
 
               // Media indicator
@@ -11096,19 +11202,28 @@ class _MyPostsBottomSheetState extends State<_MyPostsBottomSheet> {
                   const SizedBox(width: 4),
                   Text(
                     '$likesCount',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(
+                      fontSize: 12, 
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Icon(Icons.comment, size: 16, color: Colors.blue.shade300),
                   const SizedBox(width: 4),
                   Text(
                     '$commentsCount',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(
+                      fontSize: 12, 
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                   const Spacer(),
                   Text(
                     timeAgo,
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                    style: TextStyle(
+                      fontSize: 12, 
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
                 ],
               ),
@@ -11227,7 +11342,7 @@ class _MyFollowersBottomSheetState extends State<_MyFollowersBottomSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -11267,14 +11382,14 @@ class _MyFollowersBottomSheetState extends State<_MyFollowersBottomSheet> {
                             Icon(
                               Icons.people_outline,
                               size: 64,
-                              color: Colors.grey.shade300,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'No followers yet',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -11319,7 +11434,7 @@ class _MyFollowersBottomSheetState extends State<_MyFollowersBottomSheet> {
           );
         },
         child: CircleAvatar(
-          backgroundColor: Colors.blue.shade100,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
           backgroundImage:
               userAvatar != null && userAvatar.toString().isNotEmpty
                   ? UrlUtils.getAvatarImageProvider(userAvatar)
@@ -11432,7 +11547,7 @@ class _MyFollowersBottomSheetState extends State<_MyFollowersBottomSheet> {
                     ? 'Unfollowed successfully'
                     : 'Following successfully',
               ),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 2),
             ),
           );
@@ -11445,7 +11560,7 @@ class _MyFollowersBottomSheetState extends State<_MyFollowersBottomSheet> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Action failed'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -11458,7 +11573,7 @@ class _MyFollowersBottomSheetState extends State<_MyFollowersBottomSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -11556,9 +11671,9 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -11568,7 +11683,7 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -11608,14 +11723,14 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
                             Icon(
                               Icons.people_outline,
                               size: 64,
-                              color: Colors.grey.shade300,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'Not following anyone yet',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -11660,7 +11775,7 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
           );
         },
         child: CircleAvatar(
-          backgroundColor: Colors.blue.shade100,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
           backgroundImage:
               userAvatar != null && userAvatar.toString().isNotEmpty
                   ? UrlUtils.getAvatarImageProvider(userAvatar)
@@ -11725,9 +11840,12 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
       child: OutlinedButton(
         onPressed: () => _handleUnfollowAction(userId),
         style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.grey.shade200,
-          foregroundColor: Colors.black87,
-          side: BorderSide(color: Colors.grey.shade400, width: 1),
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 1,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
@@ -11777,10 +11895,10 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Unfollowed successfully'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+            SnackBar(
+              content: const Text('Unfollowed successfully'),
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              duration: const Duration(seconds: 2),
             ),
           );
         }
@@ -11792,7 +11910,7 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Action failed'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -11805,7 +11923,7 @@ class _MyFollowingBottomSheetState extends State<_MyFollowingBottomSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -11933,3 +12051,4 @@ class SafeAvatar extends StatelessWidget {
     );
   }
 }
+

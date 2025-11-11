@@ -54,21 +54,20 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Settings & Preferences',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
       ),
       body: ListView(
@@ -191,10 +190,10 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       child: Text(
         title,
-        style: TextStyle(
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
           fontSize: 14,
           fontWeight: FontWeight.w700,
-          color: Colors.grey.shade700,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
           letterSpacing: 0.5,
         ),
       ),
@@ -213,11 +212,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.1),
+              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 5,
               offset: const Offset(0, 2),
             ),
@@ -229,10 +228,14 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: Colors.blue, size: 24),
+              child: Icon(
+                icon,
+                color: Theme.of(context).colorScheme.primary,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -241,7 +244,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -249,7 +252,9 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -257,7 +262,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
             Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: Colors.grey.shade400,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ],
         ),
@@ -278,7 +283,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border(
             left: BorderSide(
@@ -312,7 +317,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -320,7 +325,9 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
@@ -340,11 +347,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 5,
             offset: const Offset(0, 2),
           ),
@@ -356,7 +363,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.grey.shade200,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
           ),
@@ -369,7 +376,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   height: 16,
                   width: 100,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -378,7 +385,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   height: 13,
                   width: 150,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

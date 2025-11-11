@@ -540,7 +540,7 @@ class _ChainReactionGameState extends State<ChainReactionGame>
                         '${countdown ?? ''}',
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                       ),
                     ),
@@ -552,7 +552,11 @@ class _ChainReactionGameState extends State<ChainReactionGame>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.pause, size: 64, color: Colors.white),
+                          Icon(
+                            Icons.pause, 
+                            size: 64, 
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             onPressed: () => setState(() => isPaused = false),
@@ -1107,6 +1111,7 @@ class _ChainReactionGameState extends State<ChainReactionGame>
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final padding =
         ResponsiveSizing.getSpacing(context, small: 8, medium: 12, large: 14);
     final borderRadius = ResponsiveSizing.getBorderRadius(context);
@@ -1136,7 +1141,7 @@ class _ChainReactionGameState extends State<ChainReactionGame>
           Text(
             label,
             style: TextStyle(
-              color: Colors.white,
+              color: theme.colorScheme.onSurface,
               fontSize: labelFontSize,
               fontWeight: FontWeight.w500,
             ),

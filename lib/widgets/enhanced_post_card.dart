@@ -95,20 +95,16 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: _isHovering
-              ? Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey.shade800
-                  : Colors.grey.shade50
-              : Theme.of(context).cardColor,
+              ? Theme.of(context).colorScheme.surfaceContainerHighest
+              : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey.shade800
-                : Colors.grey.shade200,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -137,6 +133,7 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           height: 1.5,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                   ),
 
@@ -172,7 +169,7 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -182,8 +179,9 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
               name: widget.userName,
               imageUrl: widget.userAvatar,
               radius: 20,
-              textStyle: const TextStyle(
-                color: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              textStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.bold,
               ),
               getImageProvider: (url) => UrlUtils.getAvatarImageProvider(url),
@@ -202,20 +200,21 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                       widget.userName,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                     ),
                     if (widget.isVerified)
-                      const Padding(
-                        padding: EdgeInsets.only(left: 6),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 6),
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Theme.of(context).colorScheme.primary,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.check,
                             size: 12,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ),
@@ -225,7 +224,7 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                 Text(
                   widget.timeAgo,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                 ),
               ],
@@ -250,13 +249,19 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
       margin: EdgeInsets.symmetric(horizontal: padding),
       padding: EdgeInsets.all(padding * 0.75),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         children: [
-          Icon(Icons.share, size: 16, color: Colors.grey.shade600),
+          Icon(
+            Icons.share,
+            size: 16,
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
           SizedBox(width: padding * 0.5),
           Expanded(
             child: Column(
@@ -264,14 +269,18 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
               children: [
                 Text(
                   'Shared by ${widget.sharedBy is Map ? widget.sharedBy['name'] : 'someone'}',
-                  style: Theme.of(context).textTheme.labelSmall,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 if (widget.shareMessage != null)
                   Text(
                     widget.shareMessage!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                    ),
                   ),
               ],
             ),
@@ -290,7 +299,7 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: Colors.grey.shade300,
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -302,7 +311,7 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
               height: 200,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(borderRadius - 2),
-                color: Colors.grey.shade200,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               child: Image.network(
                 widget.images!.first,
@@ -319,13 +328,13 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
               height: 200,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(borderRadius - 2),
-                color: Colors.grey.shade200,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               child: Center(
                 child: Icon(
                   Icons.play_circle_filled,
                   size: 56,
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
             ),
@@ -338,13 +347,13 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.6),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   '+${mediaCount - 1}',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -363,8 +372,14 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
       padding: EdgeInsets.symmetric(vertical: spacing * 0.75),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Colors.grey.shade200, width: 1),
-          bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+          top: BorderSide(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+            width: 1,
+          ),
         ),
       ),
       child: Row(
@@ -419,14 +434,20 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 18, color: Colors.grey.shade600),
+                Icon(
+                  icon,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   label,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),
@@ -463,13 +484,13 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                     padding: EdgeInsets.symmetric(vertical: spacing * 0.75),
                     decoration: BoxDecoration(
                       color: hasReacted
-                          ? Colors.blue.shade50
-                          : Colors.grey.shade100,
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: hasReacted
-                            ? Colors.blue.shade300
-                            : Colors.grey.shade300,
+                            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
+                            : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Row(
@@ -478,7 +499,9 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                         Icon(
                           hasReacted ? Icons.favorite : Icons.favorite_border,
                           size: 18,
-                          color: hasReacted ? Colors.red : Colors.grey.shade600,
+                          color: hasReacted
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                         SizedBox(width: spacing * 0.5),
                         Text(
@@ -486,8 +509,9 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color:
-                                hasReacted ? Colors.red : Colors.grey.shade600,
+                            color: hasReacted 
+                                ? Theme.of(context).colorScheme.error 
+                                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -510,9 +534,11 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: spacing * 0.75),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -520,15 +546,15 @@ class _EnhancedPostCardState extends State<EnhancedPostCard>
                       Icon(
                         Icons.chat_bubble_outline,
                         size: 18,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                       SizedBox(width: spacing * 0.5),
-                      const Text(
+                      Text(
                         'Comment',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],

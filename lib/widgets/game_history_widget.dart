@@ -170,12 +170,14 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
               ),
               _buildRecentGamesList(),
             ] else
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.all(32),
+                  padding: const EdgeInsets.all(32),
                   child: Text(
                     'No games played yet',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                 ),
               ),
@@ -204,10 +206,10 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Head to Head Stats',
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -225,17 +227,20 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.black12,
+              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               children: [
-                const Icon(Icons.trending_up, color: Colors.white),
+                Icon(
+                  Icons.trending_up, 
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Win Rate: $winRate%',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -248,6 +253,7 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
   }
 
   Widget _buildStatCard(String label, int value, Color color) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Text(
@@ -261,8 +267,8 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white70,
+          style: TextStyle(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: 12,
           ),
         ),
@@ -297,7 +303,9 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -315,9 +323,9 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
                         const SizedBox(height: 4),
                         Text(
                           '$total games played',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -390,7 +398,9 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[200]!),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.15),
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -422,9 +432,9 @@ class _GameHistoryWidgetState extends State<GameHistoryWidget> {
                       if (completedAt != null)
                         Text(
                           _formatDate(completedAt),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                     ],

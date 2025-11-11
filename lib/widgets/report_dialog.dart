@@ -91,11 +91,11 @@ class _ReportDialogState extends State<ReportDialog> {
 
       Navigator.pop(context, true);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
               'Report submitted successfully. Our team will review it shortly.'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 3),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          duration: const Duration(seconds: 3),
         ),
       );
     } catch (e) {
@@ -106,7 +106,7 @@ class _ReportDialogState extends State<ReportDialog> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to submit report: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
@@ -119,7 +119,10 @@ class _ReportDialogState extends State<ReportDialog> {
     return AlertDialog(
       title: Row(
         children: [
-          Icon(Icons.flag, color: Colors.red.shade600),
+          Icon(
+            Icons.flag,
+            color: Theme.of(context).colorScheme.error,
+          ),
           const SizedBox(width: 8),
           const Text('Report Content'),
         ],
@@ -162,7 +165,7 @@ class _ReportDialogState extends State<ReportDialog> {
                               reason.description,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                             value: reason.value,
@@ -219,16 +222,18 @@ class _ReportDialogState extends State<ReportDialog> {
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submitReport,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.error,
+            foregroundColor: Theme.of(context).colorScheme.onError,
           ),
           child: _isSubmitting
-              ? const SizedBox(
+              ? SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).colorScheme.onError,
+                    ),
                   ),
                 )
               : const Text('Submit Report'),

@@ -179,18 +179,21 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Profile Visitors',
           style: TextStyle(
-            color: Colors.black87,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w700,
             fontSize: 22,
           ),
@@ -207,7 +210,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                   Text(
                     'Loading visitors...',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontSize: 14,
                     ),
                   ),
@@ -229,7 +232,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                         child: Icon(
                           Icons.lock_outline,
                           size: 50,
-                          color: Colors.amber.shade400,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -238,7 +241,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
-                          color: Colors.grey.shade800,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -246,7 +249,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                         'Buy Premium to see\nwho visits your profile',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           height: 1.4,
                         ),
                         textAlign: TextAlign.center,
@@ -263,7 +266,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 32,
                             vertical: 14,
@@ -299,7 +302,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                             child: Icon(
                               Icons.visibility_off_outlined,
                               size: 50,
-                              color: Colors.blue.shade300,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -308,7 +311,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade800,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -316,7 +319,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                             'People who view your profile will appear here',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -325,7 +328,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                     )
                   : RefreshIndicator(
                       onRefresh: _loadVisitors,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.primary,
                       child: ListView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -342,7 +345,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                                     'Loading more...',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey.shade600,
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                     ),
                                   ),
                                 ],
@@ -394,7 +397,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
           },
           child: CircleAvatar(
             radius: 30,
-            backgroundColor: Colors.blue.shade100,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             backgroundImage: user['avatar'] != null
                 ? UrlUtils.getAvatarImageProvider(user['avatar'])
                 : null,
@@ -403,7 +406,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                     user['name']?[0]?.toUpperCase() ?? '?',
                     style: TextStyle(
                       fontSize: 22,
-                      color: Colors.blue.shade700,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
                     ),
                   )
@@ -428,10 +431,10 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.12),
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.blue.withValues(alpha: 0.3),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -439,7 +442,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                   '$visitCount visits',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.blue.shade700,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -458,7 +461,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade700,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                   height: 1.3,
                 ),
               ),
@@ -469,7 +472,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                 Icon(
                   Icons.access_time_rounded,
                   size: 13,
-                  color: Colors.grey.shade500,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 const SizedBox(width: 5),
                 Flexible(
@@ -479,7 +482,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                         : 'Recently visited',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade500,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -493,7 +496,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
           icon: Icon(
             Icons.arrow_forward_ios,
             size: 16,
-            color: Colors.grey.shade400,
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
           ),
           onPressed: () {
             Navigator.push(

@@ -46,7 +46,7 @@ class _NotificationCardState extends State<NotificationCard> {
         break;
       case 'comment':
         icon = Icons.comment;
-        iconColor = Colors.blue;
+        iconColor = Theme.of(context).colorScheme.primary;
         final commentText =
             widget.notificationData['commentText'] as String? ?? '';
         message =
@@ -54,7 +54,7 @@ class _NotificationCardState extends State<NotificationCard> {
         break;
       case 'reply':
         icon = Icons.reply;
-        iconColor = Colors.green;
+        iconColor = Theme.of(context).colorScheme.secondary;
         final replyText =
             widget.notificationData['commentText'] as String? ?? '';
         message =
@@ -62,34 +62,34 @@ class _NotificationCardState extends State<NotificationCard> {
         break;
       case 'follow':
         icon = Icons.person_add;
-        iconColor = Colors.purple;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         message = 'started following you';
         break;
       case 'post_mention':
         icon = Icons.alternate_email;
-        iconColor = Colors.orange;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         message = 'mentioned you in a post';
         break;
       case 'tag':
         icon = Icons.local_offer;
-        iconColor = Colors.orange;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         message = 'tagged you in a post';
         break;
       case 'message':
         icon = Icons.message;
-        iconColor = Colors.teal;
+        iconColor = Theme.of(context).colorScheme.secondary;
         final messageText = widget.notificationData['message'] as String? ?? '';
         message =
             'sent you a message${messageText.isNotEmpty ? ': "$messageText"' : ''}';
         break;
       case 'story':
         icon = Icons.auto_stories;
-        iconColor = Colors.purple;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         message = 'posted a new story';
         break;
       case 'story_reaction':
         icon = Icons.emoji_emotions;
-        iconColor = Colors.pink;
+        iconColor = Theme.of(context).colorScheme.primary;
         final notifMessage =
             widget.notificationData['message'] as String? ?? '';
         message =
@@ -97,18 +97,18 @@ class _NotificationCardState extends State<NotificationCard> {
         break;
       case 'poke':
         icon = Icons.back_hand;
-        iconColor = Colors.deepOrange;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         final pokeMessage = widget.notificationData['message'] as String? ?? '';
         message = pokeMessage.isNotEmpty ? pokeMessage : 'poked you';
         break;
       case 'video_like':
         icon = Icons.favorite;
-        iconColor = Colors.red;
+        iconColor = Theme.of(context).colorScheme.error;
         message = 'liked your video';
         break;
       case 'video_comment':
         icon = Icons.comment;
-        iconColor = Colors.blue;
+        iconColor = Theme.of(context).colorScheme.primary;
         final videoCommentText =
             widget.notificationData['message'] as String? ?? '';
         message = videoCommentText.isNotEmpty 
@@ -117,18 +117,18 @@ class _NotificationCardState extends State<NotificationCard> {
         break;
       case 'video_comment_reaction':
         icon = Icons.emoji_emotions;
-        iconColor = Colors.pink;
+        iconColor = Theme.of(context).colorScheme.primary;
         final reactionType = widget.notificationData['reactionType'] as String?;
         message = 'reacted ${_getReactionEmoji(reactionType)} to your comment on a video';
         break;
       case 'video_tag':
         icon = Icons.local_offer;
-        iconColor = Colors.orange;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         message = 'tagged you in a video';
         break;
       case 'club_invite':
         icon = Icons.group_add;
-        iconColor = Colors.purple;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         final clubName = widget.notificationData['content'] != null 
             ? (widget.notificationData['content'] as String).split('invited you to join ').last.replaceAll('.', '')
             : 'a club';
@@ -136,7 +136,7 @@ class _NotificationCardState extends State<NotificationCard> {
         break;
       case 'club_request_approved':
         icon = Icons.check_circle;
-        iconColor = Colors.green;
+        iconColor = Theme.of(context).colorScheme.secondary;
         final clubName = widget.notificationData['content'] != null 
             ? (widget.notificationData['content'] as String).split('request to join ').last.replaceAll('.', '')
             : 'a club';
@@ -145,14 +145,14 @@ class _NotificationCardState extends State<NotificationCard> {
       case 'moderation_action':
       case 'report_update':
         icon = Icons.shield;
-        iconColor = Colors.red;
+        iconColor = Theme.of(context).colorScheme.error;
         // For moderation actions, use the message directly without sender name prefix
         message = widget.notificationData['message'] as String? ??
             'A moderation action has been taken on your account';
         break;
       default:
         icon = Icons.notifications;
-        iconColor = Colors.grey;
+        iconColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
         message = 'sent you a notification';
     }
 
@@ -166,10 +166,13 @@ class _NotificationCardState extends State<NotificationCard> {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.error,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Icon(
+          Icons.delete,
+          color: Theme.of(context).colorScheme.onError,
+        ),
       ),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
@@ -215,11 +218,14 @@ class _NotificationCardState extends State<NotificationCard> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: isRead ? Colors.white : Colors.blue.shade50,
+                color: isRead
+                    ? Theme.of(context).colorScheme.surface
+                    : Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color:
-                      _isHovered ? Colors.blue.shade200 : Colors.grey.shade200,
+                  color: _isHovered
+                      ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
+                      : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
                   width: _isHovered ? 1.5 : 1,
                 ),
               ),
@@ -232,8 +238,8 @@ class _NotificationCardState extends State<NotificationCard> {
                         radius: 28,
                         backgroundColor: type == 'moderation_action' ||
                                 type == 'report_update'
-                            ? Colors.red.shade100
-                            : Colors.grey.shade300,
+                            ? Theme.of(context).colorScheme.errorContainer
+                            : Theme.of(context).colorScheme.surfaceContainerHighest,
                         backgroundImage: (type != 'moderation_action' &&
                                     type != 'report_update') &&
                                 senderAvatar != null
@@ -244,15 +250,15 @@ class _NotificationCardState extends State<NotificationCard> {
                             ? Icon(
                                 Icons.shield,
                                 size: 32,
-                                color: Colors.red.shade700,
+                                color: Theme.of(context).colorScheme.onErrorContainer,
                               )
                             : (senderAvatar == null
                                 ? Text(
                                     senderName[0].toUpperCase(),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                                   )
                                 : null),
@@ -265,7 +271,10 @@ class _NotificationCardState extends State<NotificationCard> {
                           decoration: BoxDecoration(
                             color: iconColor,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.surface,
+                              width: 2,
+                            ),
                           ),
                           child: type == 'reaction'
                               ? Text(
@@ -275,7 +284,11 @@ class _NotificationCardState extends State<NotificationCard> {
                                   ),
                                   style: const TextStyle(fontSize: 14),
                                 )
-                              : Icon(icon, size: 14, color: Colors.white),
+                              : Icon(
+                                  icon,
+                                  size: 14,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
                         ),
                       ),
                     ],
@@ -291,7 +304,7 @@ class _NotificationCardState extends State<NotificationCard> {
                             TextSpan(
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey.shade800,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                               children: type == 'moderation_action' ||
                                       type == 'report_update'
@@ -324,7 +337,7 @@ class _NotificationCardState extends State<NotificationCard> {
                               : 'Just now',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                         // Show action buttons for club invites - below the message for mobile
@@ -344,8 +357,8 @@ class _NotificationCardState extends State<NotificationCard> {
                                   icon: const Icon(Icons.check, size: 16),
                                   label: const Text('Accept', style: TextStyle(fontSize: 12)),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Colors.white,
+                                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                                  foregroundColor: Theme.of(context).colorScheme.onSecondary,
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                     minimumSize: const Size(0, 32),
                                   ),
@@ -358,7 +371,7 @@ class _NotificationCardState extends State<NotificationCard> {
                                   icon: const Icon(Icons.close, size: 16),
                                   label: const Text('Decline', style: TextStyle(fontSize: 12)),
                                   style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.grey.shade700,
+                                    foregroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                     minimumSize: const Size(0, 32),
                                   ),
@@ -377,8 +390,11 @@ class _NotificationCardState extends State<NotificationCard> {
                       MouseRegion(
                         cursor: SystemMouseCursors.click,
                         child: IconButton(
-                          icon: Icon(Icons.close,
-                              size: 20, color: Colors.grey.shade600),
+                          icon: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                          ),
                           onPressed: widget.onDismiss,
                           tooltip: 'Dismiss',
                           padding: EdgeInsets.zero,
@@ -393,8 +409,8 @@ class _NotificationCardState extends State<NotificationCard> {
                         width: 8,
                         height: 8,
                         margin: const EdgeInsets.only(top: 8),
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -409,21 +425,22 @@ class _NotificationCardState extends State<NotificationCard> {
   }
 
   Color _getReactionColor(String? reactionType) {
+    final theme = Theme.of(context);
     switch (reactionType) {
       case 'like':
-        return Colors.blue;
+        return theme.colorScheme.primary;
       case 'celebrate':
-        return Colors.purple;
+        return theme.colorScheme.tertiary;
       case 'insightful':
-        return Colors.amber;
+        return theme.colorScheme.tertiary;
       case 'funny':
-        return Colors.orange;
+        return theme.colorScheme.tertiary;
       case 'mindblown':
-        return Colors.deepPurple;
+        return theme.colorScheme.tertiary;
       case 'support':
-        return Colors.green;
+        return theme.colorScheme.secondary;
       default:
-        return Colors.grey;
+        return theme.colorScheme.onSurface.withValues(alpha: 0.6);
     }
   }
 

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'api_service.dart';
 import 'iap_service.dart';
@@ -17,6 +19,16 @@ class PaymentService {
   // Initialize IAP service (singleton)
   static final IAPService _iapService = IAPService();
   static bool _initialized = false;
+  
+  // Cache for subscription status to reduce API calls
+  static Map<String, dynamic>? _cachedStatus;
+  static DateTime? _statusCacheTime;
+  static const Duration _statusCacheDuration = Duration(minutes: 2); // Cache for 2 minutes
+  
+  // Cache for feature access to reduce redundant checks
+  static final Map<String, Map<String, dynamic>> _featureAccessCache = {};
+  static final Map<String, DateTime> _featureAccessCacheTime = {};
+  static const Duration _featureAccessCacheDuration = Duration(minutes: 1); // Cache for 1 minute
 
   /// Initialize the payment service
   /// Safe to call on all platforms (iOS, Android, Web)
@@ -119,16 +131,64 @@ class PaymentService {
   }
 
   /// Restore previous purchases (REQUIRED by Apple)
+  /// This will restore purchases from the store and verify them with the backend
   static Future<Map<String, dynamic>> restorePurchases() async {
     try {
       await initialize();
-      await _iapService.restorePurchases();
 
-      return {
-        'success': true,
-        'message': 'Purchases restored successfully',
-      };
+      if (!_iapService.isAvailable) {
+        return {
+          'success': false,
+          'message': 'In-App Purchase not available on this device',
+        };
+      }
+
+      debugPrint('🔄 Starting restore purchases process...');
+
+      // Restore purchases - this will trigger purchase updates through the stream
+      final restored = await _iapService.restorePurchases();
+
+      if (restored) {
+        // Clear cache to force fresh status check after restore
+        clearStatusCache();
+        
+        // Wait briefly for backend verification to complete (reduced delay for performance)
+        await Future.delayed(const Duration(milliseconds: 1500));
+
+        // Check backend status to confirm purchases were restored (with timeout, force refresh)
+        final status = await getSubscriptionStatus(forceRefresh: true).timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => <String, dynamic>{
+            'success': false,
+            'message': 'Status check timed out',
+          },
+        );
+        
+        if (status['success'] == true) {
+          final data = status['data'];
+          final hasPremium = data['isPremium'] ?? false;
+          
+          return {
+            'success': true,
+            'message': hasPremium 
+                ? 'Purchases restored and verified successfully' 
+                : 'Restore completed. No active purchases found.',
+            'hasPremium': hasPremium,
+          };
+        } else {
+          return {
+            'success': true,
+            'message': 'Purchases restored. Verification may take a moment.',
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': 'No previous purchases found to restore',
+        };
+      }
     } catch (e) {
+      debugPrint('❌ Error restoring purchases: $e');
       return {
         'success': false,
         'message': 'Error restoring purchases: ${e.toString()}',
@@ -165,8 +225,18 @@ class PaymentService {
   }
 
   /// Get subscription status from backend
-  static Future<Map<String, dynamic>> getSubscriptionStatus() async {
+  /// Performance: Uses caching to reduce API calls
+  static Future<Map<String, dynamic>> getSubscriptionStatus({bool forceRefresh = false}) async {
     try {
+      // Return cached status if still valid and not forcing refresh
+      if (!forceRefresh && 
+          _cachedStatus != null && 
+          _statusCacheTime != null &&
+          DateTime.now().difference(_statusCacheTime!) < _statusCacheDuration) {
+        debugPrint('📦 Using cached subscription status');
+        return _cachedStatus!;
+      }
+
       final token = await ApiService.getAccessToken();
 
       if (token == null) {
@@ -178,15 +248,26 @@ class PaymentService {
         headers: {
           'Authorization': 'Bearer $token',
         },
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException('Subscription status check timed out', const Duration(seconds: 10));
+        },
       );
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 && data['success'] == true) {
-        return {
+        final result = {
           'success': true,
           'data': data['data'],
         };
+        
+        // Cache the result
+        _cachedStatus = result;
+        _statusCacheTime = DateTime.now();
+        
+        return result;
       } else {
         return {
           'success': false,
@@ -194,29 +275,56 @@ class PaymentService {
         };
       }
     } catch (e) {
+      // Return cached status on error if available
+      if (_cachedStatus != null) {
+        debugPrint('⚠️ Error getting subscription status, using cached: $e');
+        return _cachedStatus!;
+      }
+      
       return {
         'success': false,
         'message': 'Error: ${e.toString()}',
       };
     }
   }
+  
+  /// Clear subscription status cache (call after purchase/restore)
+  static void clearStatusCache() {
+    _cachedStatus = null;
+    _statusCacheTime = null;
+    _featureAccessCache.clear();
+    _featureAccessCacheTime.clear();
+  }
 
   /// Check feature access (combines local IAP check with backend verification)
-  static Future<Map<String, dynamic>> checkFeatureAccess(String feature) async {
+  /// Performance: Uses caching and local-first approach
+  static Future<Map<String, dynamic>> checkFeatureAccess(String feature, {bool forceRefresh = false}) async {
     try {
-      // First check local IAP status (fast)
+      // First check local IAP status (fast, no network)
       final localAccess = await hasFeatureAccess(feature);
+
+      // Check cache first (unless forcing refresh)
+      if (!forceRefresh && 
+          _featureAccessCache.containsKey(feature) &&
+          _featureAccessCacheTime.containsKey(feature) &&
+          DateTime.now().difference(_featureAccessCacheTime[feature]!) < _featureAccessCacheDuration) {
+        debugPrint('📦 Using cached feature access for: $feature');
+        return _featureAccessCache[feature]!;
+      }
 
       // Then verify with backend (slower but authoritative)
       final token = await ApiService.getAccessToken();
 
       if (token == null) {
         // If not authenticated, just return local status
-        return {
+        final result = {
           'success': true,
           'hasAccess': localAccess,
           'isPremium': localAccess,
         };
+        _featureAccessCache[feature] = result;
+        _featureAccessCacheTime[feature] = DateTime.now();
+        return result;
       }
 
       final response = await http.get(
@@ -224,34 +332,56 @@ class PaymentService {
         headers: {
           'Authorization': 'Bearer $token',
         },
+      ).timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          throw TimeoutException('Feature access check timed out', const Duration(seconds: 8));
+        },
       );
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 && data['success'] == true) {
-        return {
+        final result = {
           'success': true,
           'hasAccess': data['data']['hasAccess'] ?? localAccess,
           'isPremium': data['data']['isPremium'] ?? localAccess,
           'expiresAt': data['data']['expiresAt'],
         };
+        
+        // Cache the result
+        _featureAccessCache[feature] = result;
+        _featureAccessCacheTime[feature] = DateTime.now();
+        
+        return result;
       } else {
         // Fallback to local status if backend check fails
-        return {
+        final result = {
           'success': true,
           'hasAccess': localAccess,
           'isPremium': localAccess,
         };
+        _featureAccessCache[feature] = result;
+        _featureAccessCacheTime[feature] = DateTime.now();
+        return result;
       }
     } catch (e) {
-      // On error, fallback to local IAP check
+      // On error, fallback to local IAP check or cached value
+      if (_featureAccessCache.containsKey(feature)) {
+        debugPrint('⚠️ Error checking feature access, using cached: $e');
+        return _featureAccessCache[feature]!;
+      }
+      
       final localAccess = await hasFeatureAccess(feature);
-      return {
+      final result = {
         'success': true,
         'hasAccess': localAccess,
         'isPremium': localAccess,
         'message': 'Using local verification',
       };
+      _featureAccessCache[feature] = result;
+      _featureAccessCacheTime[feature] = DateTime.now();
+      return result;
     }
   }
 

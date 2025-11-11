@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../services/api_service.dart';
 import '../services/messaging_service.dart';
 import '../services/socket_service.dart';
+import '../services/secure_storage_service.dart';
 import '../utils/time_utils.dart';
 import '../utils/url_utils.dart';
 import '../widgets/post_card.dart' as post_card;
@@ -37,6 +38,7 @@ class _UserProfilePageState extends State<UserProfilePage>
   int _currentPage = 1;
   bool _hasMorePosts = true;
   bool _expandedBio = false;
+  bool _isAdmin = false;
 
   // Tab controller for content filtering
   late TabController _tabController;
@@ -66,6 +68,7 @@ class _UserProfilePageState extends State<UserProfilePage>
       });
     });
     _loadUserProfile();
+    _checkAdminStatus();
     // Don't load posts immediately - wait for profile to load first
     // Posts will be loaded after profile loads or after following
     _setupSocketListener();
@@ -152,26 +155,26 @@ class _UserProfilePageState extends State<UserProfilePage>
           debugPrint('🚫 User block event received');
 
           if (mounted) {
+            final scaffoldContext = context;
             // Navigate back since the profile is no longer accessible
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('This profile is no longer accessible'),
-                backgroundColor: Colors.orange,
-                duration: Duration(seconds: 2),
+            ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+              SnackBar(
+                content: const Text('This profile is no longer accessible'),
+                backgroundColor: Theme.of(scaffoldContext).colorScheme.errorContainer,
+                duration: const Duration(seconds: 2),
               ),
             );
 
             // Navigate back after a short delay - pop until we're back to home screen
             Future.delayed(const Duration(milliseconds: 300), () {
-              if (mounted) {
-                int popCount = 0;
-                Navigator.of(context).popUntil((route) {
-                  popCount++;
-                  if (popCount > 10) return true; // Safety limit
-                  return route
-                      .isFirst; // Pop until we reach the first route (home)
-                });
-              }
+              if (!mounted) return;
+              int popCount = 0;
+              Navigator.of(context).popUntil((route) {
+                popCount++;
+                if (popCount > 10) return true; // Safety limit
+                return route
+                    .isFirst; // Pop until we reach the first route (home)
+              });
             });
           }
         }
@@ -188,11 +191,12 @@ class _UserProfilePageState extends State<UserProfilePage>
           debugPrint('✅ User unblock event received');
 
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('User has been unblocked'),
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
+            final scaffoldContext = context;
+            ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+              SnackBar(
+                content: const Text('User has been unblocked'),
+                backgroundColor: Theme.of(scaffoldContext).colorScheme.primaryContainer,
+                duration: const Duration(seconds: 2),
               ),
             );
 
@@ -399,25 +403,23 @@ class _UserProfilePageState extends State<UserProfilePage>
         _loadUserPosts();
       } else {
         setState(() => _isLoading = false);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['message'] ?? 'Failed to load user profile'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      setState(() => _isLoading = false);
-      if (mounted) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            content: Text(result['message'] ?? 'Failed to load user profile'),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
     }
   }
 
@@ -502,42 +504,39 @@ class _UserProfilePageState extends State<UserProfilePage>
           _loadUserPosts();
         }
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                isCurrentlyFollowing
-                    ? 'Unfollowed ${_user!['name']}'
-                    : 'Following ${_user!['name']}',
-              ),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        }
-      } else {
-        setState(() => _isFollowLoading = false);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                result['message'] ?? 'Failed to update follow status',
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      setState(() => _isFollowLoading = false);
-      if (mounted) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            content: Text(
+              isCurrentlyFollowing
+                  ? 'Unfollowed ${_user!['name']}'
+                  : 'Following ${_user!['name']}',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else {
+        setState(() => _isFollowLoading = false);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result['message'] ?? 'Failed to update follow status',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
+    } catch (e) {
+      setState(() => _isFollowLoading = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
     }
   }
 
@@ -559,37 +558,34 @@ class _UserProfilePageState extends State<UserProfilePage>
         final conversationId = conversation['_id'];
 
         // Navigate to chat page
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ChatPage(conversationId: conversationId, otherUser: _user!),
-            ),
-          );
-        }
+        if (!mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ChatPage(conversationId: conversationId, otherUser: _user!),
+          ),
+        );
       } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                result['message'] ?? 'Failed to start conversation',
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      setState(() => _isCreatingConversation = false);
-      if (mounted) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            content: Text(
+              result['message'] ?? 'Failed to start conversation',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
+    } catch (e) {
+      setState(() => _isCreatingConversation = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
     }
   }
 
@@ -645,8 +641,33 @@ class _UserProfilePageState extends State<UserProfilePage>
     );
   }
 
+  // Check if current user is admin
+  Future<void> _checkAdminStatus() async {
+    try {
+      final isAdmin = await ApiService.checkIsAdmin();
+      if (mounted) {
+        setState(() {
+          _isAdmin = isAdmin;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error checking admin status: $e');
+      if (mounted) {
+        setState(() {
+          _isAdmin = false;
+        });
+      }
+    }
+  }
+
   // Show more options menu
-  void _showMoreOptions() {
+  void _showMoreOptions() async {
+    final currentUserId = await SecureStorageService().getUserId();
+    final isOwnProfile = _user?['_id'] != null && 
+        _user!['_id'] == currentUserId;
+    
+    if (!mounted) return;
+    
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -669,28 +690,140 @@ class _UserProfilePageState extends State<UserProfilePage>
                 _copyProfileLink();
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.block, color: Colors.red),
-              title: const Text(
-                'Block User',
-                style: TextStyle(color: Colors.red),
+            if (!isOwnProfile) ...[
+              ListTile(
+                leading: Icon(
+                  Icons.block,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  'Block User',
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _blockUser();
+                },
               ),
-              onTap: () {
-                Navigator.pop(context);
-                _blockUser();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.report, color: Colors.red),
-              title: const Text(
-                'Report User',
-                style: TextStyle(color: Colors.red),
+              ListTile(
+                leading: Icon(
+                  Icons.report,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  'Report User',
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _reportUser();
+                },
               ),
-              onTap: () {
-                Navigator.pop(context);
-                _reportUser();
-              },
-            ),
+            ],
+            // Admin moderation options
+            if (_isAdmin && !isOwnProfile) ...[
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.admin_panel_settings,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+                title: Text(
+                  'Admin Actions',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.tertiary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                enabled: false,
+              ),
+              if (_user?['isSuspended'] == true)
+                ListTile(
+                  leading: Icon(
+                    Icons.check_circle,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  title: const Text('Remove Suspension'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _unsuspendUser();
+                  },
+                )
+              else
+                ListTile(
+                  leading: Icon(
+                    Icons.pause_circle,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  title: const Text('Suspend User'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _suspendUser();
+                  },
+                ),
+              if (_user?['isBanned'] == true)
+                ListTile(
+                  leading: Icon(
+                    Icons.check_circle,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  title: const Text('Remove Ban'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _unbanUser();
+                  },
+                )
+              else
+                ListTile(
+                  leading: Icon(
+                    Icons.gavel,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  title: const Text('Ban User'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _banUser();
+                  },
+                ),
+              if (_user?['isMuted'] == true)
+                ListTile(
+                  leading: Icon(
+                    Icons.volume_up,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  title: const Text('Unmute User'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _unmuteUser();
+                  },
+                )
+              else
+                ListTile(
+                  leading: Icon(
+                    Icons.volume_off,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  title: const Text('Mute User'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _muteUser();
+                  },
+                ),
+              ListTile(
+                leading: Icon(
+                  Icons.delete_forever,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  'Delete Account',
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteUser();
+                },
+              ),
+            ],
           ],
         ),
       ),
@@ -738,7 +871,9 @@ class _UserProfilePageState extends State<UserProfilePage>
               Navigator.pop(context);
               await _handleBlockUser();
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
             child: const Text('Block'),
           ),
         ],
@@ -751,51 +886,47 @@ class _UserProfilePageState extends State<UserProfilePage>
       final result = await ApiService.blockUser(widget.userId);
 
       if (result['success'] == true) {
-        if (mounted) {
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${_user!['name']} has been blocked'),
-              backgroundColor: Colors.orange,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-
-          // Navigate back to home - pop until we reach the first route (HomePage)
-          // Use a small delay to ensure the snackbar is visible
-          await Future.delayed(const Duration(milliseconds: 100));
-
-          if (mounted) {
-            // Try to pop until we reach a route that can't be popped (the home screen)
-            int popCount = 0;
-            Navigator.of(context).popUntil((route) {
-              popCount++;
-              // If we've popped more than 10 times, something is wrong, stop
-              if (popCount > 10) return true;
-              // Stop at the first route or when we can't pop anymore
-              return route.isFirst;
-            });
-          }
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['message'] ?? 'Failed to block user'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
+        if (!mounted) return;
+        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            content: Text('${_user!['name']} has been blocked'),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate back to home - pop until we reach the first route (HomePage)
+        // Use a small delay to ensure the snackbar is visible
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        if (!mounted) return;
+        // Try to pop until we reach a route that can't be popped (the home screen)
+        int popCount = 0;
+        Navigator.of(context).popUntil((route) {
+          popCount++;
+          // If we've popped more than 10 times, something is wrong, stop
+          if (popCount > 10) return true;
+          // Stop at the first route or when we can't pop anymore
+          return route.isFirst;
+        });
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to block user'),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
     }
   }
 
@@ -805,6 +936,531 @@ class _UserProfilePageState extends State<UserProfilePage>
       builder: (context) => _ReportUserDialog(
         userId: widget.userId,
         userName: _user!['name'] ?? 'User',
+      ),
+    );
+  }
+
+  // Admin moderation actions
+  void _suspendUser() {
+    final reasonController = TextEditingController();
+    String selectedDuration = '7';
+    final scaffoldContext = context;
+
+    showDialog(
+      context: scaffoldContext,
+      builder: (context) => AlertDialog(
+        title: Text('Suspend ${_user!['name']}'),
+        content: StatefulBuilder(
+          builder: (context, setState) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('This user will not be able to like, comment, create posts/videos, or interact until unsuspended.'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reasonController,
+                decoration: const InputDecoration(
+                  labelText: 'Reason for suspension',
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter reason...',
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                initialValue: selectedDuration,
+                decoration: const InputDecoration(
+                  labelText: 'Duration (days)',
+                  border: OutlineInputBorder(),
+                ),
+                items: const [
+                  DropdownMenuItem(value: '1', child: Text('1 day')),
+                  DropdownMenuItem(value: '3', child: Text('3 days')),
+                  DropdownMenuItem(value: '7', child: Text('7 days')),
+                  DropdownMenuItem(value: '14', child: Text('14 days')),
+                  DropdownMenuItem(value: '30', child: Text('30 days')),
+                  DropdownMenuItem(value: 'permanent', child: Text('Permanent')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    selectedDuration = value!;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              foregroundColor: Theme.of(context).colorScheme.onTertiary,
+            ),
+            onPressed: () async {
+              if (reasonController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Please enter a reason'),
+                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                  ),
+                );
+                return;
+              }
+
+              Navigator.pop(context);
+              final duration = selectedDuration == 'permanent' ? null : int.parse(selectedDuration);
+              final result = await ApiService.suspendUser(
+                widget.userId,
+                reason: reasonController.text.trim(),
+                duration: duration,
+              );
+
+              if (!mounted) return;
+              if (result['success'] == true) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('${_user!['name']} has been suspended'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+                _loadUserProfile();
+              } else {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed: ${result['message']}'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+              }
+            },
+            child: const Text('Suspend'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _unsuspendUser() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Suspension'),
+        content: Text('Are you sure you want to remove the suspension for ${_user!['name']}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              foregroundColor: Theme.of(context).colorScheme.onSecondary,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Remove Suspension'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final result = await ApiService.unsuspendUser(widget.userId);
+    if (!mounted) return;
+    if (result['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${_user!['name']} has been unsuspended'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        ),
+      );
+      _loadUserProfile();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed: ${result['message']}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  void _banUser() {
+    final reasonController = TextEditingController();
+    final scaffoldContext = context;
+
+    showDialog(
+      context: scaffoldContext,
+      builder: (context) => AlertDialog(
+        title: Text('Ban ${_user!['name']}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('This user will be permanently banned and will not be able to login until unbanned.'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: reasonController,
+              decoration: const InputDecoration(
+                labelText: 'Reason for ban',
+                border: OutlineInputBorder(),
+                hintText: 'Enter reason...',
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            onPressed: () async {
+              if (reasonController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Please enter a reason'),
+                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                  ),
+                );
+                return;
+              }
+
+              Navigator.pop(context);
+              final result = await ApiService.banUser(
+                widget.userId,
+                reason: reasonController.text.trim(),
+              );
+
+              if (!mounted) return;
+              if (result['success'] == true) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('${_user!['name']} has been banned'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+                _loadUserProfile();
+              } else {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed: ${result['message']}'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+              }
+            },
+            child: const Text('Ban User'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _unbanUser() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Ban'),
+        content: Text('Are you sure you want to remove the ban for ${_user!['name']}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              foregroundColor: Theme.of(context).colorScheme.onSecondary,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Remove Ban'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final result = await ApiService.unbanUser(widget.userId);
+    if (!mounted) return;
+    if (result['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${_user!['name']} has been unbanned'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        ),
+      );
+      _loadUserProfile();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed: ${result['message']}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  void _muteUser() {
+    final reasonController = TextEditingController();
+    String selectedDuration = '7';
+    final scaffoldContext = context;
+
+    showDialog(
+      context: scaffoldContext,
+      builder: (context) => AlertDialog(
+        title: Text('Mute ${_user!['name']}'),
+        content: StatefulBuilder(
+          builder: (context, setState) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('This user will not be able to create posts or comments until unmuted.'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reasonController,
+                decoration: const InputDecoration(
+                  labelText: 'Reason for mute',
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter reason...',
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                initialValue: selectedDuration,
+                decoration: const InputDecoration(
+                  labelText: 'Duration (days)',
+                  border: OutlineInputBorder(),
+                ),
+                items: const [
+                  DropdownMenuItem(value: '1', child: Text('1 day')),
+                  DropdownMenuItem(value: '3', child: Text('3 days')),
+                  DropdownMenuItem(value: '7', child: Text('7 days')),
+                  DropdownMenuItem(value: '14', child: Text('14 days')),
+                  DropdownMenuItem(value: '30', child: Text('30 days')),
+                  DropdownMenuItem(value: 'permanent', child: Text('Permanent')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    selectedDuration = value!;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              foregroundColor: Theme.of(context).colorScheme.onTertiary,
+            ),
+            onPressed: () async {
+              if (reasonController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Please enter a reason'),
+                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                  ),
+                );
+                return;
+              }
+
+              Navigator.pop(context);
+              final duration = selectedDuration == 'permanent' ? null : int.parse(selectedDuration);
+              final result = await ApiService.muteUser(
+                widget.userId,
+                reason: reasonController.text.trim(),
+                duration: duration,
+              );
+
+              if (!mounted) return;
+              if (result['success'] == true) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('${_user!['name']} has been muted'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+                _loadUserProfile();
+              } else {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed: ${result['message']}'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+              }
+            },
+            child: const Text('Mute'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _unmuteUser() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Unmute User'),
+        content: Text('Are you sure you want to unmute ${_user!['name']}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              foregroundColor: Theme.of(context).colorScheme.onSecondary,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Unmute'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final result = await ApiService.unmuteUser(widget.userId);
+    if (!mounted) return;
+    if (result['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${_user!['name']} has been unmuted'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        ),
+      );
+      _loadUserProfile();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed: ${result['message']}'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  void _deleteUser() {
+    final reasonController = TextEditingController();
+    final scaffoldContext = context;
+
+    showDialog(
+      context: scaffoldContext,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(
+              Icons.warning,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(width: 8),
+            Text('Delete ${_user!['name']}\'s Account'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'WARNING: This action is PERMANENT and cannot be undone!',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'The user will receive a notification and be immediately logged out. All their data will be deleted.',
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: reasonController,
+              decoration: const InputDecoration(
+                labelText: 'Reason for deletion (required)',
+                border: OutlineInputBorder(),
+                hintText: 'Enter reason for account deletion...',
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            onPressed: () async {
+              if (reasonController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Please enter a reason for deletion'),
+                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                  ),
+                );
+                return;
+              }
+
+              Navigator.pop(context);
+              final result = await ApiService.deleteUser(
+                widget.userId,
+                reason: reasonController.text.trim(),
+              );
+
+              if (!mounted) return;
+              if (result['success'] == true) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('${_user!['name']}\'s account has been deleted'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                    duration: const Duration(seconds: 5),
+                  ),
+                );
+                if (!mounted) return;
+                Navigator.of(this.context).pop();
+              } else {
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed: ${result['message']}'),
+                    backgroundColor: Theme.of(this.context).colorScheme.errorContainer,
+                  ),
+                );
+              }
+            },
+            child: const Text('DELETE ACCOUNT'),
+          ),
+        ],
       ),
     );
   }
@@ -831,8 +1487,10 @@ class _UserProfilePageState extends State<UserProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
+    final isSmallScreen = screenWidth < 360;
 
     if (_isLoading) {
       return Scaffold(
@@ -851,17 +1509,19 @@ class _UserProfilePageState extends State<UserProfilePage>
               Icon(
                 Icons.person_outline,
                 size: 64,
-                color: Colors.grey.shade400,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'User not found',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: theme.textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-              const Text(
+              Text(
                 'This user may have been deleted or blocked',
-                style: TextStyle(color: Colors.grey),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
             ],
           ),
@@ -876,12 +1536,14 @@ class _UserProfilePageState extends State<UserProfilePage>
           // Send Message button in app bar
           IconButton(
             icon: _isCreatingConversation
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        theme.colorScheme.onPrimary,
+                      ),
                     ),
                   )
                 : const Icon(Icons.message),
@@ -923,7 +1585,9 @@ class _UserProfilePageState extends State<UserProfilePage>
 
               // Quick Action Buttons (Poke, Share, Message) - Enhanced
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSmallScreen ? 12 : screenWidth * 0.04,
+                ),
                 child: Row(
                   children: [
                     // Poke Button
@@ -932,9 +1596,9 @@ class _UserProfilePageState extends State<UserProfilePage>
                         icon: '👋',
                         label: 'Poke',
                         onPressed: _handlePoke,
-                        backgroundColor: Colors.pink.shade50,
-                        textColor: Colors.pink.shade700,
-                        borderColor: Colors.pink.shade300,
+                        backgroundColor: theme.colorScheme.tertiaryContainer,
+                        textColor: theme.colorScheme.onTertiaryContainer,
+                        borderColor: theme.colorScheme.tertiary.withValues(alpha: 0.3),
                       ),
                     ),
                     SizedBox(width: screenWidth * 0.025),
@@ -944,9 +1608,9 @@ class _UserProfilePageState extends State<UserProfilePage>
                         icon: Icons.share_outlined,
                         label: 'Share',
                         onPressed: _shareProfile,
-                        backgroundColor: Colors.purple.shade50,
-                        textColor: Colors.purple.shade700,
-                        borderColor: Colors.purple.shade300,
+                        backgroundColor: theme.colorScheme.secondaryContainer,
+                        textColor: theme.colorScheme.onSecondaryContainer,
+                        borderColor: theme.colorScheme.secondary.withValues(alpha: 0.3),
                       ),
                     ),
                     SizedBox(width: screenWidth * 0.025),
@@ -956,9 +1620,9 @@ class _UserProfilePageState extends State<UserProfilePage>
                         icon: Icons.more_horiz,
                         label: 'More',
                         onPressed: _showMoreOptions,
-                        backgroundColor: Colors.orange.shade50,
-                        textColor: Colors.orange.shade700,
-                        borderColor: Colors.orange.shade300,
+                        backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                        textColor: theme.colorScheme.onSurface,
+                        borderColor: theme.colorScheme.outline.withValues(alpha: 0.2),
                       ),
                     ),
                   ],
@@ -969,39 +1633,47 @@ class _UserProfilePageState extends State<UserProfilePage>
 
               // Tab Bar for filtering posts - Enhanced styling
               Container(
-                margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+                margin: EdgeInsets.symmetric(
+                  horizontal: isSmallScreen ? 12 : screenWidth * 0.04,
+                ),
                 padding: EdgeInsets.all(screenWidth * 0.01),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TabBar(
                   controller: _tabController,
                   indicator: BoxDecoration(
-                    color: Colors.blue,
+                    color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blue.withValues(alpha: 0.3),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.grey.shade600,
-                  labelStyle: const TextStyle(
-                    fontSize: 14,
+                  labelColor: theme.colorScheme.onPrimary,
+                  unselectedLabelColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  labelStyle: TextStyle(
+                    fontSize: isSmallScreen ? 12 : 14,
                     fontWeight: FontWeight.w600,
                   ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontSize: 14,
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: isSmallScreen ? 12 : 14,
                     fontWeight: FontWeight.w500,
                   ),
                   tabs: const [
                     Tab(text: 'All Posts'),
-                    Tab(icon: Icon(Icons.image), text: 'Photos'),
-                    Tab(icon: Icon(Icons.ondemand_video), text: 'Videos'),
+                    Tab(
+                      icon: Icon(Icons.image, size: 20),
+                      text: 'Photos',
+                    ),
+                    Tab(
+                      icon: Icon(Icons.ondemand_video, size: 20),
+                      text: 'Videos',
+                    ),
                   ],
                 ),
               ),
@@ -1022,7 +1694,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                           width: screenWidth * 0.225,
                           height: screenWidth * 0.225,
                           decoration: BoxDecoration(
-                            color: Colors.blue.withValues(alpha: 0.1),
+                            color: theme.colorScheme.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Icon(
@@ -1032,7 +1704,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                                     ? Icons.image_not_supported_outlined
                                     : Icons.video_library_outlined,
                             size: screenWidth * 0.12,
-                            color: Colors.blue.shade300,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
                         SizedBox(height: screenWidth * 0.05),
@@ -1042,18 +1714,17 @@ class _UserProfilePageState extends State<UserProfilePage>
                               : _selectedTabIndex == 1
                                   ? 'No photos yet'
                                   : 'No videos yet',
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.048,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontSize: isSmallScreen ? 16 : screenWidth * 0.048,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade800,
                           ),
                         ),
                         SizedBox(height: screenWidth * 0.025),
                         Text(
                           '${_user!['name']} hasn\'t shared anything in this category',
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.035,
-                            color: Colors.grey.shade600,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontSize: isSmallScreen ? 12 : screenWidth * 0.035,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                             height: 1.5,
                           ),
                           textAlign: TextAlign.center,
@@ -1064,30 +1735,38 @@ class _UserProfilePageState extends State<UserProfilePage>
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.blue.shade400,
-                                  Colors.blue.shade600,
+                                  theme.colorScheme.primary,
+                                  theme.colorScheme.primaryContainer,
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: ElevatedButton.icon(
                               onPressed: _handleFollowToggle,
-                              icon: Icon(Icons.person_add,
-                                  size: screenWidth * 0.05),
+                              icon: Icon(
+                                Icons.person_add,
+                                size: isSmallScreen ? 16 : screenWidth * 0.05,
+                              ),
                               label: Text(
                                 'Follow to see more',
                                 style: TextStyle(
-                                  fontSize: screenWidth * 0.0375,
+                                  fontSize: isSmallScreen
+                                      ? 12
+                                      : screenWidth * 0.0375,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
+                                foregroundColor: theme.colorScheme.onPrimary,
                                 elevation: 0,
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.07,
-                                  vertical: screenWidth * 0.035,
+                                  horizontal: isSmallScreen
+                                      ? 16
+                                      : screenWidth * 0.07,
+                                  vertical: isSmallScreen
+                                      ? 10
+                                      : screenWidth * 0.035,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -1126,8 +1805,11 @@ class _UserProfilePageState extends State<UserProfilePage>
   }
 
   Widget _buildProfileHeader() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
+    final isSmallScreen = screenWidth < 360;
     final name = _user!['name'] ?? 'Unknown';
     final email = _user!['email'] ?? '';
     final avatar = _user!['avatar'];
@@ -1149,27 +1831,27 @@ class _UserProfilePageState extends State<UserProfilePage>
         ? name.split(' ').map((n) => n[0]).take(2).join().toUpperCase()
         : '?';
 
-    // Determine profile background gradient
+    // Determine profile background gradient - theme-aware
     final List<Color> gradientColors = [
-      Colors.blue.shade400,
-      Colors.blue.shade700,
+      theme.colorScheme.primary,
+      theme.colorScheme.primaryContainer,
     ];
 
     // Check if user is premium for special gradient
     final isPremium = _user!['isPremium'] ?? false;
     if (isPremium) {
       gradientColors.setAll(0, [
-        Colors.amber.shade300,
-        Colors.amber.shade600,
+        theme.colorScheme.tertiary,
+        theme.colorScheme.tertiaryContainer,
       ]);
     }
 
     return Container(
       padding: EdgeInsets.fromLTRB(
-        screenWidth * 0.06,
-        screenWidth * 0.06,
-        screenWidth * 0.06,
-        screenWidth * 0.07,
+        isSmallScreen ? 16 : screenWidth * 0.06,
+        isSmallScreen ? 16 : screenWidth * 0.06,
+        isSmallScreen ? 16 : screenWidth * 0.06,
+        isSmallScreen ? 20 : screenWidth * 0.07,
       ),
       decoration: BoxDecoration(
         image: avatar != null
@@ -1177,7 +1859,9 @@ class _UserProfilePageState extends State<UserProfilePage>
                 image: UrlUtils.getAvatarImageProvider(avatar),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withValues(alpha: 0.5),
+                  isDark
+                      ? theme.colorScheme.shadow.withValues(alpha: 0.6)
+                      : theme.colorScheme.shadow.withValues(alpha: 0.5),
                   BlendMode.darken,
                 ),
               )
@@ -1203,12 +1887,19 @@ class _UserProfilePageState extends State<UserProfilePage>
                   vertical: screenWidth * 0.015,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.amber.shade100.withValues(alpha: 0.9),
+                  color: theme.colorScheme.tertiaryContainer,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.amber.shade300,
+                    color: theme.colorScheme.tertiary,
                     width: 1.5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.tertiary.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1216,7 +1907,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                     Icon(
                       Icons.star,
                       size: screenWidth * 0.035,
-                      color: Colors.amber.shade700,
+                      color: theme.colorScheme.onTertiaryContainer,
                     ),
                     SizedBox(width: screenWidth * 0.015),
                     Text(
@@ -1224,7 +1915,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                       style: TextStyle(
                         fontSize: screenWidth * 0.03,
                         fontWeight: FontWeight.w600,
-                        color: Colors.amber.shade800,
+                        color: theme.colorScheme.onTertiaryContainer,
                       ),
                     ),
                   ],
@@ -1237,14 +1928,16 @@ class _UserProfilePageState extends State<UserProfilePage>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: AnimatedProfilePicture(
-                radius: screenWidth * 0.2,
+                radius: isSmallScreen
+                    ? 60
+                    : screenWidth * 0.2,
                 imageUrl: avatar != null && avatar.toString().isNotEmpty
                     ? avatar // Pass raw URL - AnimatedProfilePicture handles both local assets and network URLs
                     : null,
@@ -1278,9 +1971,11 @@ class _UserProfilePageState extends State<UserProfilePage>
                   child: Text(
                     name,
                     style: TextStyle(
-                      fontSize: screenWidth * 0.065,
+                      fontSize: isSmallScreen
+                          ? 20
+                          : screenWidth * 0.065,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: 0.5,
                     ),
                     textAlign: TextAlign.center,
@@ -1311,12 +2006,12 @@ class _UserProfilePageState extends State<UserProfilePage>
                     height: screenWidth * 0.028,
                     decoration: BoxDecoration(
                       color: isOnline
-                          ? Colors.greenAccent.shade400
-                          : Colors.grey.shade400,
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.25),
+                          color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.25),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
@@ -1327,8 +2022,10 @@ class _UserProfilePageState extends State<UserProfilePage>
                   Text(
                     presenceText,
                     style: TextStyle(
-                      fontSize: screenWidth * 0.034,
-                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: isSmallScreen
+                          ? 12
+                          : screenWidth * 0.034,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1340,8 +2037,10 @@ class _UserProfilePageState extends State<UserProfilePage>
             Text(
               email,
               style: TextStyle(
-                fontSize: screenWidth * 0.035,
-                color: Colors.white,
+                fontSize: isSmallScreen
+                    ? 12
+                    : screenWidth * 0.035,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -1356,8 +2055,10 @@ class _UserProfilePageState extends State<UserProfilePage>
                     Text(
                       displayBio,
                       style: TextStyle(
-                        fontSize: screenWidth * 0.035,
-                        color: Colors.white,
+                        fontSize: isSmallScreen
+                            ? 12
+                            : screenWidth * 0.035,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.95),
                         height: 1.4,
                       ),
                       textAlign: TextAlign.center,
@@ -1375,7 +2076,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                             _expandedBio ? 'Show less' : 'Show more',
                             style: TextStyle(
                               fontSize: screenWidth * 0.03,
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
@@ -1400,7 +2101,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                       style: TextStyle(
                         fontSize: screenWidth * 0.04,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -1418,10 +2119,10 @@ class _UserProfilePageState extends State<UserProfilePage>
                           child: Container(
                             padding: EdgeInsets.all(screenWidth * 0.02),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
+                                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -1447,10 +2148,10 @@ class _UserProfilePageState extends State<UserProfilePage>
               ),
               decoration: BoxDecoration(
                 // Slightly increase opacity for better readability
-                color: Colors.white.withValues(alpha: 0.18),
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.16),
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.16),
                   width: 1,
                 ),
               ),
@@ -1492,10 +2193,10 @@ class _UserProfilePageState extends State<UserProfilePage>
                         ? SizedBox(
                             width: screenWidth * 0.045,
                             height: screenWidth * 0.045,
-                            child: const CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                               strokeWidth: 2.5,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
+                                Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           )
@@ -1513,10 +2214,12 @@ class _UserProfilePageState extends State<UserProfilePage>
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isFollowing ? Colors.white : Colors.green.shade400,
-                      foregroundColor:
-                          isFollowing ? Colors.blue.shade600 : Colors.white,
+                      backgroundColor: isFollowing
+                          ? Theme.of(context).colorScheme.surface
+                          : Theme.of(context).colorScheme.secondary,
+                      foregroundColor: isFollowing
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSecondary,
                       padding:
                           EdgeInsets.symmetric(vertical: screenWidth * 0.03),
                       shape: RoundedRectangleBorder(
@@ -1537,10 +2240,10 @@ class _UserProfilePageState extends State<UserProfilePage>
                         ? SizedBox(
                             width: screenWidth * 0.045,
                             height: screenWidth * 0.045,
-                            child: const CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                               strokeWidth: 2.5,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
+                                Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           )
@@ -1553,8 +2256,8 @@ class _UserProfilePageState extends State<UserProfilePage>
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.blue.shade600,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      foregroundColor: Theme.of(context).colorScheme.primary,
                       padding:
                           EdgeInsets.symmetric(vertical: screenWidth * 0.03),
                       shape: RoundedRectangleBorder(
@@ -1576,14 +2279,14 @@ class _UserProfilePageState extends State<UserProfilePage>
                   Icon(
                     Icons.calendar_today,
                     size: screenWidth * 0.035,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                   ),
                   SizedBox(width: screenWidth * 0.015),
                   Text(
                     'Joined ${TimeUtils.formatMessageTimestamp(createdAt)}',
                     style: TextStyle(
                       fontSize: screenWidth * 0.03,
-                      color: Colors.white.withValues(alpha: 0.85),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -1600,7 +2303,7 @@ class _UserProfilePageState extends State<UserProfilePage>
     return Container(
       width: 1,
       height: 30,
-      color: Colors.white.withValues(alpha: 0.2),
+      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
     );
   }
 
@@ -1790,16 +2493,25 @@ class _UserProfilePageState extends State<UserProfilePage>
   }
 
   Widget _buildLoadingShimmer() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: isDark
+          ? theme.colorScheme.surfaceContainerHighest
+          : theme.colorScheme.surfaceContainerHighest,
+      highlightColor: isDark
+          ? theme.colorScheme.surface
+          : theme.colorScheme.surface,
       child: SingleChildScrollView(
         child: Column(
           children: [
             // Header shimmer
             Container(
               height: 300,
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -1807,8 +2519,8 @@ class _UserProfilePageState extends State<UserProfilePage>
                   Container(
                     width: 100,
                     height: 100,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -1818,7 +2530,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                     width: 150,
                     height: 24,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -1828,7 +2540,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                     width: 200,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -1844,7 +2556,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                             width: 50,
                             height: 20,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: theme.colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -1853,7 +2565,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                             width: 60,
                             height: 14,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: theme.colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -1871,7 +2583,7 @@ class _UserProfilePageState extends State<UserProfilePage>
               child: Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -1888,7 +2600,7 @@ class _UserProfilePageState extends State<UserProfilePage>
                 child: Container(
                   height: 200,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
@@ -1901,20 +2613,25 @@ class _UserProfilePageState extends State<UserProfilePage>
   }
 
   Widget _buildStatColumn(String label, String count, VoidCallback? onTap) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 360;
+    
     final content = Column(
       children: [
         Text(
           count,
-          style: const TextStyle(
-            fontSize: 20,
+          style: TextStyle(
+            fontSize: isSmallScreen ? 18 : 20,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(fontSize: 14, color: Colors.white70),
+          style: TextStyle(
+            fontSize: isSmallScreen ? 12 : 14,
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+          ),
         ),
       ],
     );
@@ -1995,9 +2712,9 @@ class _FollowersBottomSheetState extends State<_FollowersBottomSheet> {
 
     return Container(
       height: screenHeight * 0.7,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -2007,7 +2724,7 @@ class _FollowersBottomSheetState extends State<_FollowersBottomSheet> {
             width: screenWidth * 0.1,
             height: screenHeight * 0.005,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -2047,14 +2764,14 @@ class _FollowersBottomSheetState extends State<_FollowersBottomSheet> {
                             Icon(
                               Icons.people_outline,
                               size: screenWidth * 0.16,
-                              color: Colors.grey.shade300,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             ),
                             SizedBox(height: screenWidth * 0.04),
                             Text(
                               'No followers yet',
                               style: TextStyle(
                                 fontSize: screenWidth * 0.04,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                             ),
                           ],
@@ -2084,7 +2801,7 @@ class _FollowersBottomSheetState extends State<_FollowersBottomSheet> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         backgroundImage: userAvatar != null && userAvatar.toString().isNotEmpty
             ? UrlUtils.getAvatarImageProvider(userAvatar)
             : null,
@@ -2092,7 +2809,7 @@ class _FollowersBottomSheetState extends State<_FollowersBottomSheet> {
             ? Text(
                 userInitials,
                 style: TextStyle(
-                  color: Colors.blue.shade700,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.bold,
                 ),
               )
@@ -2184,9 +2901,9 @@ class _FollowingBottomSheetState extends State<_FollowingBottomSheet> {
 
     return Container(
       height: screenHeight * 0.7,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -2196,7 +2913,7 @@ class _FollowingBottomSheetState extends State<_FollowingBottomSheet> {
             width: screenWidth * 0.1,
             height: screenHeight * 0.005,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -2236,14 +2953,14 @@ class _FollowingBottomSheetState extends State<_FollowingBottomSheet> {
                             Icon(
                               Icons.people_outline,
                               size: screenWidth * 0.16,
-                              color: Colors.grey.shade300,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             ),
                             SizedBox(height: screenWidth * 0.04),
                             Text(
                               'Not following anyone yet',
                               style: TextStyle(
                                 fontSize: screenWidth * 0.04,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                             ),
                           ],
@@ -2273,7 +2990,7 @@ class _FollowingBottomSheetState extends State<_FollowingBottomSheet> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         backgroundImage: userAvatar != null && userAvatar.toString().isNotEmpty
             ? UrlUtils.getAvatarImageProvider(userAvatar)
             : null,
@@ -2281,7 +2998,7 @@ class _FollowingBottomSheetState extends State<_FollowingBottomSheet> {
             ? Text(
                 userInitials,
                 style: TextStyle(
-                  color: Colors.blue.shade700,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.bold,
                 ),
               )
@@ -2347,9 +3064,9 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
   Future<void> _submitReport() async {
     if (_selectedReason == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a reason for reporting'),
-          backgroundColor: Colors.orange,
+        SnackBar(
+          content: const Text('Please select a reason for reporting'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
       return;
@@ -2377,7 +3094,7 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
               result['message'] ??
                   'Report submitted successfully. Our team will review it shortly.',
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             duration: const Duration(seconds: 3),
           ),
         );
@@ -2385,7 +3102,7 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? 'Failed to submit report'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -2396,7 +3113,7 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -2408,7 +3125,7 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
     return AlertDialog(
       title: Row(
         children: [
-          const Icon(Icons.report, color: Colors.red),
+          Icon(Icons.report, color: Theme.of(context).colorScheme.error),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -2480,7 +3197,10 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
               maxLength: 500,
               decoration: InputDecoration(
                 hintText: 'Provide more information about your report...',
-                hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                hintStyle: TextStyle(
+                  fontSize: 13,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -2494,7 +3214,7 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
               'Your report will be reviewed by our team. False reports may result in account restrictions.',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -2509,16 +3229,18 @@ class _ReportUserDialogState extends State<_ReportUserDialog> {
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submitReport,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.error,
+            foregroundColor: Theme.of(context).colorScheme.onError,
           ),
           child: _isSubmitting
-              ? const SizedBox(
+              ? SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).colorScheme.onError,
+                    ),
                   ),
                 )
               : const Text('Submit Report'),

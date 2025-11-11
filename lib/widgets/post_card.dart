@@ -128,9 +128,10 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
 
     if (avatarUrl == null || avatarUrl.isEmpty) {
       // Fallback: Generate initials
+      final theme = Theme.of(context);
       return CircleAvatar(
         radius: 24,
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: theme.colorScheme.primaryContainer,
         child: Text(
           widget.userName.isNotEmpty
               ? widget.userName
@@ -141,7 +142,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                   .toUpperCase()
               : 'U',
           style: TextStyle(
-            color: Colors.blue.shade700,
+            color: theme.colorScheme.onPrimaryContainer,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -154,9 +155,10 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
       // Local asset - use Image widget with AssetImage
       final assetPath =
           avatarUrl.startsWith('/') ? avatarUrl.substring(1) : avatarUrl;
+      final theme = Theme.of(context);
       return CircleAvatar(
         radius: 24,
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: theme.colorScheme.primaryContainer,
         child: ClipOval(
           child: Image.asset(
             assetPath,
@@ -173,7 +175,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                         .toUpperCase()
                     : 'U',
                 style: TextStyle(
-                  color: Colors.blue.shade700,
+                  color: theme.colorScheme.onPrimaryContainer,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -187,9 +189,10 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
     // Check if it's a bot avatar API endpoint (e.g., '/api/user/bot-avatar/ai_assistant')
     if (isBot && UrlUtils.isBotAvatarEndpoint(avatarUrl)) {
       // Bot avatar API endpoint - use CachedNetworkImage for better SVG support
+      final theme = Theme.of(context);
       return CircleAvatar(
         radius: 24,
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: theme.colorScheme.primaryContainer,
         child: ClipOval(
           child: CachedNetworkImage(
             imageUrl: UrlUtils.getFullAvatarUrl(avatarUrl),
@@ -199,11 +202,13 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
             },
             placeholder: (context, url) {
               return Container(
-                color: Colors.blue.shade100,
-                child: const Center(
+                color: theme.colorScheme.primaryContainer,
+                child: Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.colorScheme.primary,
+                    ),
                   ),
                 ),
               );
@@ -212,7 +217,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
               debugPrint('❌ Failed to load bot avatar from: $url');
               debugPrint('   Error: $error');
               return Container(
-                color: Colors.blue.shade100,
+                color: theme.colorScheme.primaryContainer,
                 child: Text(
                   widget.userName.isNotEmpty
                       ? widget.userName
@@ -223,7 +228,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                           .toUpperCase()
                       : 'U',
                   style: TextStyle(
-                    color: Colors.blue.shade700,
+                    color: theme.colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -236,9 +241,10 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
     }
 
     // Regular user network avatar - use CircleAvatar with NetworkImage
+    final theme = Theme.of(context);
     return CircleAvatar(
       radius: 24,
-      backgroundColor: Colors.blue.shade100,
+      backgroundColor: theme.colorScheme.primaryContainer,
       backgroundImage: NetworkImage(UrlUtils.getFullAvatarUrl(avatarUrl)),
       child: null,
     );
@@ -304,7 +310,8 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
               },
               child: Card(
                 elevation: isDark ? 4 : _hoverElevation.value,
-                shadowColor: Colors.black.withValues(alpha: 0.1),
+                shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: BorderSide(
@@ -314,6 +321,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
                     gradient: isDark
                         ? null
@@ -343,24 +351,26 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                 horizontal: 10, vertical: 4),
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: Colors.orange.shade50,
+                              color: Theme.of(context).colorScheme.tertiaryContainer,
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                  color: Colors.orange.shade200, width: 1),
+                                color: Theme.of(context).colorScheme.tertiary,
+                                width: 1,
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   Icons.trending_up,
-                                  color: Colors.orange.shade700,
+                                  color: Theme.of(context).colorScheme.onTertiaryContainer,
                                   size: 14,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '🔥 Trending',
                                   style: TextStyle(
-                                    color: Colors.orange.shade900,
+                                    color: Theme.of(context).colorScheme.onTertiaryContainer,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 12,
                                   ),
@@ -376,15 +386,17 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(8),
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
+                              color: Theme.of(context).colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.blue.shade200),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                              ),
                             ),
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.repeat,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                                   size: 16,
                                 ),
                                 const SizedBox(width: 8),
@@ -396,7 +408,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                       Text(
                                         '${widget.sharedBy!['name']} shared this post',
                                         style: TextStyle(
-                                          color: Colors.blue.shade900,
+                                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                                           fontWeight: FontWeight.w600,
                                           fontSize: 13,
                                         ),
@@ -409,7 +421,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                           child: Text(
                                             widget.shareMessage!,
                                             style: TextStyle(
-                                              color: Colors.blue.shade700,
+                                              color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                                               fontSize: 12,
                                             ),
                                             maxLines: 2,
@@ -438,8 +450,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.1),
+                                          color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
                                           blurRadius: 8,
                                           offset: const Offset(0, 2),
                                         ),
@@ -529,14 +540,12 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                 style: TextStyle(
                                   fontSize: 15,
                                   height: 1.6,
-                                  color: isDark
-                                      ? Colors.green
-                                      : Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 mentionStyle: TextStyle(
                                   fontSize: 15,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 onMentionTapWithId: (userName, userId) {
@@ -581,8 +590,8 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                     ),
                                     child: Text(
                                       'Read more →',
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).colorScheme.primary,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                       ),
@@ -599,14 +608,12 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                 style: TextStyle(
                                   fontSize: 15,
                                   height: 1.6,
-                                  color: isDark
-                                      ? Colors.green
-                                      : Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                   fontWeight: FontWeight.w400,
                                 ),
                                 mentionStyle: TextStyle(
                                   fontSize: 15,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 onMentionTapWithId: (userName, userId) {
@@ -651,8 +658,8 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                     ),
                                     child: Text(
                                       'Show less ↑',
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: Theme.of(context).colorScheme.primary,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                       ),
@@ -673,9 +680,11 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
+                              color: Theme.of(context).colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.blue.shade100),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                              ),
                             ),
                             child: Wrap(
                               spacing: 8,
@@ -684,7 +693,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                 Icon(
                                   Icons.people_outline,
                                   size: 16,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -713,7 +722,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                         child: Text(
                                           '${user['name']}${isLast ? '' : ', '}',
                                           style: TextStyle(
-                                            color: Colors.blue.shade700,
+                                            color: Theme.of(context).colorScheme.primary,
                                             fontWeight: FontWeight.w600,
                                             fontSize: 13,
                                             decoration:
@@ -871,7 +880,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.blue.shade400,
+                                Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ),
@@ -967,7 +976,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.blue.shade400,
+                                Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ),
@@ -1001,12 +1010,12 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                     ),
                     if (isLast)
                       Container(
-                        color: Colors.black54,
+                        color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.7),
                         child: Center(
                           child: Text(
                             '+${images.length - 4}',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
@@ -1053,18 +1062,18 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
           _buildStatBadge(
             icon: Icons.thumb_up_outlined,
             label: '${widget.reactionsCount}',
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
           _buildStatBadge(
             icon: Icons.comment_outlined,
             label: '${widget.comments}',
-            color: Colors.green,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           if (widget.sharesCount != null)
             _buildStatBadge(
               icon: Icons.share_outlined,
               label: '${widget.sharesCount}',
-              color: Colors.purple,
+              color: Theme.of(context).colorScheme.tertiary,
             ),
         ],
       ),
@@ -1121,7 +1130,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
           // Show "Comments" header
           Text(
             'Top ${comments.length} comment${comments.length > 1 ? 's' : ''}',
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
@@ -1144,16 +1153,17 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                     children: [
                       Text(
                         userName,
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           content,
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: 12,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
@@ -1171,14 +1181,14 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
           if (widget.comments > comments.length)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: InkWell(
+                child: InkWell(
                 onTap: widget.onCommentTap,
                 child: Text(
                   'View all ${widget.comments} comments →',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.blue.shade700,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -1238,7 +1248,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
             const SizedBox(width: 8),
             Text(
               widget.reactionsCount.toString(),
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -1301,10 +1311,14 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.blue.shade50 : Colors.transparent,
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected ? Colors.blue.shade200 : Colors.transparent,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
+                    : Colors.transparent,
                 width: 1,
               ),
             ),
@@ -1320,7 +1334,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                       child: Icon(
                         isSelected ? selectedIcon : icon,
                         color: isSelected
-                            ? Colors.blue.shade700
+                            ? Theme.of(context).colorScheme.primary
                             : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         size: 22,
                       ),
@@ -1330,9 +1344,9 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                 const SizedBox(width: 8),
                 Text(
                   count != null && count > 0 ? '$count' : '',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: isSelected
-                        ? Colors.blue.shade700
+                        ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -1341,9 +1355,9 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                 if (count != null && count > 0) const SizedBox(width: 4),
                 Text(
                   label,
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: isSelected
-                        ? Colors.blue.shade700
+                        ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     fontSize: 14,
@@ -1428,7 +1442,7 @@ class _ImageFullscreenViewerState extends State<ImageFullscreenViewer> {
         return KeyEventResult.ignored;
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.black, // Keep black for image viewer - standard UX
         body: Stack(
           children: [
             // Image viewer with swipe
@@ -1459,27 +1473,27 @@ class _ImageFullscreenViewerState extends State<ImageFullscreenViewer> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.black54,
+                        color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.54), // Semi-transparent overlay for readability
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '${_currentIndex + 1} / ${widget.images.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface, // Text on overlay for contrast
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                     // Close button
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface, // Icon on overlay for contrast
                         size: 28,
                       ),
                       onPressed: () => Navigator.pop(context),
                       style: IconButton.styleFrom(
-                        backgroundColor: Colors.black54,
+                        backgroundColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.54), // Semi-transparent overlay
                       ),
                     ),
                   ],
@@ -1504,7 +1518,7 @@ class _ImageFullscreenViewerState extends State<ImageFullscreenViewer> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: index == _currentIndex
-                            ? Colors.white
+                            ? Colors.white // White dots for visibility on dark background
                             : Colors.white.withValues(alpha: 0.4),
                       ),
                     ),
@@ -1524,14 +1538,14 @@ class _ImageFullscreenViewerState extends State<ImageFullscreenViewer> {
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_back_ios_new,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface, // Icon on overlay
                           size: 32,
                         ),
                         onPressed: _previousImage,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.black54,
+                          backgroundColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.54), // Semi-transparent overlay
                           padding: const EdgeInsets.all(12),
                         ),
                       ),
@@ -1548,14 +1562,14 @@ class _ImageFullscreenViewerState extends State<ImageFullscreenViewer> {
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_forward_ios,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface, // Icon on overlay
                           size: 32,
                         ),
                         onPressed: _nextImage,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.black54,
+                          backgroundColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.54), // Semi-transparent overlay
                           padding: const EdgeInsets.all(12),
                         ),
                       ),
@@ -1620,11 +1634,11 @@ class _ZoomableImageState extends State<_ZoomableImage> {
           child: CachedNetworkImage(
             imageUrl: UrlUtils.getFullImageUrl(widget.imageUrl),
             fit: BoxFit.contain,
-            placeholder: (context, url) => const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+            placeholder: (context, url) => Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface), // Spinner on background
             ),
-            errorWidget: (context, url, error) => const Center(
-              child: Icon(Icons.error, color: Colors.white, size: 50),
+            errorWidget: (context, url, error) => Center(
+              child: Icon(Icons.error, color: Theme.of(context).colorScheme.onSurface, size: 50), // Error icon on background
             ),
           ),
         ),

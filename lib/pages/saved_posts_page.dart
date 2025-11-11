@@ -166,7 +166,7 @@ class _SavedPostsPageState extends State<SavedPostsPage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.person, color: Colors.blue),
+                leading: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
                 title: const Text('View Profile'),
                 onTap: () {
                   Navigator.pop(context);
@@ -179,7 +179,7 @@ class _SavedPostsPageState extends State<SavedPostsPage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.cancel, color: Colors.grey),
+                leading: Icon(Icons.cancel, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                 title: const Text('Cancel'),
                 onTap: () => Navigator.pop(context),
               ),
@@ -286,20 +286,20 @@ class _SavedPostsPageState extends State<SavedPostsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.bookmark_border, size: 80, color: Colors.grey[400]),
+          Icon(Icons.bookmark_border, size: 80, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
           const SizedBox(height: 16),
           Text(
             'No Saved Posts',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Posts you save will appear here',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
           ),
         ],
       ),

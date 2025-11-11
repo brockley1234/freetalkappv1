@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import '../config/app_config.dart';
 import 'secure_storage_service.dart';
 
@@ -15,6 +17,11 @@ class ApiService {
   static String get videosbaseUrl => AppConfig.videosbaseUrl;
   static String get baseApi => AppConfig.baseApi;
   static String get baseUrl => AppConfig.baseUrl;
+
+  // In-memory cache for device ID to avoid repeated secure storage reads
+  // This significantly improves performance since device ID is used in every API request
+  static String? _cachedDeviceId;
+  static bool _deviceIdInitialized = false;
 
   // Helper method for conditional logging (only in debug mode)
   static void _log(String message) {
@@ -50,6 +57,8 @@ class ApiService {
   // Clear tokens and user ID (SECURE: Uses Keychain/EncryptedSharedPreferences)
   static Future<void> clearTokens() async {
     await SecureStorageService().clearAuthCredentials();
+    // Note: Device ID is NOT cleared on logout as it's device-specific, not user-specific
+    // This allows the backend to track device usage patterns for security
     _log('✅ Cleared tokens and userId');
   }
 
@@ -97,11 +106,120 @@ class ApiService {
     return prefs.getBool('remember_me') ?? false;
   }
 
-  // Get headers with authentication
+  // Get platform identifier for API requests
+  static String _getPlatform() {
+    if (kIsWeb) {
+      return 'web';
+    } else if (Platform.isIOS) {
+      return 'ios';
+    } else if (Platform.isAndroid) {
+      return 'android';
+    } else {
+      return 'unknown';
+    }
+  }
+
+  // Get device ID (if available) - uses device_info_plus package
+  // Device ID is cached in memory and secure storage for optimal performance
+  // iOS: Uses identifierForVendor (App Store compliant, unique per app on device)
+  // Android: Uses Android ID (unique per app installation)
+  // Web: Uses browser user agent hash
+  static Future<String?> _getDeviceId() async {
+    try {
+      // Return cached device ID if available (fast path for performance)
+      if (_cachedDeviceId != null && _cachedDeviceId!.isNotEmpty) {
+        return _cachedDeviceId;
+      }
+
+      // If already initialized but cache is empty, return null to avoid repeated attempts
+      if (_deviceIdInitialized) {
+        return null;
+      }
+
+      // Mark as initialized to prevent concurrent initialization
+      _deviceIdInitialized = true;
+
+      // Try to get cached device ID from secure storage
+      final storedDeviceId = await SecureStorageService().readSecure('device_id');
+      if (storedDeviceId != null && storedDeviceId.isNotEmpty) {
+        _cachedDeviceId = storedDeviceId;
+        return _cachedDeviceId;
+      }
+
+      // If not cached, generate and store device ID
+      final deviceInfo = DeviceInfoPlugin();
+      String? deviceId;
+
+      if (kIsWeb) {
+        // For web, use a combination of browser info
+        // Note: User agent hash is not a persistent identifier but sufficient for web
+        final webInfo = await deviceInfo.webBrowserInfo;
+        deviceId = 'web_${webInfo.userAgent?.hashCode ?? DateTime.now().millisecondsSinceEpoch}';
+      } else if (Platform.isAndroid) {
+        // For Android, use Android ID (unique per app installation)
+        // No special permissions required - this is a system identifier
+        final androidInfo = await deviceInfo.androidInfo;
+        deviceId = 'android_${androidInfo.id}';
+      } else if (Platform.isIOS) {
+        // For iOS, use identifierForVendor (unique per app on device)
+        // This is App Store compliant and doesn't require special permissions
+        // identifierForVendor may be null on iOS 14+ if user resets advertising identifier
+        final iosInfo = await deviceInfo.iosInfo;
+        final vendorId = iosInfo.identifierForVendor;
+        if (vendorId != null && vendorId.isNotEmpty) {
+          deviceId = 'ios_$vendorId';
+        } else {
+          // Fallback: Generate a persistent ID stored in secure storage
+          // This ensures we have a stable identifier even if identifierForVendor is unavailable
+          final fallbackId = await SecureStorageService().readSecure('ios_fallback_device_id');
+          if (fallbackId != null && fallbackId.isNotEmpty) {
+            deviceId = 'ios_fallback_$fallbackId';
+          } else {
+            final newFallbackId = DateTime.now().millisecondsSinceEpoch.toString();
+            await SecureStorageService().writeSecure('ios_fallback_device_id', newFallbackId);
+            deviceId = 'ios_fallback_$newFallbackId';
+          }
+        }
+      } else {
+        // Fallback for other platforms
+        deviceId = 'unknown_${DateTime.now().millisecondsSinceEpoch}';
+      }
+
+      // Store device ID in secure storage and memory cache for future use
+      if (deviceId.isNotEmpty) {
+        await SecureStorageService().writeSecure('device_id', deviceId);
+        _cachedDeviceId = deviceId;
+        _log('✅ Device ID initialized and cached: ${deviceId.substring(0, deviceId.length > 20 ? 20 : deviceId.length)}...');
+      }
+
+      return deviceId;
+    } catch (e) {
+      _log('❌ Error retrieving device ID: $e');
+      _deviceIdInitialized = true; // Mark as initialized even on error to prevent retry loops
+      return null;
+    }
+  }
+
+  // Clear device ID cache (useful for testing or when user logs out)
+  static void clearDeviceIdCache() {
+    _cachedDeviceId = null;
+    _deviceIdInitialized = false;
+  }
+
+  // Get headers with authentication and platform info
   static Future<Map<String, String>> _getHeaders({
     bool includeAuth = false,
   }) async {
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {
+      'Content-Type': 'application/json',
+      'x-platform': _getPlatform(), // Add platform header for backend
+    };
+
+    // Add device ID if available
+    final deviceId = await _getDeviceId();
+    if (deviceId != null) {
+      headers['x-device-id'] = deviceId;
+    }
 
     if (includeAuth) {
       final token = await getAccessToken();
@@ -121,6 +239,12 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return body;
       } else {
+        // For 403 responses with requiresPremium flag, return the body instead of throwing
+        // This allows the frontend to handle premium requirements gracefully
+        if (response.statusCode == 403 && body['requiresPremium'] == true) {
+          return body;
+        }
+        
         throw ApiException(
           statusCode: response.statusCode,
           message: body['message'] ?? 'An error occurred',
@@ -198,6 +322,15 @@ class ApiService {
           debugPrint('✅ Token refreshed successfully');
         }
         return true;
+      } else if (response.statusCode == 401) {
+        // 401 means refresh token is invalid (user logged out or token expired)
+        // Clear tokens to prevent further refresh attempts
+        if (AppConfig.enableDebugLogs) {
+          debugPrint('❌ Refresh token invalid (401) - user has logged out');
+        }
+        await clearTokens();
+        _refreshRetryCount = 0;
+        return false;
       } else if (response.statusCode == 429) {
         // Rate limited - implement exponential backoff
         _refreshRetryCount++;
@@ -701,13 +834,82 @@ class ApiService {
   }
 
   // Logout user
+  // Always clears tokens locally, even if backend call fails
+  // Handles 401 errors specially (token already invalid) - clears tokens immediately
   static Future<Map<String, dynamic>> logout() async {
-    return await _makeAuthenticatedRequest(() async {
-      return await http.post(
-        Uri.parse('$baseUrl/auth/logout'),
-        headers: await _getHeaders(includeAuth: true),
-      );
-    });
+    try {
+      // Get token before making request
+      final token = await getAccessToken();
+      
+      // If no token exists, just clear everything and return success
+      if (token == null) {
+        _log('⚠️ No token found, clearing local data');
+        await clearTokens();
+        await clearRememberedCredentials();
+        clearDeviceIdCache();
+        return {
+          'success': true,
+          'message': 'Already logged out',
+        };
+      }
+      
+      // Try to call backend logout endpoint
+      // Use direct http call instead of _makeAuthenticatedRequest to avoid token refresh attempts
+      try {
+        final response = await http.post(
+          Uri.parse('$baseUrl/auth/logout'),
+          headers: await _getHeaders(includeAuth: true),
+        ).timeout(AppConfig.apiTimeout);
+        
+        final result = _handleResponse(response);
+        
+        // Clear tokens and credentials after successful logout
+        await clearTokens();
+        await clearRememberedCredentials();
+        clearDeviceIdCache();
+        
+        _log('✅ Logout successful - tokens cleared');
+        return result;
+      } catch (apiError) {
+        // Handle API errors (including 401 - token already invalid)
+        if (apiError is ApiException && apiError.statusCode == 401) {
+          _log('⚠️ Token already invalid (401), clearing tokens locally');
+        } else {
+          _log('⚠️ Backend logout failed, clearing tokens locally: $apiError');
+        }
+        
+        // Always clear tokens locally, even if backend call fails
+        await clearTokens();
+        await clearRememberedCredentials();
+        clearDeviceIdCache();
+        
+        _log('✅ Tokens cleared locally');
+        
+        // Return success response so UI can proceed with logout
+        return {
+          'success': true,
+          'message': 'Logged out locally',
+        };
+      }
+    } catch (e) {
+      // Catch-all error handler - ensure tokens are always cleared
+      _log('❌ Unexpected error during logout, clearing tokens: $e');
+      
+      try {
+        await clearTokens();
+        await clearRememberedCredentials();
+        clearDeviceIdCache();
+        _log('✅ Tokens cleared despite error');
+      } catch (clearError) {
+        _log('❌ Error clearing tokens: $clearError');
+      }
+      
+      // Return success response so UI can proceed with logout
+      return {
+        'success': true,
+        'message': 'Logged out locally (error occurred)',
+      };
+    }
   }
 
   // Update FCM token
@@ -2618,6 +2820,7 @@ class ApiService {
   static Future<Map<String, dynamic>> suspendUser(
     String userId, {
     String? reason,
+    int? duration,
   }) async {
     return await _makeAuthenticatedRequest(() async {
       return await http.post(
@@ -2625,6 +2828,7 @@ class ApiService {
         headers: await _getHeaders(includeAuth: true),
         body: json.encode({
           if (reason != null) 'reason': reason,
+          if (duration != null) 'duration': duration,
         }),
       );
     });
@@ -2670,6 +2874,50 @@ class ApiService {
     return await _makeAuthenticatedRequest(() async {
       return await http.post(
         Uri.parse('$baseUrl/admin/users/$userId/unban'),
+        headers: await _getHeaders(includeAuth: true),
+        body: json.encode({
+          if (reason != null) 'reason': reason,
+        }),
+      );
+    });
+  }
+
+  // Mute a user
+  static Future<Map<String, dynamic>> muteUser(
+    String userId, {
+    String? reason,
+    int? duration,
+  }) async {
+    return await _makeAuthenticatedRequest(() async {
+      return await http.put(
+        Uri.parse('$baseUrl/admin/users/$userId/mute'),
+        headers: await _getHeaders(includeAuth: true),
+        body: json.encode({
+          if (reason != null) 'reason': reason,
+          if (duration != null) 'duration': duration,
+        }),
+      );
+    });
+  }
+
+  // Unmute a user
+  static Future<Map<String, dynamic>> unmuteUser(String userId) async {
+    return await _makeAuthenticatedRequest(() async {
+      return await http.put(
+        Uri.parse('$baseUrl/admin/users/$userId/unmute'),
+        headers: await _getHeaders(includeAuth: true),
+      );
+    });
+  }
+
+  // Delete a user account (admin action)
+  static Future<Map<String, dynamic>> deleteUser(
+    String userId, {
+    String? reason,
+  }) async {
+    return await _makeAuthenticatedRequest(() async {
+      return await http.delete(
+        Uri.parse('$baseUrl/admin/users/$userId'),
         headers: await _getHeaders(includeAuth: true),
         body: json.encode({
           if (reason != null) 'reason': reason,

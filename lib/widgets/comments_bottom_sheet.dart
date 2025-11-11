@@ -114,9 +114,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Comment added!'),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: Duration(seconds: 1),
             ),
           );
@@ -124,10 +124,10 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['message'] ?? 'Failed to add comment'),
-              backgroundColor: Colors.red,
-            ),
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to add comment'),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ),
           );
         }
       }
@@ -168,7 +168,10 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'Delete', 
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
         ],
       ),
@@ -187,9 +190,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Comment deleted'),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: Duration(seconds: 1),
             ),
           );
@@ -220,9 +223,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -230,14 +233,18 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     'Comments (${_comments.length})',
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -263,12 +270,14 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                             Icon(
                               Icons.error_outline,
                               size: 48,
-                              color: Colors.grey.shade400,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               _error!,
-                              style: TextStyle(color: Colors.grey.shade600),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                              ),
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton(
@@ -286,14 +295,14 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                                 Icon(
                                   Icons.chat_bubble_outline,
                                   size: 64,
-                                  color: Colors.grey.shade300,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
                                   'No comments yet',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey.shade600,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -301,7 +310,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                                   'Be the first to comment!',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey.shade500,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                   ),
                                 ),
                               ],
@@ -359,10 +368,10 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
               bottom: MediaQuery.of(context).viewInsets.bottom + 12,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
@@ -396,12 +405,12 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             radius: 18,
             child: Text(
               userInitials,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),
@@ -415,7 +424,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -426,7 +435,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                           Flexible(
                             child: Text(
                               userName,
-                              style: const TextStyle(
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
@@ -439,7 +448,10 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                       if (content.isNotEmpty)
                         Text(
                           content,
-                          style: const TextStyle(fontSize: 14, height: 1.4),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
                         ),
                       if (gifUrl != null && gifUrl.toString().isNotEmpty) ...[
                         if (content.isNotEmpty) const SizedBox(height: 8),
@@ -452,7 +464,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                             placeholder: (context, url) => Container(
                               width: 200,
                               height: 150,
-                              color: Colors.grey.shade200,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: const Center(
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               ),
@@ -460,8 +472,11 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                             errorWidget: (context, url, error) => Container(
                               width: 200,
                               height: 150,
-                              color: Colors.grey.shade200,
-                              child: const Icon(Icons.error, color: Colors.red),
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              child: Icon(
+                                Icons.error,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
                           ),
                         ),
@@ -475,7 +490,10 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                     children: [
                       Text(
                         timeAgo,
-                        style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
                       ),
                       if (canDelete) ...[
                         const SizedBox(width: 12),
@@ -487,7 +505,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                             'Delete',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.red.shade600,
+                              color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -510,8 +528,8 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
       itemCount: 5,
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+          highlightColor: Theme.of(context).colorScheme.surface,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Row(
@@ -520,8 +538,8 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                 Container(
                   width: 36,
                   height: 36,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -534,7 +552,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                         width: 120,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -543,7 +561,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                         width: double.infinity,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),

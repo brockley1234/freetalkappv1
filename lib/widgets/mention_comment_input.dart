@@ -324,10 +324,10 @@ class _MentionCommentInputState extends State<MentionCommentInput> {
                         );
                       });
                     },
-                    backgroundColor: Colors.blue.shade50,
-                    deleteIconColor: Colors.blue.shade700,
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    deleteIconColor: Theme.of(context).colorScheme.onPrimaryContainer,
                     labelStyle: TextStyle(
-                      color: Colors.blue.shade700,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.w500,
                     ),
                   );
@@ -351,8 +351,11 @@ class _MentionCommentInputState extends State<MentionCommentInput> {
                         return Container(
                           width: 150,
                           height: 150,
-                          color: Colors.grey.shade200,
-                          child: const Icon(Icons.error, color: Colors.red),
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          child: Icon(
+                            Icons.error,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                         );
                       },
                     ),
@@ -368,13 +371,13 @@ class _MentionCommentInputState extends State<MentionCommentInput> {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.black54,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.7),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
                           size: 16,
                         ),
                       ),
@@ -391,7 +394,9 @@ class _MentionCommentInputState extends State<MentionCommentInput> {
                 onPressed: widget.isSubmitting ? null : _pickGif,
                 icon: Icon(
                   Icons.gif_box_outlined,
-                  color: _selectedGifUrl != null ? Colors.blue : Colors.grey.shade600,
+                  color: _selectedGifUrl != null
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
                 tooltip: 'Add GIF',
               ),
@@ -405,22 +410,29 @@ class _MentionCommentInputState extends State<MentionCommentInput> {
                     hintText: 'Write a comment... (type @ to mention)',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
-                      borderSide: const BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      ),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 10,
                     ),
                     filled: true,
-                    fillColor: Colors.grey.shade50,
+                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                   ),
                   enabled: !widget.isSubmitting,
                 ),
@@ -435,8 +447,8 @@ class _MentionCommentInputState extends State<MentionCommentInput> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.send),
-                color: Colors.blue,
-                disabledColor: Colors.grey,
+                color: Theme.of(context).colorScheme.primary,
+                disabledColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
               ),
             ],
           ),
@@ -653,7 +665,7 @@ class _GifPickerBottomSheetState extends State<_GifPickerBottomSheet> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
             ),
           ),
@@ -670,14 +682,16 @@ class _GifPickerBottomSheetState extends State<_GifPickerBottomSheet> {
                             Icon(
                               Icons.gif_box_outlined,
                               size: 64,
-                              color: Colors.grey.shade300,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               _isSearching
                                   ? 'No GIFs found'
                                   : 'No trending GIFs available',
-                              style: TextStyle(color: Colors.grey.shade600),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                              ),
                             ),
                           ],
                         ),
@@ -707,7 +721,7 @@ class _GifPickerBottomSheetState extends State<_GifPickerBottomSheet> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
-                                    color: Colors.grey.shade200,
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                     child: const Icon(Icons.error),
                                   );
                                 },

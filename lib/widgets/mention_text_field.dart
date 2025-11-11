@@ -209,7 +209,10 @@ class _MentionTextFieldState extends State<MentionTextField> {
               hintText: widget.hintText,
               border: InputBorder.none,
               counterText: '',
-              hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 16),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                fontSize: 16,
+              ),
             ),
             style: const TextStyle(fontSize: 16),
           ),
@@ -221,12 +224,15 @@ class _MentionTextFieldState extends State<MentionTextField> {
                 minHeight: 50,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade400, width: 2),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                  width: 2,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -237,7 +243,9 @@ class _MentionTextFieldState extends State<MentionTextField> {
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         _lastErrorMessage ?? queryHintText(),
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     )
@@ -258,7 +266,7 @@ class _MentionTextFieldState extends State<MentionTextField> {
                               children: [
                                 CircleAvatar(
                                   radius: 20,
-                                  backgroundColor: Colors.blue.shade100,
+                                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                                   backgroundImage: user['avatar'] != null
                                       ? NetworkImage(
                                           UrlUtils.getFullAvatarUrl(user['avatar']),
@@ -270,7 +278,7 @@ class _MentionTextFieldState extends State<MentionTextField> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.blue.shade700,
+                                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                                           ),
                                         )
                                       : null,
@@ -283,10 +291,10 @@ class _MentionTextFieldState extends State<MentionTextField> {
                                     children: [
                                       Text(
                                         user['name'] ?? 'Unknown',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16,
-                                          color: Colors.black87,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                       ),
                                       if (user['email'] != null)
@@ -294,15 +302,15 @@ class _MentionTextFieldState extends State<MentionTextField> {
                                           '@${user['email']?.split('@')[0] ?? ''}',
                                           style: TextStyle(
                                             fontSize: 13,
-                                            color: Colors.grey.shade600,
+                                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                           ),
                                         ),
                                     ],
                                   ),
                                 ),
-                                const Icon(
+                                Icon(
                                   Icons.person_add,
-                                  color: Colors.grey,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                   size: 20,
                                 ),
                               ],

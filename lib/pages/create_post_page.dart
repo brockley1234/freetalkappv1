@@ -294,7 +294,11 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
             ),
             child: Row(
               children: [
@@ -325,7 +329,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.blue.shade100,
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                   backgroundImage:
                       userAvatar != null && userAvatar.toString().isNotEmpty
                           ? UrlUtils.getAvatarImageProvider(userAvatar)
@@ -334,7 +338,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                       ? Text(
                           userInitials,
                           style: TextStyle(
-                            color: Colors.blue.shade700,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                             fontWeight: FontWeight.bold,
                           ),
                         )
@@ -365,18 +369,25 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                       padding: const EdgeInsets.all(12),
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
-                        color: Colors.red.shade50,
+                        color: Theme.of(context).colorScheme.errorContainer,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.red.shade200),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.error_outline, color: Colors.red.shade700),
+                          Icon(
+                            Icons.error_outline,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               _error!,
-                              style: TextStyle(color: Colors.red.shade700),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onErrorContainer,
+                              ),
                             ),
                           ),
                         ],
@@ -396,7 +407,9 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                   // Content text field with @mention support
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blue.shade200),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                      ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -410,15 +423,18 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.info_outline,
-                                  size: 14, color: Colors.blue.shade600),
+                              Icon(
+                                Icons.info_outline,
+                                size: 14,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
                                   'Type @ to mention someone or use "Tag People" below',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.blue.shade600,
+                                    color: Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -481,10 +497,10 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                               _taggedUsers.remove(user);
                             });
                           },
-                          backgroundColor: Colors.blue.shade50,
-                          deleteIconColor: Colors.blue.shade700,
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          deleteIconColor: Theme.of(context).colorScheme.onPrimaryContainer,
                           labelStyle: TextStyle(
-                            color: Colors.blue.shade700,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                             fontWeight: FontWeight.w500,
                           ),
                         );
@@ -508,8 +524,12 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: Colors.grey.shade200),
-                bottom: BorderSide(color: Colors.grey.shade200),
+                top: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
               ),
             ),
             child: Row(
@@ -520,14 +540,19 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.videocam, color: Colors.red),
+                  icon: Icon(
+                    Icons.videocam,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   onPressed: _isLoading ? null : _showMediaOptionsDialog,
                   tooltip: 'Photo/Video',
                 ),
                 IconButton(
                   icon: Icon(
                     Icons.person_add_alt,
-                    color: _taggedUsers.isNotEmpty ? Colors.blue : Colors.grey,
+                    color: _taggedUsers.isNotEmpty
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   onPressed: _isLoading ? null : _showTagUsersDialog,
                   tooltip: 'Tag People',
@@ -545,21 +570,21 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _submitPost,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   elevation: 0,
                 ),
                 child: _isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                            Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       )
@@ -582,7 +607,9 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -954,7 +981,9 @@ class _TagUsersDialogState extends State<_TagUsersDialog> {
                                         ? 'You have no followers to tag'
                                         : 'Search for followers to tag')
                                     : 'No followers found',
-                                style: const TextStyle(color: Colors.grey),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                ),
                               ),
                             )
                           : ListView.builder(

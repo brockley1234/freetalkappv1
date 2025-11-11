@@ -81,13 +81,13 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.blue.shade300,
-                          Colors.purple.shade300,
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
                         ],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withValues(alpha: 0.2),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -96,7 +96,7 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                     child: Icon(
                       widget.icon,
                       size: 50,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -109,7 +109,7 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade800,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
               ),
 
@@ -122,7 +122,7 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                   widget.description,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         height: 1.6,
                       ),
                 ),
@@ -137,7 +137,7 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blue.withValues(alpha: 0.3),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -152,8 +152,8 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                         horizontal: spacing * 2,
                         vertical: spacing * 1.25,
                       ),
-                      backgroundColor: Colors.blue.shade600,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -169,7 +169,7 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                 Text(
                   'Suggested actions:',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                 ),
                 SizedBox(height: spacing),
@@ -226,11 +226,11 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
               width: 1.5,
             ),
             borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.shade50,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
           padding: EdgeInsets.all(spacing),
           child: Column(
@@ -265,7 +265,7 @@ class _EnhancedEmptyStateWidgetState extends State<EnhancedEmptyStateWidget>
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                 ),
               ],

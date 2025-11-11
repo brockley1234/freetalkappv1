@@ -147,60 +147,73 @@ class _LoginPageState extends State<LoginPage> {
         if (mounted) {
           showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-              title: const Row(
-                children: [
-                  Icon(Icons.error_outline, color: Colors.red),
-                  SizedBox(width: 8),
-                  Flexible(child: Text('Login Failed')),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(errorMessage, style: const TextStyle(fontSize: 16)),
-                  if (actionableHint != null) ...[
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.lightbulb_outline,
-                              color: Colors.blue.shade700, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              actionableHint,
-                              style: TextStyle(
-                                  color: Colors.blue.shade900, fontSize: 14),
-                            ),
-                          ),
-                        ],
-                      ),
+            builder: (dialogContext) {
+              final dialogTheme = Theme.of(dialogContext);
+              return AlertDialog(
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: dialogTheme.colorScheme.error,
                     ),
+                    const SizedBox(width: 8),
+                    const Flexible(child: Text('Login Failed')),
                   ],
-                ],
-              ),
-              actions: [
-                if (actionableHint?.contains('Forgot PIN') == true)
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _navigateToForgotPassword();
-                    },
-                    child: const Text('Reset PIN'),
-                  ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
                 ),
-              ],
-            ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      errorMessage,
+                      style: dialogTheme.textTheme.bodyLarge,
+                    ),
+                    if (actionableHint != null) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: dialogTheme.colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.lightbulb_outline,
+                              color: dialogTheme.colorScheme.onPrimaryContainer,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                actionableHint,
+                                style: dialogTheme.textTheme.bodyMedium?.copyWith(
+                                  color: dialogTheme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                actions: [
+                  if (actionableHint?.contains('Forgot PIN') == true)
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        _navigateToForgotPassword();
+                      },
+                      child: const Text('Reset PIN'),
+                    ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
           );
         }
       }
@@ -270,6 +283,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 360;
     final horizontalPadding = isSmallScreen ? 16.0 : 24.0;
@@ -280,7 +294,7 @@ class _LoginPageState extends State<LoginPage> {
         final localizations = AppLocalizations.of(context);
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: SingleChildScrollView(
               child: Column(
@@ -297,8 +311,8 @@ class _LoginPageState extends State<LoginPage> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Colors.blue.shade400,
-                              Colors.purple.shade400
+                              theme.colorScheme.primary,
+                              theme.colorScheme.secondary,
                             ],
                           ),
                           borderRadius: const BorderRadius.only(
@@ -402,16 +416,19 @@ class _LoginPageState extends State<LoginPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                            color: theme.colorScheme.outline,
+                                          ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                            color: theme.colorScheme.primary,
+                                            width: 2,
+                                          ),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: theme.colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -476,16 +493,19 @@ class _LoginPageState extends State<LoginPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                            color: theme.colorScheme.outline,
+                                          ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                            color: theme.colorScheme.primary,
+                                            width: 2,
+                                          ),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: theme.colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -515,14 +535,14 @@ class _LoginPageState extends State<LoginPage> {
                                             Checkbox(
                                               value: _rememberMe,
                                               onChanged: _toggleRememberMe,
-                                              activeColor: Colors.blue,
                                             ),
                                             Flexible(
                                               child: Text(
                                                 localizations?.rememberMe ??
                                                     'Remember me',
-                                                style: const TextStyle(
-                                                    color: Colors.grey),
+                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                                ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
@@ -540,8 +560,9 @@ class _LoginPageState extends State<LoginPage> {
                                           child: Text(
                                             localizations?.forgotPassword ??
                                                 'Forgot PIN?',
-                                            style: const TextStyle(
-                                                color: Colors.blue),
+                                            style: TextStyle(
+                                              color: theme.colorScheme.primary,
+                                            ),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
@@ -557,8 +578,8 @@ class _LoginPageState extends State<LoginPage> {
                                       onPressed:
                                           _isLoading ? null : _handleLogin,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        foregroundColor: Colors.white,
+                                        backgroundColor: theme.colorScheme.primary,
+                                        foregroundColor: theme.colorScheme.onPrimary,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
@@ -566,19 +587,20 @@ class _LoginPageState extends State<LoginPage> {
                                         elevation: 2,
                                       ),
                                       child: _isLoading
-                                          ? const SizedBox(
+                                          ? SizedBox(
                                               width: 20,
                                               height: 20,
                                               child: CircularProgressIndicator(
-                                                color: Colors.white,
+                                                color: theme.colorScheme.onPrimary,
                                                 strokeWidth: 2,
                                               ),
                                             )
                                           : Text(
                                               localizations?.login ?? 'Login',
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
+                                                color: theme.colorScheme.onPrimary,
                                               ),
                                             ),
                                     ),
@@ -593,14 +615,16 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 Text(
                                   "${localizations?.dontHaveAccount ?? "Don't have an account?"} ",
-                                  style: const TextStyle(color: Colors.grey),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                  ),
                                 ),
                                 TextButton(
                                   onPressed: _navigateToSignUp,
                                   child: Text(
                                     localizations?.signUp ?? 'Sign Up',
-                                    style: const TextStyle(
-                                      color: Colors.blue,
+                                    style: TextStyle(
+                                      color: theme.colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

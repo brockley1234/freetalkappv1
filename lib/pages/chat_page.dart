@@ -1389,12 +1389,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Row(
@@ -1414,15 +1414,15 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 children: [
                   CircleAvatar(
                     radius: ResponsiveDimensions.getAvatarSize(context) / 2.5,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                     backgroundImage: _otherUser['avatar'] != null
                         ? UrlUtils.getAvatarImageProvider(_otherUser['avatar'])
                         : null,
                     child: _otherUser['avatar'] == null
                         ? Text(
                             _otherUser['name']?[0]?.toUpperCase() ?? '?',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                             ),
                           )
@@ -1437,9 +1437,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         width: ResponsiveDimensions.getIconSize(context) * 0.6,
                         height: ResponsiveDimensions.getIconSize(context) * 0.6,
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
+                          border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                         ),
                       ),
                     ),
@@ -1506,7 +1506,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                               fontSize: ResponsiveDimensions.getCaptionFontSize(
                                       context) *
                                   0.85,
-                              color: Colors.orange,
+                              color: Theme.of(context).colorScheme.tertiary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1528,7 +1528,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 child: IconButton(
                   icon: Icon(
                     Icons.push_pin,
-                    color: _showPinnedMessages ? Colors.red : Colors.blue,
+                    color: _showPinnedMessages ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
                   ),
                   onPressed: () {
                     setState(() {
@@ -1542,12 +1542,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 ),
               ),
             IconButton(
-              icon: const Icon(Icons.search, color: Colors.blue),
+              icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
               onPressed: _toggleSearch,
               tooltip: 'Search messages',
             ),
             PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert, color: Colors.blue),
+              icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
               onSelected: (value) {
                 if (value == 'export') {
                   _showExportDialog();
@@ -1608,10 +1608,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             if (_showPinnedMessages && _pinnedMessages.isNotEmpty)
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.08),
+                  color: Theme.of(context).colorScheme.tertiaryContainer.withValues(alpha: 0.08),
                   border: Border(
                     bottom:
-                        BorderSide(color: Colors.amber.withValues(alpha: 0.3)),
+                        BorderSide(color: Theme.of(context).colorScheme.tertiaryContainer.withValues(alpha: 0.3)),
                   ),
                 ),
                 child: Column(
@@ -1624,14 +1624,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                       child: Row(
                         children: [
                           Icon(Icons.push_pin,
-                              size: 20, color: Colors.amber[700]),
+                              size: 20, color: Theme.of(context).colorScheme.tertiary),
                           const SizedBox(width: 8),
                           Text(
                             'Pinned Messages (${_pinnedMessages.length})',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Colors.amber[900],
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
                             ),
                           ),
                           const Spacer(),
@@ -1673,10 +1673,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                                         left: 12, bottom: 12, top: 12),
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.surface,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                          color: Colors.amber
+                                          color: Theme.of(context).colorScheme.tertiaryContainer
                                               .withValues(alpha: 0.4)),
                                     ),
                                     child: Column(
@@ -2003,7 +2003,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               child: _otherUser['avatar'] == null
                   ? Text(
                       _otherUser['name']?[0]?.toUpperCase() ?? '?',
-                      style: const TextStyle(fontSize: 12, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 12, 
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     )
                   : null,
             ),
@@ -2195,7 +2198,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
               ),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              child: Text(
+                'Save', 
+                style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              ),
             ),
           ],
         );
@@ -2738,7 +2744,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'Delete', 
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
         ],
       ),
@@ -2853,7 +2862,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       padding: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
         color: isHighlighted
-            ? Colors.amber.withValues(alpha: 0.3)
+            ? Theme.of(context).colorScheme.tertiaryContainer.withValues(alpha: 0.3)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(20),
       ),
@@ -3303,7 +3312,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                           },
                           decoration: InputDecoration(
                             hintText: 'Aa',
-                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            hintStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                            ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -3798,10 +3809,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         constraints: const BoxConstraints(maxWidth: 280),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: Colors.grey[300]!,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
@@ -3812,14 +3823,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               height: 16,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[600]!),
+                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
               ),
             ),
             const SizedBox(width: 8),
             Text(
               'Loading post...',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 14,
               ),
             ),
@@ -4065,9 +4076,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         constraints: const BoxConstraints(maxWidth: 280),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -4077,13 +4088,16 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               height: 16,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[600]!),
+                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
               ),
             ),
             const SizedBox(width: 8),
             Text(
               'Loading item...',
-              style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), 
+                fontSize: 14,
+              ),
             ),
           ],
         ),
@@ -4095,10 +4109,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isMe ? Colors.white.withValues(alpha: 0.3) : Colors.grey[300]!,
+          color: isMe ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.3) : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
           width: 1.5,
         ),
-        color: isMe ? Colors.green[700]?.withValues(alpha: 0.2) : Colors.grey[50],
+        color: isMe ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.2) : Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -4109,7 +4123,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isMe ? Colors.white.withValues(alpha: 0.1) : Colors.grey[300]!,
+                  color: isMe ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.1) : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                 ),
               ),
             ),
@@ -4516,10 +4530,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Scaffold(
-                        backgroundColor: Colors.black,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
                         appBar: AppBar(
-                          backgroundColor: Colors.black,
-                          iconTheme: const IconThemeData(color: Colors.white),
+                          backgroundColor: Theme.of(context).colorScheme.surface,
+                          iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
                         ),
                         body: Center(
                           child: InteractiveViewer(
@@ -4814,7 +4828,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 const SizedBox(height: 2),
                 Text(
                   'Tap to retry or dismiss',
-                  style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+                  style: TextStyle(
+                    fontSize: 11, 
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
                 ),
               ],
             ),
@@ -4890,7 +4907,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                   replyContent.length > 50
                       ? '${replyContent.substring(0, 50)}...'
                       : replyContent,
-                  style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                  style: TextStyle(
+                    fontSize: 13, 
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -5002,14 +5022,20 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     _selectedMediaFile != null)
                   Text(
                     _selectedMediaFile!.name,
-                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: 11, 
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 const SizedBox(height: 4),
                 Text(
                   'Tap send to upload',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: 12, 
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
                 ),
               ],
             ),
@@ -5035,7 +5061,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   void _showMoreOptions() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -5294,7 +5320,13 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             child: Icon(icon, color: color, size: 30),
           ),
           const SizedBox(height: 8),
-          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+          Text(
+            label, 
+            style: TextStyle(
+              fontSize: 12, 
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
         ],
       ),
     );

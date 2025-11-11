@@ -108,5 +108,11 @@
 	<!-- Most apps use standard HTTPS/TLS which is exempt, so set to false -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	
+	<!-- Background Modes for Push Notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

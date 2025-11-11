@@ -93,7 +93,7 @@ class _CommentsBottomSheetWithPhotosState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to pick images: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -110,9 +110,9 @@ class _CommentsBottomSheetWithPhotosState
     final content = _commentController.text.trim();
     if (content.isEmpty && _selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Please add text or images to comment'),
-          backgroundColor: Colors.orange,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
       return;
@@ -139,20 +139,20 @@ class _CommentsBottomSheetWithPhotosState
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Comment added!'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 1),
-            ),
+          SnackBar(
+            content: Text('Comment added!'),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            duration: Duration(seconds: 1),
+          ),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['message'] ?? 'Failed to add comment'),
-              backgroundColor: Colors.red,
-            ),
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to add comment'),
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ),
           );
         }
       }
@@ -180,9 +180,9 @@ class _CommentsBottomSheetWithPhotosState
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -190,14 +190,18 @@ class _CommentsBottomSheetWithPhotosState
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     'Comments (${_comments.length})',
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -223,12 +227,14 @@ class _CommentsBottomSheetWithPhotosState
                             Icon(
                               Icons.error_outline,
                               size: 48,
-                              color: Colors.grey.shade400,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               _error!,
-                              style: TextStyle(color: Colors.grey.shade600),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                              ),
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton(
@@ -246,22 +252,20 @@ class _CommentsBottomSheetWithPhotosState
                                 Icon(
                                   Icons.chat_bubble_outline,
                                   size: 64,
-                                  color: Colors.grey.shade300,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
                                   'No comments yet',
-                                  style: TextStyle(
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     fontSize: 16,
-                                    color: Colors.grey.shade600,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Be the first to comment!',
-                                  style: TextStyle(
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     fontSize: 14,
-                                    color: Colors.grey.shade500,
                                   ),
                                 ),
                               ],
@@ -308,10 +312,10 @@ class _CommentsBottomSheetWithPhotosState
               bottom: MediaQuery.of(context).viewInsets.bottom + 12,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
@@ -352,14 +356,14 @@ class _CommentsBottomSheetWithPhotosState
                                   child: GestureDetector(
                                     onTap: () => _removeImage(index),
                                     child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.error,
                                         shape: BoxShape.circle,
                                       ),
                                       padding: const EdgeInsets.all(2),
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.close,
-                                        color: Colors.white,
+                                        color: Theme.of(context).colorScheme.onError,
                                         size: 16,
                                       ),
                                     ),
@@ -378,9 +382,9 @@ class _CommentsBottomSheetWithPhotosState
                   children: [
                     IconButton(
                       onPressed: _isSubmitting ? null : _pickImages,
-                      icon: const Icon(Icons.image),
-                      color: Colors.blue,
-                      disabledColor: Colors.grey,
+                      icon: Icon(Icons.image),
+                      color: Theme.of(context).colorScheme.primary,
+                      disabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
                       tooltip: 'Add photos',
                     ),
                     Expanded(
@@ -394,22 +398,28 @@ class _CommentsBottomSheetWithPhotosState
                           hintText: 'Write a comment...',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(color: Colors.blue),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 10,
                           ),
                           filled: true,
-                          fillColor: Colors.grey.shade50,
+                          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                           counterText: '',
                         ),
                         enabled: !_isSubmitting,
@@ -419,14 +429,14 @@ class _CommentsBottomSheetWithPhotosState
                     IconButton(
                       onPressed: _isSubmitting ? null : _submitComment,
                       icon: _isSubmitting
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Icon(Icons.send),
-                      color: Colors.blue,
-                      disabledColor: Colors.grey,
+                          : Icon(Icons.send),
+                      color: Theme.of(context).colorScheme.primary,
+                      disabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ],
                 ),
@@ -452,7 +462,7 @@ class _CommentsBottomSheetWithPhotosState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             radius: 18,
             backgroundImage: user?['avatar'] != null
                 ? UrlUtils.getAvatarImageProvider(user!['avatar'])
@@ -460,8 +470,8 @@ class _CommentsBottomSheetWithPhotosState
             child: user?['avatar'] == null
                 ? Text(
                     userInitials,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -476,7 +486,7 @@ class _CommentsBottomSheetWithPhotosState
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -487,7 +497,7 @@ class _CommentsBottomSheetWithPhotosState
                           Flexible(
                             child: Text(
                               userName,
-                              style: const TextStyle(
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
@@ -500,7 +510,10 @@ class _CommentsBottomSheetWithPhotosState
                       if (content.isNotEmpty)
                         Text(
                           content,
-                          style: const TextStyle(fontSize: 14, height: 1.4),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
                         ),
                       // Display comment images
                       if (images.isNotEmpty) ...[
@@ -524,9 +537,11 @@ class _CommentsBottomSheetWithPhotosState
                                       return Container(
                                         width: 120,
                                         height: 120,
-                                        color: Colors.grey.shade300,
-                                        child: const Icon(
-                                            Icons.image_not_supported),
+                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                        child: Icon(
+                                          Icons.image_not_supported,
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                        ),
                                       );
                                     },
                                   ),
@@ -543,7 +558,9 @@ class _CommentsBottomSheetWithPhotosState
                   padding: const EdgeInsets.only(left: 12, top: 4),
                   child: Text(
                     timeAgo,
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -560,8 +577,8 @@ class _CommentsBottomSheetWithPhotosState
       itemCount: 5,
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+          highlightColor: Theme.of(context).colorScheme.surface,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Row(
@@ -570,8 +587,8 @@ class _CommentsBottomSheetWithPhotosState
                 Container(
                   width: 36,
                   height: 36,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -584,7 +601,7 @@ class _CommentsBottomSheetWithPhotosState
                         width: 120,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -593,7 +610,7 @@ class _CommentsBottomSheetWithPhotosState
                         width: double.infinity,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),

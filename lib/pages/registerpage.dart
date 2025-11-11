@@ -123,9 +123,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _handleRegister() async {
     if (!_acceptTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please accept the terms and conditions'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('Please accept the terms and conditions'),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
       return;
@@ -187,6 +187,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
 
         // Show error dialog for better visibility
+        final theme = Theme.of(context);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -194,7 +195,9 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 Icon(
                   isConflict ? Icons.info_outline : Icons.error_outline,
-                  color: isConflict ? Colors.orange : Colors.red,
+                  color: isConflict 
+                      ? theme.colorScheme.tertiary 
+                      : theme.colorScheme.error,
                 ),
                 const SizedBox(width: 8),
                 Text(isConflict
@@ -278,8 +281,9 @@ class _RegisterPageState extends State<RegisterPage> {
             _confirmPinCodeController.text == _pinCodeController.text &&
             _selectedSecurityQuestion != null &&
             _securityAnswerController.text.trim().length >= 2;
+        final theme = Theme.of(context);
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: SingleChildScrollView(
               child: Column(
@@ -298,8 +302,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                Colors.blue.shade400,
-                                Colors.purple.shade400
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.secondary,
                               ],
                             ),
                             borderRadius: const BorderRadius.only(
@@ -315,11 +319,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                 height: 80,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white.withValues(alpha: 0.3),
+                                  color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.3),
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.chat_bubble_outline,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   size: 40,
                                 ),
                               ),
@@ -329,7 +333,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 28 : 32,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -405,7 +409,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             'Letters and spaces only (2-50 characters)',
                                         helperStyle: TextStyle(
                                           color: _nameError != null
-                                              ? Colors.red
+                                              ? Theme.of(context).colorScheme.error
                                               : null,
                                         ),
                                         prefixIcon:
@@ -413,8 +417,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                         suffixIcon: _nameTouched &&
                                                 _nameError == null &&
                                                 _nameController.text.isNotEmpty
-                                            ? const Icon(Icons.check_circle,
-                                                color: Colors.green)
+                                            ? Icon(
+                                                Icons.check_circle,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                              )
                                             : null,
                                         border: OutlineInputBorder(
                                           borderRadius:
@@ -424,16 +430,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -473,7 +480,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             'Enter a valid email address',
                                         helperStyle: TextStyle(
                                           color: _emailError != null
-                                              ? Colors.red
+                                              ? Theme.of(context).colorScheme.error
                                               : null,
                                         ),
                                         prefixIcon:
@@ -481,8 +488,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                         suffixIcon: _emailTouched &&
                                                 _emailError == null &&
                                                 _emailController.text.isNotEmpty
-                                            ? const Icon(Icons.check_circle,
-                                                color: Colors.green)
+                                            ? Icon(
+                                                Icons.check_circle,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                              )
                                             : null,
                                         border: OutlineInputBorder(
                                           borderRadius:
@@ -492,16 +501,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -540,7 +550,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             'Choose any 4 digits for login authentication',
                                         helperStyle: TextStyle(
                                           color: _pinError != null
-                                              ? Colors.red
+                                              ? Theme.of(context).colorScheme.error
                                               : null,
                                         ),
                                         counterText:
@@ -551,7 +561,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             if (_pinTouched && _pinError == null && _pinCodeController.text.length == 4)
-                                              const Icon(Icons.check_circle, color: Colors.green),
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                              ),
                                             IconButton(
                                               icon: Icon(
                                                 _obscurePin ? Icons.visibility_off : Icons.visibility,
@@ -568,16 +581,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -631,16 +645,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -664,11 +679,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  const Text(
+                                  Text(
                                     'This will help you recover your PIN if you forget it',
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: Colors.grey,
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                     ),
                                   ),
                                   const SizedBox(height: 16),
@@ -694,16 +709,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                             borderRadius:
                                                 BorderRadius.circular(12),
                                             borderSide: BorderSide(
-                                                color: Colors.grey.shade300),
+                                                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                                           ),
                                           focusedBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(12),
-                                            borderSide: const BorderSide(
-                                                color: Colors.blue),
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context).colorScheme.primary,
+                                                width: 2),
                                           ),
                                           filled: true,
-                                          fillColor: Colors.grey.shade50,
+                                          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                         ),
                                         items: _securityQuestions
                                             .map((String question) {
@@ -756,16 +772,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
-                                              color: Colors.grey.shade300),
+                                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          borderSide: const BorderSide(
-                                              color: Colors.blue),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context).colorScheme.primary,
+                                              width: 2),
                                         ),
                                         filled: true,
-                                        fillColor: Colors.grey.shade50,
+                                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -791,7 +808,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       Checkbox(
                                         value: _acceptTerms,
                                         onChanged: _toggleAcceptTerms,
-                                        activeColor: Colors.blue,
+                                        activeColor: Theme.of(context).colorScheme.primary,
                                       ),
                                       Expanded(
                                         child: Padding(
@@ -799,8 +816,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                               const EdgeInsets.only(top: 12),
                                           child: RichText(
                                             text: TextSpan(
-                                              style: const TextStyle(
-                                                color: Colors.grey,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                                 fontSize: 14,
                                               ),
                                               children: [
@@ -808,8 +825,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                                     text: 'I agree to the '),
                                                 TextSpan(
                                                   text: 'Terms & Conditions',
-                                                  style: const TextStyle(
-                                                    color: Colors.blue,
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).colorScheme.primary,
                                                     decoration: TextDecoration
                                                         .underline,
                                                   ),
@@ -828,8 +845,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 const TextSpan(text: ' and '),
                                                 TextSpan(
                                                   text: 'Privacy Policy',
-                                                  style: const TextStyle(
-                                                    color: Colors.blue,
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).colorScheme.primary,
                                                     decoration: TextDecoration
                                                         .underline,
                                                   ),
@@ -860,8 +877,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: ElevatedButton(
                                       onPressed: (_isLoading || !isFormReady) ? null : _handleRegister,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        foregroundColor: Colors.white,
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(12),
@@ -869,11 +886,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                         elevation: 2,
                                       ),
                                       child: _isLoading
-                                          ? const SizedBox(
+                                          ? SizedBox(
                                               width: 20,
                                               height: 20,
                                               child: CircularProgressIndicator(
-                                                color: Colors.white,
+                                                valueColor: AlwaysStoppedAnimation<Color>(
+                                                  Theme.of(context).colorScheme.onPrimary,
+                                                ),
                                                 strokeWidth: 2,
                                               ),
                                             )
@@ -894,16 +913,18 @@ class _RegisterPageState extends State<RegisterPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
+                                Text(
                                   "Already have an account? ",
-                                  style: TextStyle(color: Colors.grey),
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                  ),
                                 ),
                                 TextButton(
                                   onPressed: _navigateToLogin,
-                                  child: const Text(
+                                  child: Text(
                                     'Login',
                                     style: TextStyle(
-                                      color: Colors.blue,
+                                      color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

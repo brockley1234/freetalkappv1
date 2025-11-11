@@ -502,7 +502,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
                                 .displayLarge
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
                           ),
                         ),
@@ -514,7 +514,11 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.pause, size: 64, color: Colors.white),
+                              Icon(
+                                Icons.pause, 
+                                size: 64, 
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                               const SizedBox(height: 16),
                               ElevatedButton.icon(
                                 onPressed: () => setState(() => isPaused = false),
@@ -628,7 +632,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
                       style: TextStyle(
                         fontSize: ResponsiveSizing.getFontSize(context,
                             small: 11, medium: 12, large: 13, xlarge: 13),
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                         height: 1.5,
                       ),
                     ),
@@ -675,7 +679,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
             Text(
               label,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: ResponsiveSizing.getFontSize(context,
                     small: 15, medium: 16, large: 18, xlarge: 20),
                 fontWeight: FontWeight.bold,
@@ -685,7 +689,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
             Text(
               desc,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 fontSize: ResponsiveSizing.getFontSize(context,
                     small: 10, medium: 11, large: 12, xlarge: 12),
               ),
@@ -922,7 +926,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
                     Text(
                       '$tileNumber',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: ResponsiveSizing.getFontSize(context,
                             small: 20, medium: 24, large: 28, xlarge: 32),
                         fontWeight: FontWeight.bold,
@@ -1080,6 +1084,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final padding =
         ResponsiveSizing.getSpacing(context, small: 10, medium: 12, large: 14);
     final borderRadius = ResponsiveSizing.getBorderRadius(context);
@@ -1090,7 +1095,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
         vertical: padding * 0.8,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
@@ -1102,7 +1107,7 @@ class _PuzzleRushGameState extends State<PuzzleRushGame>
             style: TextStyle(
               fontSize: ResponsiveSizing.getFontSize(context,
                   small: 10, medium: 11, large: 12, xlarge: 12),
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,

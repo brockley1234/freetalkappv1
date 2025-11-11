@@ -194,7 +194,7 @@ class _VideosPageState extends State<VideosPage>
         ),
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.black87,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
     );
   }
@@ -509,39 +509,54 @@ class _VideosPageState extends State<VideosPage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.black87,
-        title: const Text('Edit Video', style: TextStyle(color: Colors.white)),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text(
+          'Edit Video', 
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                decoration: InputDecoration(
                   labelText: 'Title',
-                  labelStyle: TextStyle(color: Colors.white70),
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white54),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 maxLines: 3,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Description',
-                  labelStyle: TextStyle(color: Colors.white70),
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white54),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
               ),
@@ -551,7 +566,12 @@ class _VideosPageState extends State<VideosPage>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
+            child: Text(
+              'Cancel', 
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
           ),
           TextButton(
             onPressed: () async {
@@ -596,16 +616,16 @@ class _VideosPageState extends State<VideosPage>
                 });
 
                 scaffoldMessenger.showSnackBar(
-                  const SnackBar(
-                    content: Text('Video updated successfully'),
-                    backgroundColor: Colors.green,
+                  SnackBar(
+                    content: const Text('Video updated successfully'),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
                 );
               } else {
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(result['message'] ?? 'Failed to update video'),
-                    backgroundColor: Colors.red,
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );
               }
@@ -625,16 +645,26 @@ class _VideosPageState extends State<VideosPage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.black87,
-        title: const Text('Delete Video', style: TextStyle(color: Colors.white)),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text(
+          'Delete Video', 
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         content: Text(
           'Are you sure you want to delete "$title"? This action cannot be undone.',
-          style: const TextStyle(color: Colors.white70),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
+            child: Text(
+              'Cancel', 
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
           ),
           TextButton(
             onPressed: () async {
@@ -643,15 +673,17 @@ class _VideosPageState extends State<VideosPage>
               // Show loading
               final scaffoldMessenger = ScaffoldMessenger.of(context);
               scaffoldMessenger.showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Row(
                     children: [
-                      CircularProgressIndicator(color: Colors.white),
-                      SizedBox(width: 16),
-                      Text('Deleting video...'),
+                      CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      const SizedBox(width: 16),
+                      const Text('Deleting video...'),
                     ],
                   ),
-                  duration: Duration(minutes: 1),
+                  duration: const Duration(minutes: 1),
                 ),
               );
 
@@ -675,21 +707,24 @@ class _VideosPageState extends State<VideosPage>
                 });
 
                 scaffoldMessenger.showSnackBar(
-                  const SnackBar(
-                    content: Text('Video deleted successfully'),
-                    backgroundColor: Colors.green,
+                  SnackBar(
+                    content: const Text('Video deleted successfully'),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
                 );
               } else {
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(result['message'] ?? 'Failed to delete video'),
-                    backgroundColor: Colors.red,
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );
               }
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'Delete', 
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
         ],
       ),
@@ -816,7 +851,7 @@ class _VideoItemWidgetImprovedState extends State<VideoItemWidgetImproved> {
   void _showMoreOptions() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.black87,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -828,7 +863,10 @@ class _VideoItemWidgetImprovedState extends State<VideoItemWidgetImproved> {
             if (widget.onEdit != null)
               ListTile(
                 leading: const Icon(Icons.edit, color: Colors.blue),
-                title: const Text('Edit Video', style: TextStyle(color: Colors.white)),
+                title: Text(
+                  'Edit Video', 
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   widget.onEdit!();
@@ -839,7 +877,10 @@ class _VideoItemWidgetImprovedState extends State<VideoItemWidgetImproved> {
             if (widget.onDelete != null)
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Delete Video', style: TextStyle(color: Colors.red)),
+                title: Text(
+                  'Delete Video', 
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   widget.onDelete!();
@@ -1275,7 +1316,13 @@ class _CommentsDialogState extends State<CommentsDialog> {
                                   final user = comment['user'] as Map<String, dynamic>?;
                                   final raw = user?['avatar'];
                                   final resolved = _resolveImageUrl(raw);
-                                  return resolved == null ? const Icon(Icons.person, size: 16, color: Colors.white) : null;
+                                  return resolved == null 
+                                      ? Icon(
+                                          Icons.person, 
+                                          size: 16, 
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ) 
+                                      : null;
                                 }(),
                               ),
                               const SizedBox(width: 12),
@@ -1293,7 +1340,9 @@ class _CommentsDialogState extends State<CommentsDialog> {
                                     const SizedBox(height: 4),
                                     Text(
                                       comment['text'] ?? '',
-                                      style: const TextStyle(color: Colors.white70),
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1463,10 +1512,12 @@ class _LikersDialogState extends State<LikersDialog> {
                       ),
                     )
                   : (_likers.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Text(
                             'No likes yet',
-                            style: TextStyle(color: Colors.white70),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                            ),
                           ),
                         )
                       : ListView.builder(
@@ -1484,7 +1535,7 @@ class _LikersDialogState extends State<LikersDialog> {
                               ),
                               title: Text(
                                 user['name'] ?? 'Unknown',
-                                style: const TextStyle(color: Colors.white),
+                                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                               ),
                             );
                           },

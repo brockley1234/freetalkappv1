@@ -237,7 +237,7 @@ class _CommentsBottomSheetEnhancedState
                     ? 'Reply added!'
                     : 'Comment added!',
               ),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               duration: const Duration(seconds: 1),
             ),
           );
@@ -247,7 +247,7 @@ class _CommentsBottomSheetEnhancedState
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(result['message'] ?? 'Failed to add comment'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.errorContainer,
             ),
           );
         }
@@ -257,7 +257,7 @@ class _CommentsBottomSheetEnhancedState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -317,7 +317,7 @@ class _CommentsBottomSheetEnhancedState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -389,9 +389,12 @@ class _CommentsBottomSheetEnhancedState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'React to comment',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -424,9 +427,12 @@ class _CommentsBottomSheetEnhancedState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'React to reply',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -497,7 +503,9 @@ class _CommentsBottomSheetEnhancedState
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.shade100 : Colors.transparent,
+          color: isSelected
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(emoji, style: const TextStyle(fontSize: 32)),
@@ -521,7 +529,9 @@ class _CommentsBottomSheetEnhancedState
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.shade100 : Colors.transparent,
+          color: isSelected
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(emoji, style: const TextStyle(fontSize: 32)),
@@ -558,7 +568,7 @@ class _CommentsBottomSheetEnhancedState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
@@ -569,9 +579,9 @@ class _CommentsBottomSheetEnhancedState
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -579,14 +589,18 @@ class _CommentsBottomSheetEnhancedState
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     'Comments (${_comments.length})',
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -612,12 +626,14 @@ class _CommentsBottomSheetEnhancedState
                             Icon(
                               Icons.error_outline,
                               size: 48,
-                              color: Colors.grey.shade400,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               _error!,
-                              style: TextStyle(color: Colors.grey.shade600),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                              ),
                             ),
                             const SizedBox(height: 16),
                             ElevatedButton(
@@ -635,14 +651,14 @@ class _CommentsBottomSheetEnhancedState
                                 Icon(
                                   Icons.chat_bubble_outline,
                                   size: 64,
-                                  color: Colors.grey.shade300,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
                                   'No comments yet',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey.shade600,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -650,7 +666,7 @@ class _CommentsBottomSheetEnhancedState
                                   'Be the first to comment!',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey.shade500,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                   ),
                                 ),
                               ],
@@ -670,16 +686,20 @@ class _CommentsBottomSheetEnhancedState
           if (_replyingToCommentId != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              color: Colors.blue.shade50,
+              color: Theme.of(context).colorScheme.primaryContainer,
               child: Row(
                 children: [
-                  Icon(Icons.reply, size: 16, color: Colors.blue.shade700),
+                  Icon(
+                    Icons.reply,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Replying to $_replyingToUserName',
                       style: TextStyle(
-                        color: Colors.blue.shade700,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                         fontSize: 13,
                       ),
                     ),
@@ -703,10 +723,10 @@ class _CommentsBottomSheetEnhancedState
               bottom: MediaQuery.of(context).viewInsets.bottom + 12,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
@@ -781,7 +801,7 @@ class _CommentsBottomSheetEnhancedState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
-                backgroundColor: Colors.blue.shade100,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 radius: 18,
                 backgroundImage: userAvatar != null && userAvatar.isNotEmpty
                     ? UrlUtils.getAvatarImageProvider(userAvatar)
@@ -790,7 +810,7 @@ class _CommentsBottomSheetEnhancedState
                     ? Text(
                         userInitials,
                         style: TextStyle(
-                          color: Colors.blue.shade700,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -805,7 +825,7 @@ class _CommentsBottomSheetEnhancedState
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Column(
@@ -813,7 +833,7 @@ class _CommentsBottomSheetEnhancedState
                         children: [
                           Text(
                             userName,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
@@ -822,11 +842,14 @@ class _CommentsBottomSheetEnhancedState
                           if (content.isNotEmpty)
                             MentionText(
                               text: content,
-                              style: const TextStyle(fontSize: 14, height: 1.4),
-                              mentionStyle: const TextStyle(
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontSize: 14,
                                 height: 1.4,
-                                color: Colors.blue,
+                              ),
+                              mentionStyle: TextStyle(
+                                fontSize: 14,
+                                height: 1.4,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.w600,
                               ),
                               onMentionTap: (userName) async {
@@ -861,7 +884,7 @@ class _CommentsBottomSheetEnhancedState
                                 placeholder: (context, url) => Container(
                                   width: 200,
                                   height: 150,
-                                  color: Colors.grey.shade200,
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   child: const Center(
                                     child: CircularProgressIndicator(strokeWidth: 2),
                                   ),
@@ -871,15 +894,21 @@ class _CommentsBottomSheetEnhancedState
                                   return Container(
                                     width: 200,
                                     height: 150,
-                                    color: Colors.grey.shade200,
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        const Icon(Icons.error, color: Colors.red),
+                                        Icon(
+                                          Icons.error,
+                                          color: Theme.of(context).colorScheme.error,
+                                        ),
                                         const SizedBox(height: 4),
                                         Text(
                                           'Failed to load',
-                                          style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -899,7 +928,7 @@ class _CommentsBottomSheetEnhancedState
                             timeAgo,
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -915,7 +944,7 @@ class _CommentsBottomSheetEnhancedState
                                   : '${reactions.length} reactions',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.blue.shade700,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -927,7 +956,7 @@ class _CommentsBottomSheetEnhancedState
                               'Reply',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.blue.shade700,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -982,7 +1011,7 @@ class _CommentsBottomSheetEnhancedState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 radius: 14,
                 backgroundImage: userAvatar != null && userAvatar.isNotEmpty
                     ? UrlUtils.getAvatarImageProvider(userAvatar)
@@ -991,7 +1020,7 @@ class _CommentsBottomSheetEnhancedState
                     ? Text(
                         userInitials,
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                           fontWeight: FontWeight.bold,
                           fontSize: 10,
                         ),
@@ -1006,34 +1035,34 @@ class _CommentsBottomSheetEnhancedState
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            userName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                            ),
-                          ),
+                      Text(
+                        userName,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
                           const SizedBox(height: 2),
                           MentionText(
                             text: mentionedUserName != null
                                 ? '@$mentionedUserName $content'
                                 : content,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               height: 1.3,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                             mentionStyle: TextStyle(
                               fontSize: 13,
                               height: 1.3,
                               fontWeight: FontWeight.w600,
-                              color: Colors.blue.shade700,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                             onMentionTap: (userName) async {
                               final taggedUsers = reply['taggedUsers'] as List?;
@@ -1063,7 +1092,7 @@ class _CommentsBottomSheetEnhancedState
                             timeAgo,
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             ),
                           ),
                           if (parentCommentId != null &&
@@ -1082,7 +1111,7 @@ class _CommentsBottomSheetEnhancedState
                                     : '${reactions.length} reactions',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -1098,7 +1127,7 @@ class _CommentsBottomSheetEnhancedState
                                 'Reply',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.blue.shade700,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -1142,7 +1171,7 @@ class _CommentsBottomSheetEnhancedState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundColor: Colors.grey.shade100,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             radius: 12,
             backgroundImage: userAvatar != null && userAvatar.isNotEmpty
                 ? UrlUtils.getAvatarImageProvider(userAvatar)
@@ -1151,7 +1180,7 @@ class _CommentsBottomSheetEnhancedState
                 ? Text(
                     userInitials,
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontWeight: FontWeight.bold,
                       fontSize: 9,
                     ),
@@ -1166,7 +1195,7 @@ class _CommentsBottomSheetEnhancedState
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
@@ -1174,7 +1203,7 @@ class _CommentsBottomSheetEnhancedState
                     children: [
                       Text(
                         userName,
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -1184,16 +1213,16 @@ class _CommentsBottomSheetEnhancedState
                         text: mentionedUserName != null
                             ? '@$mentionedUserName $content'
                             : content,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           height: 1.3,
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         mentionStyle: TextStyle(
                           fontSize: 12,
                           height: 1.3,
                           fontWeight: FontWeight.w600,
-                          color: Colors.blue.shade700,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         onMentionTap: (userName) async {
                           final taggedUsers =
@@ -1220,7 +1249,10 @@ class _CommentsBottomSheetEnhancedState
                   padding: const EdgeInsets.only(left: 8, top: 2),
                   child: Text(
                     timeAgo,
-                    style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                 ),
               ],
@@ -1242,27 +1274,31 @@ class _CommentsBottomSheetEnhancedState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
+                baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                highlightColor: Theme.of(context).colorScheme.surface,
                 child: const CircleAvatar(radius: 18),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
+                  baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  highlightColor: Theme.of(context).colorScheme.surface,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         height: 60,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Container(height: 12, width: 100, color: Colors.white),
+                      Container(
+                        height: 12,
+                        width: 100,
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
                     ],
                   ),
                 ),

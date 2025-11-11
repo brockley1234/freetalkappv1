@@ -407,7 +407,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
                               .displayLarge
                               ?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                         ),
                       ),
@@ -419,7 +419,11 @@ class _ColorBlastGameState extends State<ColorBlastGame>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.pause, size: 64, color: Colors.white),
+                            Icon(
+                              Icons.pause, 
+                              size: 64, 
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                             const SizedBox(height: 16),
                             ElevatedButton.icon(
                               onPressed: _togglePause,
@@ -472,7 +476,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
                 'Tap matching colors as fast as you can!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       fontSize: _getResponsiveFontSize(screenSize, 14),
                     ),
               ),
@@ -544,7 +548,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
             Text(
               label,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: responsiveFontSize,
                 fontWeight: FontWeight.bold,
               ),
@@ -553,7 +557,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
             Text(
               description,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 fontSize: _getResponsiveFontSize(screenSize, 12),
               ),
             ),
@@ -643,7 +647,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
                   onTap: () => _onColorTap(targetColor),
                   child: Icon(
                     Icons.touch_app,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                     size: _getResponsiveIconSize(screenSize, 40),
                   ),
                 ),
@@ -683,7 +687,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
             child: Text(
               message,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
                 fontSize: _getResponsiveFontSize(screenSize, 16),
               ),
@@ -842,6 +846,7 @@ class _ColorBlastGameState extends State<ColorBlastGame>
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final screenSize = MediaQuery.of(context).size;
     final padding = _getResponsivePadding(screenSize);
 
@@ -860,14 +865,14 @@ class _ColorBlastGameState extends State<ColorBlastGame>
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey.shade700,
+            style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   fontSize: _getResponsiveFontSize(screenSize, 16),
                 ),
           ),
           Text(
             value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            style: theme.textTheme.headlineSmall?.copyWith(
                   color: color,
                   fontWeight: FontWeight.bold,
                   fontSize: _getResponsiveFontSize(screenSize, 20),

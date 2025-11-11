@@ -11,7 +11,7 @@ class SecureStorageService {
   factory SecureStorageService() => _instance;
   SecureStorageService._internal();
 
-  // Configure secure storage with appropriate settings
+  // Configure secure storage with appropriate settings for all platforms
   final FlutterSecureStorage _storage = const FlutterSecureStorage(
     aOptions: AndroidOptions(
       encryptedSharedPreferences: true,
@@ -26,6 +26,10 @@ class SecureStorageService {
       // Synchronize with iCloud Keychain (optional)
       synchronizable: false,
     ),
+    // Web platform: Uses localStorage (less secure but functional)
+    // For production web apps, consider using httpOnly cookies instead
+    // Note: flutter_secure_storage uses localStorage on web by default
+    // For better security on web, consider implementing httpOnly cookies server-side
   );
 
   // Keys for storing sensitive data

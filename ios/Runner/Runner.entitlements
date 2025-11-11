@@ -6,5 +6,10 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<!-- Push Notifications capability - REQUIRED for FCM -->
+	<!-- Use "development" for testing, "production" for App Store -->
+	<!-- Firebase automatically handles both environments -->
+	<key>aps-environment</key>
+	<string>production</string>
 </dict>
 </plist>

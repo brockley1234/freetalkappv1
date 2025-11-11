@@ -1,4 +1,4 @@
-﻿# ✅ In-App Purchase Compliance Status
+# ✅ In-App Purchase Compliance Status
 
 ## Current Status: **COMPLIANT** (Client-Side)
 

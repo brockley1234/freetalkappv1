@@ -188,6 +188,37 @@ ThemeData createLightTheme() {
     // Scaffold background
     scaffoldBackgroundColor: AppColors.surface,
 
+    // Global text colors for light mode
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: AppColors.textPrimary),
+      bodyMedium: TextStyle(color: AppColors.textPrimary),
+      bodySmall: TextStyle(color: AppColors.textSecondary),
+      titleLarge: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+      titleMedium: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+      titleSmall: TextStyle(color: AppColors.textPrimary),
+      labelLarge: TextStyle(color: AppColors.textPrimary),
+      labelMedium: TextStyle(color: AppColors.textSecondary),
+      labelSmall: TextStyle(color: AppColors.textTertiary),
+    ),
+
+    // Icon theme for light mode
+    iconTheme: const IconThemeData(color: AppColors.textPrimary),
+
+    // List tile theme for light mode
+    listTileTheme: const ListTileThemeData(
+      iconColor: AppColors.textPrimary,
+      textColor: AppColors.textPrimary,
+      titleTextStyle: TextStyle(
+        color: AppColors.textPrimary,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      subtitleTextStyle: TextStyle(
+        color: AppColors.textSecondary,
+        fontSize: 14,
+      ),
+    ),
+
     // Font configuration
     fontFamily: 'Roboto',
     fontFamilyFallback: const ['Noto Sans', 'Noto Color Emoji'],
@@ -210,6 +241,16 @@ ThemeData createLightTheme() {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppBorderRadius.full),
+      ),
+    ),
+
+    // Snackbar theme
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: AppColors.darkSurface,
+      contentTextStyle: const TextStyle(color: AppColors.textInverse),
+      actionTextColor: AppColors.primaryLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppBorderRadius.md),
       ),
     ),
   );
@@ -402,6 +443,16 @@ ThemeData createDarkTheme() {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppBorderRadius.full),
+      ),
+    ),
+
+    // Snackbar theme
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: AppColors.darkSurfaceDim,
+      contentTextStyle: const TextStyle(color: AppColors.textInverse),
+      actionTextColor: AppColors.primaryLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppBorderRadius.md),
       ),
     ),
   );

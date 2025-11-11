@@ -710,11 +710,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
     String? subtitle,
     VoidCallback? onTap,
   }) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[300]!),
+        side: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: InkWell(
         onTap: onTap,
@@ -726,10 +727,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: Theme.of(context).primaryColor),
+                child: Icon(icon, color: theme.colorScheme.primary),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -740,16 +741,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                       title,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey[600],
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       content,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     if (subtitle != null) ...[
@@ -758,7 +760,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                         subtitle,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -767,7 +769,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               ),
               if (onTap != null)
                 Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.grey[400]),
+                    size: 16, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
             ],
           ),
         ),
@@ -859,7 +861,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               child: LinearProgressIndicator(
                 value: percentage / 100,
                 minHeight: 8,
-                backgroundColor: Colors.grey[200],
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   isAtCapacity ? Colors.red : Theme.of(context).primaryColor,
                 ),
@@ -1022,12 +1024,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   const SizedBox(height: 8),
                   Text(
                     'No attendees yet',
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Be the first to RSVP!',
-                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), 
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),

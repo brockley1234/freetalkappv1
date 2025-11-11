@@ -436,6 +436,7 @@ class _ClubsListPageState extends State<ClubsListPage> with AutomaticKeepAliveCl
       padding: const EdgeInsets.all(16),
       itemCount: 6,
       itemBuilder: (context, index) {
+        final theme = Theme.of(context);
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           child: Padding(
@@ -446,7 +447,7 @@ class _ClubsListPageState extends State<ClubsListPage> with AutomaticKeepAliveCl
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -459,7 +460,7 @@ class _ClubsListPageState extends State<ClubsListPage> with AutomaticKeepAliveCl
                         width: double.infinity,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -468,7 +469,7 @@ class _ClubsListPageState extends State<ClubsListPage> with AutomaticKeepAliveCl
                         width: 150,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),

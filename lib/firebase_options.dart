@@ -57,19 +57,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBL9kGSCm7VqbGb4Vc7jN7YtExK8x-mJ4Y',
-    appId: '1:812858670577:android:7a0f8e0c8e0e0e0e0e0e0e',
-    messagingSenderId: '812858670577',
+    apiKey: 'AIzaSyAfQaqdi9TVBDPM-z-u7Jac4bsjglfAZ6M',
+    appId: '1:910913472413:android:7df42f94e95cd16d391174',
+    messagingSenderId: '910913472413',
     projectId: 'reeltalk-46664',
-    storageBucket: 'reeltalk-46664.appspot.com',
+    storageBucket: 'reeltalk-46664.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBL9kGSCm7VqbGb4Vc7jN7YtExK8x-mJ4Y',
-    appId: '1:812858670577:ios:7a0f8e0c8e0e0e0e0e0e0e',
-    messagingSenderId: '812858670577',
+    apiKey: 'AIzaSyDRhQaOJ8_btnHk6iH60udQe7lEceRNEKQ',
+    appId: '1:910913472413:ios:f9b396be7c6e0d2b391174',
+    messagingSenderId: '910913472413',
     projectId: 'reeltalk-46664',
-    storageBucket: 'reeltalk-46664.appspot.com',
-    iosBundleId: 'com.reeltalk.app',
+    storageBucket: 'reeltalk-46664.firebasestorage.app',
+    iosBundleId: 'com.freetalk.social',
   );
 }

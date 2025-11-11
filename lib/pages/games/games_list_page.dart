@@ -2186,7 +2186,8 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
   }
 
   Widget _buildStatCard(String label, String value, [Color? color]) {
-    final displayColor = color ?? Colors.purple;
+    final theme = Theme.of(context);
+    final displayColor = color ?? theme.colorScheme.primary;
     final padding = ResponsiveSizing.getSpacing(context, small: 8, medium: 10, large: 12);
     final borderRadius = ResponsiveSizing.getBorderRadius(context);
     final isSmallScreen = ResponsiveSizing.isSmallScreen(context);
@@ -2197,10 +2198,12 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
         vertical: isSmallScreen ? padding * 0.6 : padding * 0.8,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: Colors.grey.shade300,
+          color: theme.cardTheme.shape is RoundedRectangleBorder
+              ? (theme.cardTheme.shape as RoundedRectangleBorder).side.color
+              : theme.colorScheme.outline.withValues(alpha: 0.2),
           width: 0.5,
         ),
       ),
@@ -2213,7 +2216,7 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
             style: TextStyle(
               fontSize: ResponsiveSizing.getFontSize(context,
                   small: 9, medium: 10, large: 11, xlarge: 12),
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
@@ -2694,6 +2697,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> {
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final padding =
         ResponsiveSizing.getSpacing(context, small: 10, medium: 12, large: 14);
     final borderRadius = ResponsiveSizing.getBorderRadius(context);
@@ -2704,7 +2708,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> {
         vertical: padding * 0.8,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Column(
@@ -2715,7 +2719,7 @@ class _MemoryMatchGameState extends State<MemoryMatchGame> {
             style: TextStyle(
               fontSize: ResponsiveSizing.getFontSize(context,
                   small: 10, medium: 11, large: 12, xlarge: 13),
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
@@ -3236,6 +3240,7 @@ class _QuickTapGameState extends State<QuickTapGame> {
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 400;
 
@@ -3245,7 +3250,7 @@ class _QuickTapGameState extends State<QuickTapGame> {
         vertical: isSmallScreen ? 8 : 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -3255,7 +3260,7 @@ class _QuickTapGameState extends State<QuickTapGame> {
             label,
             style: TextStyle(
               fontSize: isSmallScreen ? 10 : 12,
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
@@ -3765,6 +3770,7 @@ class _NumberGuessingGameState extends State<NumberGuessingGame> {
   }
 
   Widget _buildStatCard(String label, String value, Color color) {
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 400;
 
@@ -3774,7 +3780,7 @@ class _NumberGuessingGameState extends State<NumberGuessingGame> {
         vertical: isSmallScreen ? 8 : 12,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -3784,7 +3790,7 @@ class _NumberGuessingGameState extends State<NumberGuessingGame> {
             label,
             style: TextStyle(
               fontSize: isSmallScreen ? 10 : 12,
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,

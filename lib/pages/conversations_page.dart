@@ -592,10 +592,10 @@ class _ConversationsPageState extends State<ConversationsPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
+              leading: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
               title: Text(
                 isGroup ? 'Leave Group' : 'Delete Conversation',
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -775,7 +775,10 @@ class _ConversationsPageState extends State<ConversationsPage>
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Colors.blue.shade400, Colors.purple.shade400],
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary,
+                    ],
                   ),
                 ),
                 child: SafeArea(
@@ -800,7 +803,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                       ResponsiveDimensions.getHeadingFontSize(
                                           context),
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -810,7 +813,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                             IconButton(
                               icon: Icon(
                                 Icons.add_circle_outline,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.surface,
                                 size: ResponsiveDimensions.getLargeIconSize(
                                     context),
                               ),
@@ -832,7 +835,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                 turns: _refreshAnimationController,
                                 child: Icon(
                                   Icons.refresh_rounded,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   size: ResponsiveDimensions.getLargeIconSize(
                                       context),
                                 ),
@@ -883,7 +886,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                       size: ResponsiveDimensions.getIconSize(
                                               context) *
                                           0.8,
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.onPrimary,
                                     ),
                                     SizedBox(
                                         width:
@@ -895,7 +898,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                           ? '99+'
                                           : '$_totalUnread',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Theme.of(context).colorScheme.onPrimary,
                                         fontSize: ResponsiveDimensions
                                             .getCaptionFontSize(context),
                                         fontWeight: FontWeight.bold,
@@ -944,7 +947,10 @@ class _ConversationsPageState extends State<ConversationsPage>
                                 TextButton.icon(
                                   onPressed: _markAllAsRead,
                                   icon: const Icon(Icons.mark_email_read, color: Colors.white),
-                                  label: const Text('Mark all read', style: TextStyle(color: Colors.white)),
+                                  label: Text(
+                                    'Mark all read', 
+                                    style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                                  ),
                                   style: TextButton.styleFrom(
                                     foregroundColor: Colors.white,
                                   ),
@@ -958,15 +964,15 @@ class _ConversationsPageState extends State<ConversationsPage>
                 ),
               ),
             ),
-            backgroundColor: Colors.blue.shade400,
+            backgroundColor: Theme.of(context).colorScheme.primary,
           ),
 
           // Search bar
           SliverToBoxAdapter(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 ),
@@ -982,11 +988,19 @@ class _ConversationsPageState extends State<ConversationsPage>
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Search conversations...',
-                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, color: Colors.grey),
+                            icon: Icon(
+                              Icons.clear,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                            ),
                             onPressed: () {
                               _searchController.clear();
                               setState(() {
@@ -997,13 +1011,13 @@ class _ConversationsPageState extends State<ConversationsPage>
                           )
                         : null,
                     filled: true,
-                    fillColor: Colors.grey.shade100,
+                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
                         ResponsiveDimensions.getBorderRadius(context) * 1.3,
                       ),
                       borderSide: BorderSide(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
@@ -1011,7 +1025,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                         ResponsiveDimensions.getBorderRadius(context) * 1.3,
                       ),
                       borderSide: BorderSide(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -1019,7 +1033,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                         ResponsiveDimensions.getBorderRadius(context) * 1.3,
                       ),
                       borderSide: BorderSide(
-                        color: Colors.blue.shade400,
+                        color: Theme.of(context).colorScheme.primary,
                         width: 2,
                       ),
                     ),
@@ -1038,16 +1052,18 @@ class _ConversationsPageState extends State<ConversationsPage>
 
           // Content with white rounded top
           if (_isLoading)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
                     Text(
                       'Loading conversations...',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                     ),
                   ],
                 ),
@@ -1059,9 +1075,9 @@ class _ConversationsPageState extends State<ConversationsPage>
               .isEmpty)
             SliverFillRemaining(
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
@@ -1082,8 +1098,8 @@ class _ConversationsPageState extends State<ConversationsPage>
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.blue.shade50,
-                                Colors.purple.shade50,
+                                Theme.of(context).colorScheme.primaryContainer,
+                                Theme.of(context).colorScheme.secondaryContainer,
                               ],
                             ),
                             shape: BoxShape.circle,
@@ -1095,7 +1111,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                             size:
                                 ResponsiveDimensions.getLargeIconSize(context) *
                                     1.5,
-                            color: Colors.blue.shade300,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                         SizedBox(
@@ -1111,7 +1127,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                 ResponsiveDimensions.getSubheadingFontSize(
                                     context),
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         SizedBox(
@@ -1125,7 +1141,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                           style: TextStyle(
                             fontSize:
                                 ResponsiveDimensions.getBodyFontSize(context),
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             height: 1.4,
                           ),
                         ),
@@ -1138,9 +1154,9 @@ class _ConversationsPageState extends State<ConversationsPage>
           else
             SliverToBoxAdapter(
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
@@ -1163,14 +1179,14 @@ class _ConversationsPageState extends State<ConversationsPage>
                               ResponsiveDimensions.getVerticalPadding(context),
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.shade50,
+                              color: Theme.of(context).colorScheme.secondaryContainer,
                               borderRadius: BorderRadius.circular(
                                 ResponsiveDimensions.getBorderRadius(context),
                               ),
                             ),
                             child: Icon(
                               Icons.chat_bubble_outline,
-                              color: Colors.green.shade600,
+                              color: Theme.of(context).colorScheme.secondary,
                               size: ResponsiveDimensions.getIconSize(context),
                             ),
                           ),
@@ -1184,7 +1200,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                   ResponsiveDimensions.getSubheadingFontSize(
                                       context),
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -1213,7 +1229,9 @@ class _ConversationsPageState extends State<ConversationsPage>
                               child: Center(
                                 child: Text(
                                   'No more conversations',
-                                  style: TextStyle(color: Colors.grey.shade600),
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                  ),
                                 ),
                               ),
                             ),
@@ -1321,7 +1339,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
                   isGroup ? 'Leave' : 'Delete',
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
             ],
@@ -1377,20 +1395,23 @@ class _ConversationsPageState extends State<ConversationsPage>
           vertical: ResponsiveDimensions.getVerticalPadding(context) / 2,
         ),
         decoration: BoxDecoration(
-          color: unreadCount > 0 ? Colors.blue.shade50 : Colors.white,
+          color: unreadCount > 0
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(
             ResponsiveDimensions.getBorderRadius(context) * 1.3,
           ),
           border: Border.all(
-            color:
-                unreadCount > 0 ? Colors.blue.shade200 : Colors.grey.shade200,
+            color: unreadCount > 0
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
+                : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
             width: unreadCount > 0 ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
               color: unreadCount > 0
-                  ? Colors.blue.withValues(alpha: 0.1)
-                  : Colors.black.withValues(alpha: 0.05),
+                  ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+                  : Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
               blurRadius: unreadCount > 0 ? 8 : 4,
               offset: const Offset(0, 2),
             ),
@@ -1496,14 +1517,16 @@ class _ConversationsPageState extends State<ConversationsPage>
                       gradient: isGroup
                           ? LinearGradient(
                               colors: [
-                                Colors.blue.shade300,
-                                Colors.purple.shade300,
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.secondary,
                               ],
                             )
                           : null,
                       boxShadow: [
                         BoxShadow(
-                          color: (isGroup ? Colors.purple : Colors.blue)
+                          color: (isGroup
+                                  ? Theme.of(context).colorScheme.secondary
+                                  : Theme.of(context).colorScheme.primary)
                               .withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
@@ -1522,7 +1545,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                               : null,
                           backgroundColor: isGroup
                               ? Colors.transparent
-                              : Colors.blue.shade100,
+                              : Theme.of(context).colorScheme.primaryContainer,
                           child: displayAvatar == null
                               ? Icon(
                                   isGroup ? Icons.group : Icons.person,
@@ -1531,8 +1554,8 @@ class _ConversationsPageState extends State<ConversationsPage>
                                       2 *
                                       0.6,
                                   color: isGroup
-                                      ? Colors.white
-                                      : Colors.blue.shade400,
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.primary,
                                 )
                               : null,
                         ),
@@ -1548,10 +1571,10 @@ class _ConversationsPageState extends State<ConversationsPage>
                                   ResponsiveDimensions.getIconSize(context) *
                                       0.7,
                               decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Theme.of(context).colorScheme.secondary,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   width: 2.5,
                                 ),
                               ),
@@ -1588,8 +1611,8 @@ class _ConversationsPageState extends State<ConversationsPage>
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.blue.shade400,
-                                    Colors.purple.shade400,
+                                    Theme.of(context).colorScheme.primary,
+                                    Theme.of(context).colorScheme.secondary,
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(
@@ -1606,7 +1629,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                     size: ResponsiveDimensions.getIconSize(
                                             context) *
                                         0.6,
-                                    color: Colors.white,
+                                    color: Theme.of(context).colorScheme.onPrimary,
                                   ),
                                   SizedBox(
                                       width:
@@ -1619,7 +1642,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                       fontSize: ResponsiveDimensions
                                               .getCaptionFontSize(context) *
                                           0.85,
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.onPrimary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -1639,7 +1662,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                       fontWeight: unreadCount > 0
                                           ? FontWeight.bold
                                           : FontWeight.w600,
-                                      color: Colors.black87,
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -1690,7 +1713,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                                                             .getCaptionFontSize(
                                                                 context) *
                                                         0.9,
-                                                    color: Colors.orange,
+                                                    color: Theme.of(context).colorScheme.tertiary,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
@@ -1778,7 +1801,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                         child: Text(
                           unreadCount > 9 ? '9+' : '$unreadCount',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             fontSize: ResponsiveDimensions.getCaptionFontSize(
                                     context) *
                                 0.9,

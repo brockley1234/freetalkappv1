@@ -86,7 +86,7 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
                     'Loading insights...',
                     style: TextStyle(
                       fontSize: responsive.fontBase,
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -335,6 +335,7 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
 
   Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
     final responsive = context.responsive;
+    final theme = Theme.of(context);
     
     return Container(
       padding: EdgeInsets.all(responsive.paddingMedium),
@@ -359,7 +360,7 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
             title,
             style: TextStyle(
               fontSize: responsive.fontSmall,
-              color: Colors.grey[600],
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -385,11 +386,11 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
       height: 200,
       padding: EdgeInsets.all(responsive.paddingMedium),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(responsive.radiusMedium),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -481,7 +482,7 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
                     titleStyle: TextStyle(
                       fontSize: responsive.fontSmall,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   PieChartSectionData(
@@ -492,7 +493,7 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
                     titleStyle: TextStyle(
                       fontSize: responsive.fontSmall,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   PieChartSectionData(
@@ -503,7 +504,7 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
                     titleStyle: TextStyle(
                       fontSize: responsive.fontSmall,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -531,11 +532,11 @@ class _StoryInsightsDashboardState extends State<StoryInsightsDashboard>
       height: 200,
       padding: EdgeInsets.all(responsive.paddingMedium),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(responsive.radiusMedium),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

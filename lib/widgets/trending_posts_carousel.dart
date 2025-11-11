@@ -126,7 +126,7 @@ class _TrendingPostsCarouselState extends State<TrendingPostsCarousel> {
                     decoration: BoxDecoration(
                       color: _currentPage == index
                           ? Colors.orange
-                          : Colors.grey.shade300,
+                          : Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -268,7 +268,7 @@ class _TrendingPostsCarouselState extends State<TrendingPostsCarousel> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade800,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -278,7 +278,7 @@ class _TrendingPostsCarouselState extends State<TrendingPostsCarousel> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade700,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                             height: 1.4,
                           ),
                         ),
@@ -368,49 +368,53 @@ class _TrendingPostsCarouselState extends State<TrendingPostsCarousel> {
   }
 
   Widget _buildLoadingSkeleton() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Container(
-        height: 300,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: const Center(
-          child: CircularProgressIndicator(),
+    return Builder(
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildEmptyState() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Container(
-        height: 200,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.trending_up,
-              size: 48,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'No trending posts yet',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
+    return Builder(
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          height: 200,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Theme.of(context).dividerColor),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.trending_up,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+              Text(
+                'No trending posts yet',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

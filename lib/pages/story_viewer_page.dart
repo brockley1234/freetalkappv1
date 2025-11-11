@@ -729,7 +729,7 @@ class _StoryViewerPageState extends State<StoryViewerPage>
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -744,9 +744,9 @@ class _StoryViewerPageState extends State<StoryViewerPage>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Viewers',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -772,13 +772,13 @@ class _StoryViewerPageState extends State<StoryViewerPage>
                                   Icon(
                                     Icons.visibility_off,
                                     size: 48,
-                                    color: Colors.grey.shade600,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
                                     'No views yet',
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                     ),

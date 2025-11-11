@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import '../services/payment_service.dart';
@@ -30,6 +31,11 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
       final iapService = IAPService();
       await iapService.initialize();
 
+      // Load products when premium page opens (lazy loading for better performance)
+      iapService.loadProducts().catchError((e) {
+        debugPrint('❌ Error loading products: $e');
+      });
+
       // Listen for successful purchases
       // The IAP service handles purchase verification through its stream
       if (mounted) {
@@ -40,11 +46,18 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
     }
   }
 
-  Future<void> _checkCurrentStatus() async {
+  // Debounce status checks to prevent rapid-fire API calls
+  Timer? _statusCheckTimer;
+  
+  Future<void> _checkCurrentStatus({bool forceRefresh = false}) async {
+    // Debounce: Cancel previous check if still pending
+    _statusCheckTimer?.cancel();
+    
     setState(() => _isCheckingStatus = true);
 
     try {
-      final result = await PaymentService.checkFeatureAccess('premium');
+      // Use cached result if available (unless forcing refresh)
+      final result = await PaymentService.checkFeatureAccess('premium', forceRefresh: forceRefresh);
 
       if (mounted) {
         setState(() {
@@ -54,10 +67,17 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
         });
       }
     } catch (e) {
+      debugPrint('❌ Error checking status: $e');
       if (mounted) {
         setState(() => _isCheckingStatus = false);
       }
     }
+  }
+  
+  @override
+  void dispose() {
+    _statusCheckTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _startPurchase() async {
@@ -68,8 +88,8 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
     try {
       // Use real In-App Purchase for production
       final productId = _selectedPlan == 'monthly'
-          ? 'com.freetalk.premium_monthly'
-          : 'com.freetalk.premium_yearly';
+          ? 'com.freetalk.subscription.premium.monthly'
+          : 'com.freetalk.subscription.premium.yearly';
 
       debugPrint('🛒 Starting purchase for: $productId');
 
@@ -112,6 +132,8 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
           if (_hasPremium) {
             if (mounted) {
               Navigator.of(context).pop(); // Close processing dialog
+              // Clear cache to ensure fresh status
+              PaymentService.clearStatusCache();
               _showSuccessDialog();
             }
             break;
@@ -150,17 +172,20 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const AlertDialog(
+      builder: (context) => AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Processing your purchase...'),
-            SizedBox(height: 8),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            const Text('Processing your purchase...'),
+            const SizedBox(height: 8),
             Text(
               'This may take a few moments',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 12, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),
@@ -291,10 +316,13 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'We\'re working on bringing premium features to you soon. Check back later!',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 14, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),
@@ -596,6 +624,34 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
                     color: Colors.grey.shade600,
                   ),
                 ),
+                const SizedBox(height: 24),
+                // Restore Purchases Button (REQUIRED by Apple)
+                // Must be visible and prominent, not hidden in settings
+                OutlinedButton.icon(
+                  onPressed: _isLoading ? null : _restorePurchases,
+                  icon: const Icon(Icons.restore, size: 20),
+                  label: const Text(
+                    'Restore Purchases',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                    side: BorderSide(color: Colors.blue.shade300, width: 1.5),
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Restore previously purchased subscriptions',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
               ],
             ),
           ),
@@ -604,20 +660,107 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
     );
   }
 
+  Future<void> _restorePurchases() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      debugPrint('🔄 Restoring purchases...');
+      
+      // Show processing dialog
+      _showProcessingDialog();
+      
+      final result = await PaymentService.restorePurchases();
+
+      if (!mounted) return;
+
+      // Close processing dialog
+      Navigator.of(context).pop();
+
+      if (result['success'] == true) {
+        // Wait a moment for backend to process
+        await Future.delayed(const Duration(seconds: 1));
+        
+        // Check status after restore - poll efficiently to ensure backend updated
+        // Force refresh on first check after restore
+        int attempts = 0;
+        const maxAttempts = 3; // Reduced from 4 for better performance
+        while (attempts < maxAttempts && mounted) {
+          await _checkCurrentStatus(forceRefresh: attempts == 0); // Force refresh first time
+          
+          if (_hasPremium) {
+            break;
+          }
+          
+          // Progressive delay: shorter waits initially, longer if needed
+          await Future.delayed(Duration(milliseconds: 400 + (attempts * 250)));
+          attempts++;
+        }
+
+        if (!mounted) return;
+
+        if (_hasPremium) {
+          _showSuccessDialog();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['message'] ?? 'No previous purchases found to restore.'),
+              backgroundColor: Colors.orange,
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to restore purchases'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ Error restoring purchases: $e');
+      if (mounted) {
+        // Close processing dialog if still open
+        try {
+          Navigator.of(context).pop();
+        } catch (_) {}
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error restoring purchases: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   Widget _buildFeatureCard({
     required IconData icon,
     required String title,
     required String description,
     required Color color,
   }) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: theme.colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -640,9 +783,10 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -650,7 +794,7 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
                   description,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -669,6 +813,7 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
     required String value,
     bool isPopular = false,
   }) {
+    final theme = Theme.of(context);
     final isSelected = _selectedPlan == value;
 
     return GestureDetector(
@@ -676,16 +821,18 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardTheme.color ?? theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? Colors.amber : Colors.grey.shade300,
+            color: isSelected 
+                ? theme.colorScheme.primary 
+                : theme.colorScheme.outline.withValues(alpha: 0.2),
             width: isSelected ? 3 : 1,
           ),
           boxShadow: [
             if (isSelected)
               BoxShadow(
-                color: Colors.amber.withValues(alpha: 0.3),
+                color: theme.colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -701,13 +848,15 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? Colors.amber : Colors.grey.shade400,
+                      color: isSelected 
+                          ? theme.colorScheme.primary 
+                          : theme.colorScheme.outline.withValues(alpha: 0.3),
                       width: 2,
                     ),
-                    color: isSelected ? Colors.amber : Colors.transparent,
+                    color: isSelected ? theme.colorScheme.primary : Colors.transparent,
                   ),
                   child: isSelected
-                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      ? Icon(Icons.check, size: 16, color: theme.colorScheme.onPrimary)
                       : null,
                 ),
                 const SizedBox(width: 16),
@@ -717,9 +866,10 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -730,7 +880,7 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.amber.shade700,
+                              color: theme.colorScheme.primary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -738,7 +888,7 @@ class _PremiumSubscriptionPageState extends State<PremiumSubscriptionPage> {
                             period,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                             ),
                           ),
                         ],
