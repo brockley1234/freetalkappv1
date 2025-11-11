@@ -1,8 +1,10 @@
 workflows:
   ios-workflow:
-    name: iOS Workflow - Manual Upload
+    name: iOS Workflow - App Store
     max_build_duration: 120
     instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: CI/CD 
     environment:
       flutter: stable
       xcode: latest
@@ -11,22 +13,30 @@ workflows:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.freetalk.social"
-        # Code signing - you'll upload certificates manually in Codemagic UI
-        CERTIFICATE_PRIVATE_KEY: Encrypted(...)
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.freetalk.social
+        # App Store Connect API credentials for automatic code signing
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
 
     scripts:
       - name: Get Flutter dependencies
         script: |
           flutter pub get
 
-      - name: Set up code signing
+      - name: Set up keychain
+        script: keychain initialize
+
+      - name: Fetch signing files
         script: |
-          # Codemagic will automatically handle code signing
-          # using the certificates you upload in the UI
-          echo "Code signing configured via Codemagic UI"
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+
+      - name: Set up signing certificate
+        script: keychain add-certificates
+
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
 
       - name: Build iOS IPA
         script: |
@@ -36,7 +46,8 @@ workflows:
           
           echo "Building version $VERSION (build $BUILD_NUMBER) for bundle ID $BUNDLE_ID"
           
-          # Build IPA - code signing configured in previous step
+          # Build IPA - Codemagic will handle code signing automatically
+          # Using standard release build (no flavors - they don't exist in your project)
           flutter build ipa --release \
             --build-name="$VERSION" \
             --build-number="$BUILD_NUMBER"
@@ -52,7 +63,15 @@ workflows:
           success: true
           failure: true
       
-      # IPA will be available as artifact - download and upload manually via Transporter
+      app_store_connect:
+        # Automatically publish to App Store Connect
+        auth: integration
+        
+        # Optional: Submit to TestFlight beta review
+        submit_to_testflight: false
+        
+        # Optional: Submit to App Store review
+        submit_to_app_store: false
 
   ios-screenshots:
     name: iOS Screenshots Generation
