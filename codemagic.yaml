@@ -9,12 +9,17 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.freetalk.social
       vars:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.freetalk.social"
         # App Store Connect API credentials for automatic code signing
-
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
 
     scripts:
       - name: Get Flutter dependencies
@@ -24,15 +29,47 @@ workflows:
       - name: Set up keychain
         script: keychain initialize
 
-      # - name: Fetch signing files
-#   script: |
-#     app-store-connect fetch-signing-files "$BUNDLE_ID" \
-#       --type IOS_APP_STORE \
-#       --create
-
+      - name: Fetch signing files
+        script: |
+          echo "Fetching signing files for bundle ID: $BUNDLE_ID"
+          echo "Using App Store Connect integration: CI/CD"
+          
+          # Fetch signing files - this will create them if they don't exist
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create || {
+              echo "ERROR: Failed to fetch signing files!"
+              echo "Possible causes:"
+              echo "1. App Store Connect integration 'CI/CD' is not configured in CodeMagic"
+              echo "2. The API key doesn't have 'Admin' or 'App Manager' role"
+              echo "3. The bundle ID $BUNDLE_ID doesn't exist in App Store Connect"
+              echo "4. No distribution certificate exists in your Apple Developer account"
+              exit 1
+            }
+          
+          # Verify certificates were fetched
+          echo "Checking for fetched certificates..."
+          if [ ! -d "/Users/builder/Library/MobileDevice/Certificates" ] || [ -z "$(ls -A /Users/builder/Library/MobileDevice/Certificates 2>/dev/null)" ]; then
+            echo "ERROR: No certificates were fetched!"
+            echo "The fetch command succeeded but no certificates are available."
+            echo "Please check your Apple Developer account and App Store Connect setup."
+            exit 1
+          fi
+          
+          echo "Certificates found:"
+          ls -la /Users/builder/Library/MobileDevice/Certificates/
+          
+          echo "Provisioning profiles found:"
+          ls -la /Users/builder/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
 
       - name: Set up signing certificate
-        script: keychain add-certificates
+        script: |
+          echo "Adding certificates to keychain..."
+          keychain add-certificates || {
+            echo "ERROR: Failed to add certificates to keychain!"
+            exit 1
+          }
+          echo "Certificates added successfully!"
 
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
