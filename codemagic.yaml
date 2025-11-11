@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: CI/CD
+      app_store_connect: codemagic-admin
     environment:
       flutter: stable
       xcode: latest
@@ -23,20 +23,22 @@ workflows:
         script: |
           flutter pub get
 
-      - name: Set up keychain
-        script: keychain initialize
-
-      - name: Fetch signing files
+      - name: Set up code signing
         script: |
+          # Initialize keychain for code signing
+          keychain initialize
+          
+          # Fetch signing files from App Store Connect
+          # Uses the CI/CD integration to get certificates and profiles
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
-
-      - name: Set up signing certificate
-        script: keychain add-certificates
-
-      - name: Set up code signing settings on Xcode project
-        script: xcode-project use-profiles
+          
+          # Add certificates to keychain
+          keychain add-certificates
+          
+          # Configure Xcode project to use fetched profiles
+          xcode-project use-profiles
 
       - name: Build iOS IPA
         script: |
@@ -46,8 +48,7 @@ workflows:
           
           echo "Building version $VERSION (build $BUILD_NUMBER) for bundle ID $BUNDLE_ID"
           
-          # Build IPA - Codemagic will handle code signing automatically
-          # Using standard release build (no flavors - they don't exist in your project)
+          # Build IPA - code signing configured in previous step
           flutter build ipa --release \
             --build-name="$VERSION" \
             --build-number="$BUILD_NUMBER"
