@@ -1,10 +1,8 @@
 workflows:
   ios-workflow:
-    name: iOS Workflow - App Store
+    name: iOS Workflow - Manual Upload
     max_build_duration: 120
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic-admin
     environment:
       flutter: stable
       xcode: latest
@@ -13,10 +11,11 @@ workflows:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.freetalk.social"
-        # App Store Connect API credentials for automatic code signing
-        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+        # Code signing - you'll upload certificates manually in Codemagic UI
+        CERTIFICATE_PRIVATE_KEY: Encrypted(...)
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.freetalk.social
 
     scripts:
       - name: Get Flutter dependencies
@@ -25,20 +24,9 @@ workflows:
 
       - name: Set up code signing
         script: |
-          # Initialize keychain for code signing
-          keychain initialize
-          
-          # Fetch signing files from App Store Connect
-          # With Admin API key, can create certificates if needed
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
-          
-          # Add certificates to keychain
-          keychain add-certificates
-          
-          # Configure Xcode project to use fetched profiles
-          xcode-project use-profiles
+          # Codemagic will automatically handle code signing
+          # using the certificates you upload in the UI
+          echo "Code signing configured via Codemagic UI"
 
       - name: Build iOS IPA
         script: |
@@ -64,15 +52,7 @@ workflows:
           success: true
           failure: true
       
-      app_store_connect:
-        # Automatically publish to App Store Connect
-        auth: integration
-        
-        # Optional: Submit to TestFlight beta review
-        submit_to_testflight: false
-        
-        # Optional: Submit to App Store review
-        submit_to_app_store: false
+      # IPA will be available as artifact - download and upload manually via Transporter
 
   ios-screenshots:
     name: iOS Screenshots Generation
