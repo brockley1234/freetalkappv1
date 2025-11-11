@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic-admin
+      app_store_connect: CI/CD
     environment:
       flutter: stable
       xcode: latest
@@ -29,10 +29,9 @@ workflows:
           keychain initialize
           
           # Fetch signing files from App Store Connect
-          # Uses the CI/CD integration to get certificates and profiles
+          # Note: This will use existing certificates, won't create new ones
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
+            --type IOS_APP_STORE
           
           # Add certificates to keychain
           keychain add-certificates
