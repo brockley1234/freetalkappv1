@@ -14,9 +14,7 @@ workflows:
         XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.freetalk.social"
         # App Store Connect API credentials for automatic code signing
-        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+
 
     scripts:
       - name: Get Flutter dependencies
@@ -26,11 +24,12 @@ workflows:
       - name: Set up keychain
         script: keychain initialize
 
-      - name: Fetch signing files
-        script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
+      # - name: Fetch signing files
+#   script: |
+#     app-store-connect fetch-signing-files "$BUNDLE_ID" \
+#       --type IOS_APP_STORE \
+#       --create
+
 
       - name: Set up signing certificate
         script: keychain add-certificates
