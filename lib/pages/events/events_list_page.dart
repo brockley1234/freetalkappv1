@@ -385,18 +385,24 @@ class _EventsListPageState extends State<EventsListPage>
                 ),
               ],
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateEventPage()),
-          );
-          if (result == true) {
-            _loadEvents();
-          }
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Create'),
+      floatingActionButton: Semantics(
+        label: 'Create new event',
+        button: true,
+        child: FloatingActionButton.extended(
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateEventPage()),
+            );
+            if (result == true) {
+              _loadEvents();
+            }
+          },
+          icon: const Icon(Icons.add),
+          label: const Text('Create Event'),
+          tooltip: 'Create a new event',
+          heroTag: 'create_event_fab',
+        ),
       ),
     );
   }
@@ -541,31 +547,65 @@ class _EventsListPageState extends State<EventsListPage>
   Widget _buildEventList(List<Event> events, VoidCallback loadMore, bool hasMore) {
     if (events.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.event_busy,
-              size: 80,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No events found',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.grey[600],
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.event_busy,
+                  size: 80,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'No events found',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _searchController.text.isNotEmpty
+                    ? 'Try adjusting your search or filters to find more events'
+                    : _tabController.index == 0
+                        ? 'You haven\'t created any events yet.\nTap the button below to create your first event!'
+                        : 'No events match your filters.\nTry different filters or check back later.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
+                      height: 1.5,
+                    ),
+              ),
+              if (_searchController.text.isEmpty && _tabController.index == 0) ...[
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CreateEventPage()),
+                    );
+                    if (result == true) {
+                      _loadEvents();
+                    }
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('Create Your First Event'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _searchController.text.isNotEmpty
-                  ? 'Try adjusting your search or filters'
-                  : 'Create an event to get started!',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[500],
-                  ),
-            ),
-          ],
+                ),
+              ],
+            ],
+          ),
         ),
       );
     }

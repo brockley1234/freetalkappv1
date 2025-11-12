@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:freetalk/pages/conversations_page.dart';
 import 'package:freetalk/pages/admin_reports_page.dart';
 import 'package:freetalk/pages/admin_users_page.dart';
-import 'package:freetalk/pages/premium_subscription_page.dart';
 import 'package:freetalk/pages/settings_page.dart';
 import 'package:freetalk/pages/help_and_support_page.dart';
 import '../helpers/widget_test_helpers.dart';
@@ -123,37 +122,6 @@ void main() {
     });
 
     testWidgets('AdminUsersPage disposes properly',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createWidget());
-      await tester.pump(const Duration(milliseconds: 500));
-      await tester.pumpWidget(const SizedBox.shrink());
-      expect(find.byType(MaterialApp), findsNothing);
-    });
-  });
-
-  group('PremiumSubscriptionPage Widget Tests', () {
-    Widget createWidget() => testWidget(const PremiumSubscriptionPage());
-
-    testWidgets('PremiumSubscriptionPage renders', (WidgetTester tester) async {
-      await tester.pumpWidget(createWidget());
-      expect(find.byType(MaterialApp), findsOneWidget);
-    });
-
-    testWidgets('PremiumSubscriptionPage displays plans',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createWidget());
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.byType(Scaffold), findsOneWidget);
-    });
-
-    testWidgets('PremiumSubscriptionPage has purchase button',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createWidget());
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.byType(Material), findsWidgets);
-    });
-
-    testWidgets('PremiumSubscriptionPage disposes properly',
         (WidgetTester tester) async {
       await tester.pumpWidget(createWidget());
       await tester.pump(const Duration(milliseconds: 500));

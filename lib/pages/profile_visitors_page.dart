@@ -4,7 +4,6 @@ import '../services/socket_service.dart';
 import '../utils/time_utils.dart';
 import '../utils/url_utils.dart';
 import 'user_profile_page.dart';
-import 'premium_subscription_page.dart';
 
 class ProfileVisitorsPage extends StatefulWidget {
   const ProfileVisitorsPage({super.key});
@@ -17,7 +16,6 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
   final SocketService _socketService = SocketService();
   bool _isLoading = true;
   bool _isLoadingMore = false;
-  bool _requiresPremium = false;
   List<Map<String, dynamic>> _visitors = [];
   int _currentPage = 1;
   int _totalPages = 1;
@@ -100,22 +98,12 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
   Future<void> _loadVisitors() async {
     setState(() {
       _isLoading = true;
-      _requiresPremium = false;
     });
 
     try {
       final result = await ApiService.getProfileVisitors(page: 1, limit: 20);
 
       if (mounted) {
-        // Check if premium is required
-        if (result['requiresPremium'] == true) {
-          setState(() {
-            _isLoading = false;
-            _requiresPremium = true;
-          });
-          return;
-        }
-
         if (result['success'] == true) {
           setState(() {
             _visitors = List<Map<String, dynamic>>.from(
@@ -217,77 +205,7 @@ class _ProfileVisitorsPageState extends State<ProfileVisitorsPage> {
                 ],
               ),
             )
-          : _requiresPremium
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.lock_outline,
-                          size: 50,
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        'Premium Feature',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Buy Premium to see\nwho visits your profile',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                          height: 1.4,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 30),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const PremiumSubscriptionPage(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          'Upgrade to Premium',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : _visitors.isEmpty
+          : _visitors.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

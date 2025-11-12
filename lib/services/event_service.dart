@@ -107,9 +107,23 @@ class EventService {
         final data = jsonDecode(response.body);
         return Event.fromJson(data['data']);
       } else {
-        throw Exception('Failed to update event');
+        // Throw structured ApiException for better error handling
+        Map<String, dynamic>? data;
+        try {
+          data = jsonDecode(response.body);
+        } catch (_) {}
+
+        final message = data != null && data['message'] is String ? data['message'] as String : 'Failed to update event';
+        final errors = data != null && data['errors'] is List ? List<dynamic>.from(data['errors']) : null;
+
+        throw ApiException(
+          statusCode: response.statusCode,
+          message: message,
+          errors: errors,
+        );
       }
     } catch (e) {
+      if (e is ApiException) rethrow;
       throw Exception('Error updating event: $e');
     }
   }

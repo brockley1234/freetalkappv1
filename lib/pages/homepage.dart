@@ -44,10 +44,8 @@ import 'profile_settings_page.dart';
 import 'profile_visitors_page.dart';
 import 'pokes_page.dart';
 import 'videos_page.dart';
-import 'premium_subscription_page.dart';
 import 'saved_posts_page.dart';
 import 'events/events_list_page.dart';
-import 'jobs/jobs_list_page.dart';
 import 'crisis/crisis_response_page.dart';
 import 'games/games_list_page.dart';
 import 'marketplace/marketplace_listings_page.dart';
@@ -127,11 +125,6 @@ class _HomePageState extends State<HomePage> {
   bool _isLoadingTopUsers = false;
   bool _hasAttemptedTopUsers = false; // Track if we've tried loading top users
 
-  // Top posts state (from followers)
-  List<dynamic> _topPosts = [];
-  bool _isLoadingTopPosts = false;
-  bool _hasAttemptedTopPosts = false; // Track if we've tried loading top posts
-
   // Profile visitor state
   Map<String, dynamic>? _visitorStats;
   bool _isLoadingVisitorStats = false;
@@ -164,7 +157,7 @@ class _HomePageState extends State<HomePage> {
   Timer? _delayedStoriesTimer;
   Timer? _delayedSearchHistoryTimer;
   Timer? _delayedWelcomeMessageTimer;
-  Timer? _delayedTopPostsTimer;
+  Timer? _delayedSuggestedUsersTimer;
   Timer? _connectionRestoreRefreshTimer;
   Timer? _profileUpdateRefreshTimer;
   Timer? _delayedSocketRetryTimer;
@@ -223,11 +216,10 @@ class _HomePageState extends State<HomePage> {
       if (mounted) _checkAndShowWelcomeMessage();
     });
 
-    // Load top posts and suggested users after UI settles
+    // Load suggested users after UI settles
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _delayedTopPostsTimer = Timer(const Duration(milliseconds: 1500), () {
+      _delayedSuggestedUsersTimer = Timer(const Duration(milliseconds: 1500), () {
         if (mounted) {
-          _loadTopPosts();
           _loadSuggestedUsers();
         }
       });
@@ -964,7 +956,7 @@ class _HomePageState extends State<HomePage> {
     _delayedStoriesTimer?.cancel();
     _delayedSearchHistoryTimer?.cancel();
     _delayedWelcomeMessageTimer?.cancel();
-    _delayedTopPostsTimer?.cancel();
+    _delayedSuggestedUsersTimer?.cancel();
     _connectionRestoreRefreshTimer?.cancel();
     _profileUpdateRefreshTimer?.cancel();
     _delayedSocketRetryTimer?.cancel();
@@ -1087,40 +1079,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Load top posts from user's followers
-  Future<void> _loadTopPosts() async {
-    if (_isLoadingTopPosts) return;
-
-    setState(() {
-      _isLoadingTopPosts = true;
-    });
-
-    try {
-      final result = await ApiService.getTopFollowerPosts(limit: 5);
-
-      if (result['success'] == true && mounted) {
-        final posts = result['data']['posts'] as List;
-        setState(() {
-          _topPosts = posts;
-          _isLoadingTopPosts = false;
-          _hasAttemptedTopPosts = true; // Mark as attempted
-        });
-      } else {
-        setState(() {
-          _isLoadingTopPosts = false;
-          _hasAttemptedTopPosts = true; // Mark as attempted even on failure
-        });
-      }
-    } catch (e) {
-      AppLogger.e('Error loading top posts: $e');
-      if (mounted) {
-        setState(() {
-          _isLoadingTopPosts = false;
-          _hasAttemptedTopPosts = true; // Mark as attempted even on error
-        });
-      }
-    }
-  }
 
   // Load profile visitor statistics
   Future<void> _loadVisitorStats() async {
@@ -1178,12 +1136,8 @@ class _HomePageState extends State<HomePage> {
       _hasMorePosts = true;
       _hasPostLoadError = false;
       _postLoadErrorMessage = null;
-      _hasAttemptedTopPosts = false; // Reset flag to allow reload
     });
-    await Future.wait([
-      _loadPosts(),
-      _loadTopPosts(), // Also refresh top posts
-    ]);
+    await _loadPosts();
   }
 
   Future<void> _loadNotifications() async {
@@ -2373,37 +2327,6 @@ View post: ${ApiService.baseApi}/posts/$postId
                 },
               ),
 
-              // Jobs option
-              ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.work,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                title: Text(
-                  AppLocalizations.of(context)?.jobs ?? 'Jobs',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(AppLocalizations.of(context)?.findAndPostJobs ??
-                    'Find and post job opportunities'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const JobsListPage(),
-                    ),
-                  );
-                },
-              ),
-
               // Marketplace option
               ListTile(
                 leading: Container(
@@ -2494,44 +2417,6 @@ View post: ${ApiService.baseApi}/posts/$postId
                     context,
                     MaterialPageRoute(
                       builder: (context) => const CrisisResponsePage(),
-                    ),
-                  );
-                },
-              ),
-
-              // Premium Subscription option
-              ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.tertiary,
-                        Theme.of(context).colorScheme.tertiaryContainer,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.star,
-                    color: Theme.of(context).colorScheme.onTertiary,
-                  ),
-                ),
-                title: Text(
-                  AppLocalizations.of(context)?.premium ?? 'Premium',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(AppLocalizations.of(context)?.upgradeToPremium ??
-                    'Upgrade to Premium'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PremiumSubscriptionPage(),
                     ),
                   );
                 },
@@ -4118,6 +4003,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
                       final localizations = AppLocalizations.of(context);
                       final primaryContainerColor = Theme.of(context).colorScheme.primaryContainer;
+                      final onPrimaryContainerColor = Theme.of(context).colorScheme.onPrimaryContainer;
                       await _refreshPosts();
                       if (mounted) {
                         scaffoldMessenger.showSnackBar(
@@ -4125,7 +4011,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                             content: Row(
                               children: [
                                 Icon(Icons.check_circle,
-                                    color: Theme.of(context).colorScheme.onPrimaryContainer),
+                                    color: onPrimaryContainerColor),
                                 const SizedBox(width: 12),
                                 Text(localizations?.success ??
                                     'Feed refreshed!'),
@@ -4237,9 +4123,14 @@ View post: ${ApiService.baseApi}/posts/$postId
         // Add haptic feedback for better UX
         HapticFeedback.mediumImpact();
         
+        // Capture context-dependent values before async gap
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        final primaryContainerColor = Theme.of(context).colorScheme.primaryContainer;
+        final onPrimaryContainerColor = Theme.of(context).colorScheme.onPrimaryContainer;
+        
         // Show visual feedback
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             const SnackBar(
               content: Row(
                 children: [
@@ -4266,11 +4157,11 @@ View post: ${ApiService.baseApi}/posts/$postId
         
         // Show success message
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Row(
                 children: [
-                  Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimaryContainer, size: 20),
+                  Icon(Icons.check_circle, color: onPrimaryContainerColor, size: 20),
                   const SizedBox(width: 12),
                   Text(
                     _posts.isEmpty 
@@ -4279,7 +4170,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                   ),
                 ],
               ),
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              backgroundColor: primaryContainerColor,
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
             ),
@@ -4429,87 +4320,23 @@ View post: ${ApiService.baseApi}/posts/$postId
                 ),
               ),
             ),
-          // Top posts from followers section (show when loading or when have posts)
-          if ((_topPosts.isNotEmpty || _isLoadingTopPosts) && _posts.isNotEmpty)
-            SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Theme.of(context).colorScheme.tertiary,
-                                Theme.of(context).colorScheme.tertiaryContainer,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.trending_up,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Top Posts from People You Follow',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                          ),
-                        ),
-                        if (_isLoadingTopPosts)
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.orange),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          // Show loading shimmer for top posts or actual top posts
-          if (_isLoadingTopPosts && _topPosts.isEmpty && _posts.isNotEmpty)
+          if (_posts.isNotEmpty)
             SliverPadding(
               padding: EdgeInsets.symmetric(
                   horizontal:
                       ResponsiveDimensions.getHorizontalPadding(context)),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => Padding(
-                    padding: EdgeInsets.only(
-                        bottom:
-                            ResponsiveDimensions.getItemSpacing(context) * 2),
-                    child: _buildPostLoadingShimmer(),
-                  ),
-                  childCount: 2,
-                ),
-              ),
-            ),
-          if (_topPosts.isNotEmpty && _posts.isNotEmpty)
-            SliverPadding(
-              padding: EdgeInsets.symmetric(
-                  horizontal:
-                      ResponsiveDimensions.getHorizontalPadding(context)),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final post = _topPosts[index];
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  // Preemptive loading: start loading next page when 5 items from bottom
+                  // Only trigger once per page load to avoid race conditions
+                  if (_hasMorePosts &&
+                      !_isLoadingPosts &&
+                      index == _posts.length - 5 &&
+                      index >= 0) {
+                    Future.microtask(() => _loadPosts());
+                  }
+
+                    final post = _posts[index];
                     final postId = post['_id'] ?? '';
                     final author = post['author'] ?? {};
                     final authorId = author['_id'] ?? '';
@@ -4554,73 +4381,24 @@ View post: ${ApiService.baseApi}/posts/$postId
 
                     return Column(
                       children: [
-                        Stack(
-                          children: [
-                            _buildPostCard(
-                              postId: postId,
-                              authorId: authorId,
-                              userName: authorName,
-                              userAvatar: userAvatar,
-                              timeAgo: timeAgo,
-                              content: content,
-                              reactionsCount: likes,
-                              comments: comments,
-                              userReaction: userReaction,
-                              reactionsSummary: reactionsSummary,
-                              images: images,
-                              videos: videos,
-                              isShared: post['isShared'] == true,
-                              sharedBy: post['sharedBy'],
-                              shareMessage: post['shareMessage'],
-                              taggedUsers: taggedUsers,
-                              authorData: author,
-                            ),
-                            // Top post badge
-                            Positioned(
-                              top: 12,
-                              right: 12,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.amber.shade600,
-                                      Colors.orange.shade700,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.2),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.trending_up,
-                                      size: 14,
-                                      color: Theme.of(context).colorScheme.onPrimary,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'Top ${index + 1}',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onPrimary,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                        _buildPostCard(
+                          postId: postId,
+                          authorId: authorId,
+                          userName: authorName,
+                          userAvatar: userAvatar,
+                          timeAgo: timeAgo,
+                          content: content,
+                          reactionsCount: likes,
+                          comments: comments,
+                          userReaction: userReaction,
+                          reactionsSummary: reactionsSummary,
+                          images: images,
+                          videos: videos,
+                          isShared: post['isShared'] == true,
+                          sharedBy: post['sharedBy'],
+                          shareMessage: post['shareMessage'],
+                          taggedUsers: taggedUsers,
+                          authorData: author,
                         ),
                         SizedBox(
                           height: ResponsiveDimensions.getItemSpacing(context) * 1.5,
@@ -4628,51 +4406,12 @@ View post: ${ApiService.baseApi}/posts/$postId
                       ],
                     );
                   },
-                  childCount: _topPosts.length,
+                  childCount: _posts.length,
                 ),
               ),
             ),
-          // Divider between top posts and regular feed
-          if (_topPosts.isNotEmpty && _posts.isNotEmpty)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal:
-                      ResponsiveDimensions.getHorizontalPadding(context),
-                  vertical: ResponsiveDimensions.getItemSpacing(context) * 0.5,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: ResponsiveDimensions.getHorizontalPadding(
-                                  context) *
-                              0.75),
-                      child: Text(
-                        'Latest Posts',
-                        style: TextStyle(
-                          fontSize:
-                              ResponsiveDimensions.getBodyFontSize(context),
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          if (_posts.isNotEmpty)
+          // Loading indicator
+          if (_isLoadingPosts && _posts.isNotEmpty)
             SliverPadding(
               padding: EdgeInsets.symmetric(
                   horizontal:
@@ -7834,148 +7573,7 @@ View post: ${ApiService.baseApi}/posts/$postId
 
   Widget _buildPostSearchResults() {
     if (_searchQuery.isEmpty) {
-      // Load top posts if not loaded yet (use post-frame callback to avoid setState during build)
-      if (!_hasAttemptedTopPosts && !_isLoadingTopPosts) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted && !_hasAttemptedTopPosts && !_isLoadingTopPosts) {
-            _loadTopPosts();
-          }
-        });
-      }
-
-      // Show loading indicator while fetching top posts
-      if (_isLoadingTopPosts && _topPosts.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      // Show top posts if available
-      if (_topPosts.isNotEmpty) {
-        return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          itemCount: _topPosts.length + 1, // +1 for header
-          itemBuilder: (context, index) {
-            // Header
-            if (index == 0) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 4,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.blue.shade400,
-                                Colors.purple.shade400
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Top Posts',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Most engaged posts from people you follow',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            // Post items
-            final postIndex = index - 1;
-            final post = _topPosts[postIndex];
-            final postId = post['_id'] ?? '';
-            final author = post['author'] ?? {};
-            final authorId = author['_id'] ?? '';
-            final authorName = author['name'] ?? 'Unknown User';
-            final userAvatar = author['avatar'];
-            final content = post['content'] ?? '';
-            final likes = post['likeCount'] ??
-                post['likesCount'] ??
-                post['reactionsCount'] ??
-                0;
-            final comments = post['commentCount'] ?? post['commentsCount'] ?? 0;
-            final createdAt = post['createdAt'];
-            final timeAgo = _formatTimeAgo(createdAt);
-
-            // Get reactions summary
-            final reactionsSummary = post['reactionsSummary'] != null
-                ? Map<String, dynamic>.from(post['reactionsSummary'])
-                : <String, dynamic>{};
-
-            // Find user's reaction
-            final reactions = post['reactions'] != null
-                ? List<dynamic>.from(post['reactions'])
-                : [];
-            final currentUserId = _currentUser?['_id'];
-
-            String? userReaction;
-            if (currentUserId != null) {
-              for (var reaction in reactions) {
-                if (reaction['user'] == currentUserId ||
-                    (reaction['user'] is Map &&
-                        reaction['user']['_id'] == currentUserId)) {
-                  userReaction = reaction['type'];
-                  break;
-                }
-              }
-            }
-
-            // Get images and videos
-            final images = post['images'] != null
-                ? List<String>.from(post['images'])
-                : null;
-            final videos = post['videos'] != null
-                ? List<String>.from(post['videos'])
-                : null;
-
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: ResponsiveDimensions.getItemSpacing(context) * 1.5,
-              ),
-              child: _buildPostCard(
-                postId: postId,
-                authorId: authorId,
-                userName: authorName,
-                userAvatar: userAvatar,
-                timeAgo: timeAgo,
-                content: content,
-                reactionsCount: likes,
-                comments: comments,
-                userReaction: userReaction,
-                reactionsSummary: reactionsSummary,
-                images: images,
-                videos: videos,
-                isShared: post['isReshare'] == true,
-                sharedBy: post['reshareCaption'],
-                shareMessage: post['reshareCaption'],
-              ),
-            );
-          },
-        );
-      }
-
-      // Default empty state if no top posts
+      // Show prompt to search for posts
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -7991,14 +7589,14 @@ View post: ${ApiService.baseApi}/posts/$postId
                 ),
               ),
               child: Icon(
-                Icons.article_outlined,
+                Icons.search,
                 size: 64,
                 color: Colors.blue.shade700,
               ),
             ),
             const SizedBox(height: 24),
             Text(
-              'No top posts available',
+              'Search for Posts',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -8007,7 +7605,7 @@ View post: ${ApiService.baseApi}/posts/$postId
             ),
             const SizedBox(height: 8),
             Text(
-              'Follow people to see their top posts',
+              'Enter keywords to find posts',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontSize: 14,
               ),
@@ -10267,19 +9865,14 @@ View post: ${ApiService.baseApi}/posts/$postId
   // Profile Visitors Stats Card
   Widget _buildVisitorStatsCard() {
     final stats = _visitorStats?['stats'];
-    final hasPremiumAccess = _visitorStats?['hasPremiumAccess'] ?? false;
     final recentVisitors = _visitorStats?['recentVisitors'] as List?;
 
     final weekCount = stats?['thisWeek'] ?? 0;
 
     return GestureDetector(
       onTap: () {
-        if (hasPremiumAccess &&
-            recentVisitors != null &&
-            recentVisitors.isNotEmpty) {
+        if (recentVisitors != null && recentVisitors.isNotEmpty) {
           _showVisitorsList();
-        } else if (!hasPremiumAccess) {
-          _showPremiumFeatureDialog('Profile Visitors');
         }
       },
       child: Container(
@@ -10342,9 +9935,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                 ],
               ),
             ),
-            if (hasPremiumAccess &&
-                recentVisitors != null &&
-                recentVisitors.isNotEmpty) ...[
+            if (recentVisitors != null && recentVisitors.isNotEmpty) ...[
               const SizedBox(width: 8),
               Stack(
                 children: [
@@ -10390,30 +9981,7 @@ View post: ${ApiService.baseApi}/posts/$postId
                     ),
                 ],
               ),
-            ] else if (!hasPremiumAccess)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.star, color: Colors.white, size: 14),
-                    SizedBox(width: 4),
-                    Text(
-                      'Premium',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            ],
             const SizedBox(width: 8),
             Icon(
               Icons.chevron_right,
@@ -10623,108 +10191,6 @@ View post: ${ApiService.baseApi}/posts/$postId
     );
   }
 
-  // Show premium feature dialog
-  void _showPremiumFeatureDialog(String featureName) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.amber.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.star, color: Colors.amber, size: 24),
-            ),
-            const SizedBox(width: 12),
-            const Text('Premium Feature'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$featureName is a premium feature.',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'With Premium, you can:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade900,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  _buildPremiumBenefit('👀 See who viewed your profile'),
-                  _buildPremiumBenefit('🚫 Enjoy an ad-free experience'),
-                  _buildPremiumBenefit('🎨 Custom themes and colors'),
-                  _buildPremiumBenefit('✨ Get a verified badge'),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Maybe Later'),
-          ),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.pop(context);
-              // Navigate to premium purchase page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PremiumSubscriptionPage(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.star),
-            label: const Text('Go Premium'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPremiumBenefit(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
-        children: [
-          const Icon(Icons.check_circle, color: Colors.green, size: 16),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(text, style: const TextStyle(fontSize: 14)),
-          ),
-        ],
-      ),
-    );
-  }
 
   // Shimmer loading widgets
   Widget _buildProfileLoadingShimmer() {
@@ -10801,18 +10267,6 @@ View post: ${ApiService.baseApi}/posts/$postId
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildPostLoadingShimmer() {
-    return Column(
-      children: List.generate(
-        2,
-        (index) => Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: _buildPostCardShimmer(),
-        ),
       ),
     );
   }

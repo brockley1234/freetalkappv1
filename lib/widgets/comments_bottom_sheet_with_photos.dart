@@ -111,7 +111,7 @@ class _CommentsBottomSheetWithPhotosState
     if (content.isEmpty && _selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please add text or images to comment'),
+          content: const Text('Please add text or images to comment'),
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
@@ -140,9 +140,9 @@ class _CommentsBottomSheetWithPhotosState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Comment added!'),
+            content: const Text('Comment added!'),
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            duration: Duration(seconds: 1),
+            duration: const Duration(seconds: 1),
           ),
           );
         }
@@ -382,7 +382,7 @@ class _CommentsBottomSheetWithPhotosState
                   children: [
                     IconButton(
                       onPressed: _isSubmitting ? null : _pickImages,
-                      icon: Icon(Icons.image),
+                      icon: const Icon(Icons.image),
                       color: Theme.of(context).colorScheme.primary,
                       disabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
                       tooltip: 'Add photos',
@@ -429,12 +429,12 @@ class _CommentsBottomSheetWithPhotosState
                     IconButton(
                       onPressed: _isSubmitting ? null : _submitComment,
                       icon: _isSubmitting
-                          ? SizedBox(
+                          ? const SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Icon(Icons.send),
+                          : const Icon(Icons.send),
                       color: Theme.of(context).colorScheme.primary,
                       disabledColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),

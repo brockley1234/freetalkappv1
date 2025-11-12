@@ -183,20 +183,14 @@ class _CreateMarketplaceListingPageState extends State<CreateMarketplaceListingP
     setState(() => _isLoading = true);
 
     try {
-      // Include location if we have any location data (GPS coordinates or address fields)
-      MarketplaceLocation? location;
-      if (_currentLatitude != null && _currentLongitude != null ||
-          _cityController.text.isNotEmpty ||
-          _stateController.text.isNotEmpty ||
-          _zipCodeController.text.isNotEmpty) {
-        location = MarketplaceLocation(
-          city: _cityController.text.isNotEmpty ? _cityController.text : null,
-          state: _stateController.text.isNotEmpty ? _stateController.text : null,
-          zipCode: _zipCodeController.text.isNotEmpty ? _zipCodeController.text : null,
-          latitude: _currentLatitude,
-          longitude: _currentLongitude,
-        );
-      }
+      // Location is now required - city, state, and zip code fields are validated
+      final location = MarketplaceLocation(
+        city: _cityController.text.trim(),
+        state: _stateController.text.trim(),
+        zipCode: _zipCodeController.text.trim(),
+        latitude: _currentLatitude,
+        longitude: _currentLongitude,
+      );
 
       await _marketplaceService.createListing(
         title: _titleController.text.trim(),
@@ -508,7 +502,7 @@ class _CreateMarketplaceListingPageState extends State<CreateMarketplaceListingP
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Location', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text('Location *', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 if (_isLoadingLocation)
                   const SizedBox(
                     width: 16,
@@ -543,10 +537,19 @@ class _CreateMarketplaceListingPageState extends State<CreateMarketplaceListingP
                   child: TextFormField(
                     controller: _cityController,
                     decoration: const InputDecoration(
-                      labelText: 'City',
+                      labelText: 'City *',
                       border: OutlineInputBorder(),
-                      hintText: 'Optional - helps buyers find you',
+                      hintText: 'e.g. New York',
                     ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'City is required';
+                      }
+                      if (value.trim().length < 2) {
+                        return 'Enter a valid city name';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -554,10 +557,19 @@ class _CreateMarketplaceListingPageState extends State<CreateMarketplaceListingP
                   child: TextFormField(
                     controller: _stateController,
                     decoration: const InputDecoration(
-                      labelText: 'State',
+                      labelText: 'State *',
                       border: OutlineInputBorder(),
-                      hintText: 'Optional - helps buyers find you',
+                      hintText: 'e.g. NY',
                     ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'State is required';
+                      }
+                      if (value.trim().length < 2) {
+                        return 'Enter a valid state';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ],
@@ -566,14 +578,24 @@ class _CreateMarketplaceListingPageState extends State<CreateMarketplaceListingP
             TextFormField(
               controller: _zipCodeController,
               decoration: const InputDecoration(
-                labelText: 'Zip Code',
+                labelText: 'Zip Code *',
                 border: OutlineInputBorder(),
-                hintText: 'Optional - helps buyers find you',
+                hintText: 'e.g. 10001',
               ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Zip code is required';
+                }
+                if (value.trim().length < 3) {
+                  return 'Enter a valid zip code';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 8),
             Text(
-              'Location helps buyers find items nearby. Adding location improves visibility.',
+              '* Location is required. This helps buyers find items nearby and improves visibility.',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],

@@ -2,11 +2,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import 'video_player_widget.dart';
 import 'mention_text.dart';
 import 'post_reactions_viewer.dart';
 import '../utils/url_utils.dart';
 import '../pages/user_profile_page.dart';
+import '../config/app_theme.dart';
 
 class PostCard extends StatefulWidget {
   final String postId;
@@ -251,6 +253,19 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
   }
 
   bool get _shouldTruncate => widget.content.length > 300;
+
+  /// Build shimmer placeholder for image loading
+  Widget _buildShimmerPlaceholder(BuildContext context, double? height) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Shimmer.fromColors(
+      baseColor: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+      highlightColor: isDark ? AppColors.darkSurfaceDim : AppColors.surfaceDim,
+      child: Container(
+        height: height ?? 200,
+        color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+      ),
+    );
+  }
 
   // Wraps media content with responsive max-width for desktop
   Widget _wrapMediaResponsive(Widget child) {
@@ -856,35 +871,19 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                     minHeight: 200,
                     maxHeight: 400,
                   ),
-                  child: ClipRRect(
+                    child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CachedNetworkImage(
                       imageUrl: UrlUtils.getFullImageUrl(images[0]),
                       fit: BoxFit.cover,
                       width: double.infinity,
+                      memCacheWidth: 800, // Limit memory usage for large images
+                      memCacheHeight: 800,
+                      maxWidthDiskCache: 1200, // Disk cache at higher resolution
+                      maxHeightDiskCache: 1200,
                       placeholder: (context, url) {
                         debugPrint('🖼️ Loading image: $url');
-                        return Container(
-                          height: 300,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Theme.of(context).colorScheme.surfaceContainerHighest,
-                                Theme.of(context).colorScheme.surfaceContainerHighest,
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        );
+                        return _buildShimmerPlaceholder(context, 300);
                       },
                       errorWidget: (context, url, error) {
                         return Container(
@@ -960,27 +959,12 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                     CachedNetworkImage(
                       imageUrl: UrlUtils.getFullImageUrl(images[index]),
                       fit: BoxFit.cover,
+                      memCacheWidth: 400, // Smaller cache for grid images
+                      memCacheHeight: 400,
+                      maxWidthDiskCache: 600,
+                      maxHeightDiskCache: 600,
                       placeholder: (context, url) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Theme.of(context).colorScheme.surfaceContainerHighest,
-                                Theme.of(context).colorScheme.surfaceContainerHighest,
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        );
+                        return _buildShimmerPlaceholder(context, null);
                       },
                       errorWidget: (context, url, error) {
                         return Container(
@@ -1634,6 +1618,8 @@ class _ZoomableImageState extends State<_ZoomableImage> {
           child: CachedNetworkImage(
             imageUrl: UrlUtils.getFullImageUrl(widget.imageUrl),
             fit: BoxFit.contain,
+            memCacheWidth: 1600, // Full resolution for zoomed view
+            memCacheHeight: 1600,
             placeholder: (context, url) => Center(
               child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface), // Spinner on background
             ),

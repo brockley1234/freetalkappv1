@@ -140,6 +140,37 @@ class ReportService {
     }
   }
 
+  /// Report an event
+  Future<String> reportEvent({
+    required String eventId,
+    required String reason,
+    String? details,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/events/$eventId/report'),
+        headers: headers,
+        body: jsonEncode({
+          'reason': reason,
+          'details': details,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        _logger.info('Event reported successfully: $eventId');
+        return data['data']['reportId'];
+      } else {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Failed to report event');
+      }
+    } catch (e) {
+      _logger.error('Error reporting event: $e');
+      rethrow;
+    }
+  }
+
   /// Get available report reasons
   static List<ReportReason> getReportReasons() {
     return [

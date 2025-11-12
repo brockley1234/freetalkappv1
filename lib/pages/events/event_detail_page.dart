@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../models/event_model.dart';
 import '../../services/event_service.dart';
 import '../../services/api_service.dart';
+import '../../services/report_service.dart';
 import '../../utils/auth_storage.dart';
 import '../../utils/event_utils.dart';
 import '../user_profile_page.dart';
@@ -23,6 +24,7 @@ class EventDetailPage extends StatefulWidget {
 
 class _EventDetailPageState extends State<EventDetailPage> {
   final EventService _eventService = EventService();
+  final ReportService _reportService = ReportService();
   Event? _event;
   bool _isLoading = true;
   String? _currentUserId;
@@ -395,15 +397,23 @@ class _EventDetailPageState extends State<EventDetailPage> {
               ),
             ),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: _downloadICalendar,
-                tooltip: 'Add to Calendar',
+              Semantics(
+                label: 'Add event to calendar',
+                button: true,
+                child: IconButton(
+                  icon: const Icon(Icons.calendar_today),
+                  onPressed: _downloadICalendar,
+                  tooltip: 'Add to Calendar',
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: _shareEvent,
-                tooltip: 'Share',
+              Semantics(
+                label: 'Share event with others',
+                button: true,
+                child: IconButton(
+                  icon: const Icon(Icons.share),
+                  onPressed: _shareEvent,
+                  tooltip: 'Share',
+                ),
               ),
               if (isOrganizer)
                 IconButton(
@@ -422,6 +432,28 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     }
                   },
                   tooltip: 'Edit Event',
+                ),
+              if (!isOrganizer)
+                PopupMenuButton(
+                  icon: const Icon(Icons.more_vert),
+                  tooltip: 'More options',
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'report',
+                      child: Row(
+                        children: [
+                          Icon(Icons.flag, color: Colors.red),
+                          SizedBox(width: 12),
+                          Text('Report Event'),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 'report') {
+                      _reportEvent();
+                    }
+                  },
                 ),
             ],
           ),
@@ -1270,13 +1302,102 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }
 
   Future<void> _shareEvent() async {
+    if (_event == null) return;
+
+    final url = 'https://freetalk.site/events/${widget.eventId}';
+    final shareText = '🎉 ${_event!.title}\n\n'
+        '📅 ${EventUtils.formatEventDate(_event!.startTime)}\n'
+        '${_event!.locationName != null ? '📍 ${_event!.locationName}\n' : ''}'
+        '\n$url';
+
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Share Event',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.copy),
+              title: const Text('Copy Link'),
+              subtitle: const Text('Copy event link to clipboard'),
+              onTap: () => Navigator.pop(context, 'copy'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.share),
+              title: const Text('Share Details'),
+              subtitle: const Text('Share event details with others'),
+              onTap: () => Navigator.pop(context, 'share'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code),
+              title: const Text('Show QR Code'),
+              subtitle: const Text('Display QR code for easy sharing'),
+              onTap: () => Navigator.pop(context, 'qr'),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (choice == null || !mounted) return;
+
     try {
-      final url = 'https://freetalk.site/events/${widget.eventId}';
-      await Clipboard.setData(ClipboardData(text: url));
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Event link copied to clipboard')),
-        );
+      switch (choice) {
+        case 'copy':
+          await Clipboard.setData(ClipboardData(text: url));
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 12),
+                    Text('Event link copied to clipboard'),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+          break;
+        case 'share':
+          await Clipboard.setData(ClipboardData(text: shareText));
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 12),
+                    Text('Event details copied to clipboard'),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+          break;
+        case 'qr':
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('QR Code feature coming soon!'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+          break;
       }
     } catch (e) {
       if (mounted) {
@@ -1284,6 +1405,137 @@ class _EventDetailPageState extends State<EventDetailPage> {
           SnackBar(content: Text('Unable to share: $e')),
         );
       }
+    }
+  }
+
+  Future<void> _reportEvent() async {
+    final reasons = [
+      'Inappropriate content',
+      'Spam or misleading',
+      'Harassment or hate speech',
+      'Violence or dangerous activities',
+      'False information',
+      'Other',
+    ];
+
+    String? selectedReason;
+    final TextEditingController detailsController = TextEditingController();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Report Event'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Please select a reason for reporting this event:'),
+                const SizedBox(height: 16),
+                RadioGroup<String>(
+                  groupValue: selectedReason,
+                  onChanged: (value) {
+                    setState(() => selectedReason = value);
+                  },
+                  child: Column(
+                    children: reasons.map((reason) => RadioListTile<String>(
+                          title: Text(reason),
+                          value: reason,
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                        )).toList(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: detailsController,
+                  decoration: const InputDecoration(
+                    labelText: 'Additional details (optional)',
+                    border: OutlineInputBorder(),
+                    hintText: 'Provide more context...',
+                  ),
+                  maxLines: 3,
+                  maxLength: 500,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: selectedReason == null
+                  ? null
+                  : () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Report'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirmed != true || selectedReason == null) {
+      detailsController.dispose();
+      return;
+    }
+
+    try {
+      // Show loading indicator
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                SizedBox(width: 12),
+                Text('Submitting report...'),
+              ],
+            ),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+      // Submit report via API
+      await _reportService.reportEvent(
+        eventId: widget.eventId,
+        reason: selectedReason!,
+        details: detailsController.text.trim().isEmpty
+            ? null
+            : detailsController.text.trim(),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Thank you for your report. We will review it shortly.'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to submit report: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      detailsController.dispose();
     }
   }
 }

@@ -226,6 +226,7 @@ class MarketplaceLocation {
     if (city != null && city!.isNotEmpty) parts.add(city!);
     if (state != null && state!.isNotEmpty) parts.add(state!);
     if (zipCode != null && zipCode!.isNotEmpty) parts.add(zipCode!);
+    // City, state, and zip code are now required, so this should always have content
     return parts.isEmpty ? 'Location not specified' : parts.join(', ');
   }
 }

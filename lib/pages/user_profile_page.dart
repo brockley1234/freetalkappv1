@@ -1837,15 +1837,6 @@ class _UserProfilePageState extends State<UserProfilePage>
       theme.colorScheme.primaryContainer,
     ];
 
-    // Check if user is premium for special gradient
-    final isPremium = _user!['isPremium'] ?? false;
-    if (isPremium) {
-      gradientColors.setAll(0, [
-        theme.colorScheme.tertiary,
-        theme.colorScheme.tertiaryContainer,
-      ]);
-    }
-
     return Container(
       padding: EdgeInsets.fromLTRB(
         isSmallScreen ? 16 : screenWidth * 0.06,
@@ -1878,50 +1869,6 @@ class _UserProfilePageState extends State<UserProfilePage>
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Premium Badge (if applicable)
-            if (isPremium)
-              Container(
-                margin: EdgeInsets.only(bottom: screenWidth * 0.025),
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.03,
-                  vertical: screenWidth * 0.015,
-                ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.tertiaryContainer,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: theme.colorScheme.tertiary,
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.colorScheme.tertiary.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      size: screenWidth * 0.035,
-                      color: theme.colorScheme.onTertiaryContainer,
-                    ),
-                    SizedBox(width: screenWidth * 0.015),
-                    Text(
-                      'Premium Member',
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.03,
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.onTertiaryContainer,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
             // Animated Avatar with enhanced styling - auto-plays on all devices
             Container(
               decoration: BoxDecoration(

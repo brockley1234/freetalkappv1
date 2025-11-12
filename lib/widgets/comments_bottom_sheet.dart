@@ -115,9 +115,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Comment added!'),
+              content: const Text('Comment added!'),
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
             ),
           );
         }
@@ -191,9 +191,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Comment deleted'),
+              content: const Text('Comment deleted'),
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
             ),
           );
         }

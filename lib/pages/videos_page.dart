@@ -587,6 +587,8 @@ class _VideosPageState extends State<VideosPage>
 
               // Show loading
               final scaffoldMessenger = ScaffoldMessenger.of(context);
+              final primaryColor = Theme.of(context).colorScheme.primary;
+              final errorColor = Theme.of(context).colorScheme.error;
               scaffoldMessenger.showSnackBar(
                 const SnackBar(
                   content: Row(
@@ -618,14 +620,14 @@ class _VideosPageState extends State<VideosPage>
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: const Text('Video updated successfully'),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: primaryColor,
                   ),
                 );
               } else {
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(result['message'] ?? 'Failed to update video'),
-                    backgroundColor: Theme.of(context).colorScheme.error,
+                    backgroundColor: errorColor,
                   ),
                 );
               }
@@ -672,12 +674,15 @@ class _VideosPageState extends State<VideosPage>
 
               // Show loading
               final scaffoldMessenger = ScaffoldMessenger.of(context);
+              final primaryColor = Theme.of(context).colorScheme.primary;
+              final errorColor = Theme.of(context).colorScheme.error;
+              final onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
               scaffoldMessenger.showSnackBar(
                 SnackBar(
                   content: Row(
                     children: [
                       CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: onPrimaryColor,
                       ),
                       const SizedBox(width: 16),
                       const Text('Deleting video...'),
@@ -709,14 +714,14 @@ class _VideosPageState extends State<VideosPage>
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: const Text('Video deleted successfully'),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: primaryColor,
                   ),
                 );
               } else {
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(result['message'] ?? 'Failed to delete video'),
-                    backgroundColor: Theme.of(context).colorScheme.error,
+                    backgroundColor: errorColor,
                   ),
                 );
               }

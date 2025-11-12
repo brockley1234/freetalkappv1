@@ -1996,6 +1996,22 @@ class ApiService {
     }
   }
 
+  // Get unread message count
+  static Future<Map<String, dynamic>> getUnreadCount() async {
+    try {
+      final headers = await _getHeaders(includeAuth: true);
+      final response = await http.get(
+        Uri.parse('$baseUrl/conversations/unread-count'),
+        headers: headers,
+      );
+
+      return _handleResponse(response);
+    } catch (e) {
+      // Error handled by ErrorHandler
+      return {'success': false, 'message': 'Network error: ${e.toString()}'};
+    }
+  }
+
   // Mark notification as read
   static Future<Map<String, dynamic>> markNotificationAsRead(
     String notificationId,

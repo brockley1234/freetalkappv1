@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 import '../../services/event_service.dart';
 import '../../services/api_service.dart';
 
@@ -34,6 +35,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   String _visibility = 'public';
   bool _isLoading = false;
   bool _isAllDay = false;
+  bool _hasUnsavedChanges = false;
   XFile? _selectedImage;
   String? _existingImageUrl; // For editing existing events
 
@@ -48,9 +50,73 @@ class _CreateEventPageState extends State<CreateEventPage> {
       DropdownMenuItem(value: 'private', child: Text('Private')),
     ];
     
+    // Add listeners to track changes
+    _titleController.addListener(_markAsChanged);
+    _descriptionController.addListener(_markAsChanged);
+    _locationNameController.addListener(_markAsChanged);
+    _locationAddressController.addListener(_markAsChanged);
+    _capacityController.addListener(_markAsChanged);
+    _tagsController.addListener(_markAsChanged);
+    
     if (widget.eventId != null) {
       _loadEventData();
     }
+  }
+  
+  void _markAsChanged() {
+    if (!_hasUnsavedChanges) {
+      setState(() => _hasUnsavedChanges = true);
+    }
+  }
+
+  /// Format DateTime for user-friendly display
+  String _formatDateTime(DateTime? dateTime) {
+    if (dateTime == null) return 'Not selected';
+    
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    
+    String dateStr;
+    if (dateOnly == today) {
+      dateStr = 'Today';
+    } else if (dateOnly == tomorrow) {
+      dateStr = 'Tomorrow';
+    } else {
+      dateStr = DateFormat('EEE, MMM d, yyyy').format(dateTime);
+    }
+    
+    final timeStr = DateFormat('h:mm a').format(dateTime);
+    return '$dateStr at $timeStr';
+  }
+
+  /// Show dialog to confirm discarding unsaved changes
+  Future<bool> _confirmDiscard() async {
+    if (!_hasUnsavedChanges) return true;
+    
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Discard Changes?'),
+        content: const Text('You have unsaved changes. Are you sure you want to leave?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text('Discard'),
+          ),
+        ],
+      ),
+    );
+    
+    return result ?? false;
   }
 
   Future<void> _loadEventData() async {
@@ -68,6 +134,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
         _visibility = event.visibility;
         _isAllDay = event.isAllDay;
         _existingImageUrl = event.coverImage;
+        _hasUnsavedChanges = false; // Reset since we just loaded
       });
     } catch (e) {
       if (mounted) {
@@ -104,6 +171,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
         setState(() {
           _selectedImage = image;
           _existingImageUrl = null;
+          _hasUnsavedChanges = true;
         });
       }
     } catch (e) {
@@ -124,7 +192,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       initialDate: isStartTime 
           ? (_startTime ?? DateTime.now())
           : (_endTime ?? _startTime ?? DateTime.now()),
-      firstDate: DateTime.now(),
+      firstDate: widget.eventId != null ? DateTime(2020) : DateTime.now(), // Allow past dates for editing
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
 
@@ -137,6 +205,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           } else {
             _endTime = DateTime(date.year, date.month, date.day, 23, 59);
           }
+          _hasUnsavedChanges = true;
         });
       } else {
         // Show time picker for regular events
@@ -174,6 +243,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               }
               _endTime = dateTime;
             }
+            _hasUnsavedChanges = true;
           });
         }
       }
@@ -196,6 +266,45 @@ class _CreateEventPageState extends State<CreateEventPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('End time must be after start time')),
+      );
+      return;
+    }
+
+    // Validate that start time is in the future (for new events only)
+    if (widget.eventId == null && _startTime!.isBefore(DateTime.now())) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Start time must be in the future')),
+      );
+      return;
+    }
+
+    // Validate capacity if provided
+    if (_capacityController.text.isNotEmpty) {
+      final capacity = int.tryParse(_capacityController.text);
+      if (capacity == null || capacity <= 0) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Capacity must be a positive number')),
+        );
+        return;
+      }
+    }
+
+    // Validate title length
+    if (_titleController.text.length > 100) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Title must be 100 characters or less')),
+      );
+      return;
+    }
+
+    // Validate description length
+    if (_descriptionController.text.length > 1000) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Description must be 1000 characters or less')),
       );
       return;
     }
@@ -269,6 +378,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       }
 
       if (!mounted) return;
+      setState(() => _hasUnsavedChanges = false);
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
@@ -286,10 +396,28 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.eventId != null ? 'Edit Event' : 'Create Event'),
-        actions: [
+    return PopScope(
+      canPop: !_hasUnsavedChanges,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await _confirmDiscard();
+        if (shouldPop && context.mounted) {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.eventId != null ? 'Edit Event' : 'Create Event'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              final shouldPop = await _confirmDiscard();
+              if (shouldPop && context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          actions: [
           if (_isLoading)
             const Center(
               child: Padding(
@@ -302,9 +430,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
               onPressed: _isLoading ? null : _saveEvent,
               child: const Text('Save', style: TextStyle(color: Colors.green)),
             ),
-        ],
-      ),
-      body: Form(
+          ],
+        ),
+        body: Form(
         key: _formKey,
         child: ListView.builder(
           padding: const EdgeInsets.all(16),
@@ -415,13 +543,19 @@ class _CreateEventPageState extends State<CreateEventPage> {
             TextFormField(
               controller: _titleController,
               enabled: !_isLoading,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Event Title *',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
+                helperText: '${_titleController.text.length}/100 characters',
+                helperMaxLines: 1,
               ),
+              maxLength: 100,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a title';
+                }
+                if (value.length > 100) {
+                  return 'Title must be 100 characters or less';
                 }
                 return null;
               },
@@ -431,14 +565,20 @@ class _CreateEventPageState extends State<CreateEventPage> {
             TextFormField(
               controller: _descriptionController,
               enabled: !_isLoading,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Description *',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
+                helperText: '${_descriptionController.text.length}/1000 characters',
+                helperMaxLines: 1,
               ),
               maxLines: 4,
+              maxLength: 1000,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a description';
+                }
+                if (value.length > 1000) {
+                  return 'Description must be 1000 characters or less';
                 }
                 return null;
               },
@@ -449,7 +589,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
             ListTile(
               enabled: !_isLoading,
               title: const Text('Start Time *'),
-              subtitle: Text(_startTime?.toString() ?? 'Not selected'),
+              subtitle: Text(
+                _formatDateTime(_startTime),
+                style: TextStyle(
+                  fontWeight: _startTime != null ? FontWeight.w500 : null,
+                  color: _startTime != null ? Theme.of(context).primaryColor : null,
+                ),
+              ),
               trailing: const Icon(Icons.calendar_today),
               onTap: _isLoading ? null : () => _selectDateTime(context, true),
               shape: RoundedRectangleBorder(
@@ -464,11 +610,14 @@ class _CreateEventPageState extends State<CreateEventPage> {
               enabled: !_isLoading,
               title: const Text('End Time *'),
               subtitle: Text(
-                _endTime?.toString() ?? 'Not selected',
+                _formatDateTime(_endTime),
                 style: TextStyle(
+                  fontWeight: _endTime != null ? FontWeight.w500 : null,
                   color: _endTime != null && _startTime != null && _endTime!.isBefore(_startTime!)
                       ? Colors.red
-                      : null,
+                      : _endTime != null
+                          ? Theme.of(context).primaryColor
+                          : null,
                 ),
               ),
               trailing: const Icon(Icons.calendar_today),
@@ -492,6 +641,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               onChanged: _isLoading ? null : (value) {
                 setState(() {
                   _isAllDay = value;
+                  _hasUnsavedChanges = true;
                   // If switching to all-day, reset times to midnight and 11:59 PM
                   if (value && _startTime != null) {
                     _startTime = DateTime(
@@ -556,7 +706,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
               items: _visibilityItems,
               onChanged: _isLoading ? null : (value) {
                 if (value != null) {
-                  setState(() => _visibility = value);
+                  setState(() {
+                    _visibility = value;
+                    _hasUnsavedChanges = true;
+                  });
                 }
               },
             ),
@@ -579,6 +732,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             ),
             ],
           ),
+        ),
         ),
       ),
     );
